@@ -12,6 +12,7 @@ Add it as a plugin to `docusaurus.config.js`:
 plugins: [
   ["docusaurus-plugin-openapi", {
     openapiPath: require.resolve("./openapi.json"),
+    sidebarLabel: 'summary', // summary | operationId
   }],
 ]
 ```
