@@ -28,7 +28,8 @@ const DEFAULT_OPTIONS: PluginOptions = {
   remarkPlugins: [],
   rehypePlugins: [],
   admonitions: {},
-  sidebarLabel: "summary"
+  sidebarLabel: "summary",
+  pageId: "summary",
 };
 
 export default function pluginOpenAPI(
@@ -82,7 +83,8 @@ export default function pluginOpenAPI(
       const openapiData = await loadOpenapi(
         openapiPath,
         baseUrl,
-        routeBasePath
+        routeBasePath,
+        options
       );
 
       return { openapiData };

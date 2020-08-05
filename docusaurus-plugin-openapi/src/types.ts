@@ -9,6 +9,7 @@ export interface PluginOptions {
   rehypePlugins: string[];
   admonitions: any;
   sidebarLabel: "summary" | "operationId";
+  pageId: "summary" | "operationId";
 }
 
 export interface LoadedContent {
