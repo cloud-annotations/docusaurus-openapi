@@ -1,5 +1,5 @@
 import React from "react";
-import MD from "react-markdown/with-html";
+import MD from "react-markdown";
 
 import styles from "./styles.module.css";
 
@@ -46,11 +46,7 @@ function Row({ name, schema, required }) {
         )}
         {schema.description && (
           <div className={styles.description}>
-            <MD
-              escapeHtml={false}
-              className="table-markdown"
-              source={schema.description}
-            />
+            <MD className="table-markdown">{schema.description}</MD>
           </div>
         )}
         <Rows schema={schema} />

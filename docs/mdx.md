@@ -1,5 +1,5 @@
 ---
-id: mdx
+slug: mdx
 title: Powered by MDX
 ---
 

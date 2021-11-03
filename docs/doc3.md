@@ -1,5 +1,5 @@
 ---
-id: doc3
+slug: doc3
 title: This is Document Number 3
 ---
 

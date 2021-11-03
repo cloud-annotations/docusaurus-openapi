@@ -1,5 +1,5 @@
 import React from "react";
-import MD from "react-markdown/with-html";
+import MD from "react-markdown";
 
 import styles from "./styles.module.css";
 
@@ -65,11 +65,7 @@ function ParamsTable({ parameters, type }) {
                   )}
                   {param.description && (
                     <div className={styles.description}>
-                      <MD
-                        escapeHtml={false}
-                        className="table-markdown"
-                        source={param.description}
-                      />
+                      <MD className="table-markdown">{param.description}</MD>
                     </div>
                   )}
                   {param.example && <div>Example: {param.example}</div>}

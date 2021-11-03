@@ -1,5 +1,5 @@
 import React from "react";
-import MD from "react-markdown/with-html";
+import MD from "react-markdown";
 
 import Head from "@docusaurus/Head";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -10,18 +10,18 @@ import RequestBodyTable from "@theme/ApiRequestBodyTable";
 import DocPaginator from "@theme/DocPaginator";
 
 import styles from "./styles.module.css";
-import "./styles.css";
-
-import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 import { MDXProvider } from "@mdx-js/react";
 import MDXComponents from "@theme/MDXComponents";
+// import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+
+import "./styles.css";
 
 let ApiDemoPanel = () => <div />;
 
-if (ExecutionEnvironment.canUseDOM) {
-  ApiDemoPanel = require("@theme/ApiDemoPanel").default;
-}
+// if (ExecutionEnvironment.canUseDOM) {
+//   ApiDemoPanel = require("@theme/ApiDemoPanel").default;
+// }
 
 function ApiItem({ openapi, content: DescriptionContent }) {
   const { siteConfig = {} } = useDocusaurusContext();
@@ -83,10 +83,7 @@ function ApiItem({ openapi, content: DescriptionContent }) {
                         </div>
                         {deprecatedDescription && (
                           <div className="admonition-content">
-                            <MD
-                              escapeHtml={false}
-                              source={deprecatedDescription}
-                            />
+                            <MD>{deprecatedDescription}</MD>
                           </div>
                         )}
                       </div>
@@ -96,13 +93,15 @@ function ApiItem({ openapi, content: DescriptionContent }) {
                       <DescriptionContent />
                     </MDXProvider>
 
-                    {/* <MD escapeHtml={false} source={description} /> */}
                     <ParamsTable parameters={parameters} type="path" />
                     <ParamsTable parameters={parameters} type="query" />
                     <ParamsTable parameters={parameters} type="header" />
                     <ParamsTable parameters={parameters} type="cookie" />
 
-                    <RequestBodyTable body={requestBody} title={"Request Body"} />
+                    <RequestBodyTable
+                      body={requestBody}
+                      title={"Request Body"}
+                    />
 
                     <StatusCodesTable responses={responses} />
                   </div>

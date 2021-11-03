@@ -25,10 +25,8 @@ function DocPage(props) {
     }) || {};
   const { permalinkToSidebar, docsSidebars, version } = docsMetadata;
   const sidebar = permalinkToSidebar[currentRoute.path];
-  const {
-    siteConfig: { themeConfig = {} } = {},
-    isClient,
-  } = useDocusaurusContext();
+  const { siteConfig: { themeConfig = {} } = {}, isClient } =
+    useDocusaurusContext();
 
   const { sidebarCollapsible = true } = themeConfig;
 

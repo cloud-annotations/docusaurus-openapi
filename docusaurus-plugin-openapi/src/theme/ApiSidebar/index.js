@@ -7,11 +7,11 @@
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
-import useLockBodyScroll from "@theme/hooks/useLockBodyScroll";
-import useWindowSize, { windowSizes } from "@theme/hooks/useWindowSize";
-import useScrollPosition from "@theme/hooks/useScrollPosition";
+// import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+// import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
+// import useLockBodyScroll from "@theme/hooks/useLockBodyScroll";
+// import useWindowSize, { windowSizes } from "@theme/hooks/useWindowSize";
+// import useScrollPosition from "@theme/hooks/useScrollPosition";
 import Link from "@docusaurus/Link";
 import isInternalUrl from "@docusaurus/isInternalUrl";
 
@@ -186,116 +186,120 @@ function DocSidebarItem(props) {
   }
 }
 
+// function DocSidebar(props) {
+//   const [showResponsiveSidebar, setShowResponsiveSidebar] = useState(false);
+//   const {
+//     siteConfig: {
+//       themeConfig: { navbar: { title, hideOnScroll = false } = {} },
+//     } = {},
+//     isClient,
+//   } = useDocusaurusContext();
+//   const { isAnnouncementBarClosed } = useUserPreferencesContext();
+//   const [scrollY, setScrollY] = useState(0);
+//   useScrollPosition(({ scrollY }) => { setScrollY(scrollY) });
+
+//   const {
+//     docsSidebars,
+//     path,
+//     sidebar: currentSidebar,
+//     sidebarCollapsible,
+//   } = props;
+
+//   useLockBodyScroll(showResponsiveSidebar);
+//   const windowSize = useWindowSize();
+
+//   useEffect(() => {
+//     if (windowSize === windowSizes.desktop) {
+//       setShowResponsiveSidebar(false);
+//     }
+//   }, [windowSize]);
+
+//   if (!currentSidebar) {
+//     return null;
+//   }
+
+//   const sidebarData = docsSidebars[currentSidebar];
+
+//   if (!sidebarData) {
+//     throw new Error(
+//       `Cannot find the sidebar "${currentSidebar}" in the sidebar config!`
+//     );
+//   }
+
+//   return (
+//     <div
+//       className={clsx(styles.sidebar, {
+//         [styles.sidebarWithHideableNavbar]: hideOnScroll,
+//       })}
+//     >
+//       <div
+//         className={clsx("menu", "menu--responsive", styles.menu, {
+//           "menu--show": showResponsiveSidebar,
+//           [styles.menuWithAnnouncementBar]:
+//             !isAnnouncementBarClosed && scrollY === 0,
+//         })}
+//       >
+//         <button
+//           aria-label={showResponsiveSidebar ? "Close Menu" : "Open Menu"}
+//           aria-haspopup="true"
+//           className="button button--secondary button--sm menu__button"
+//           type="button"
+//           onClick={() => {
+//             setShowResponsiveSidebar(!showResponsiveSidebar);
+//           }}
+//         >
+//           {showResponsiveSidebar ? (
+//             <span
+//               className={clsx(
+//                 styles.sidebarMenuIcon,
+//                 styles.sidebarMenuCloseIcon
+//               )}
+//             >
+//               &times;
+//             </span>
+//           ) : (
+//             <svg
+//               aria-label="Menu"
+//               className={styles.sidebarMenuIcon}
+//               xmlns="http://www.w3.org/2000/svg"
+//               height={MOBILE_TOGGLE_SIZE}
+//               width={MOBILE_TOGGLE_SIZE}
+//               viewBox="0 0 32 32"
+//               role="img"
+//               focusable="false"
+//             >
+//               <title>Menu</title>
+//               <path
+//                 stroke="currentColor"
+//                 strokeLinecap="round"
+//                 strokeMiterlimit="10"
+//                 strokeWidth="2"
+//                 d="M4 7h22M4 15h22M4 23h22"
+//               />
+//             </svg>
+//           )}
+//         </button>
+//         <ul className="menu__list">
+//           {sidebarData.map((item, idx) => (
+//             <DocSidebarItem
+//               key={idx}
+//               item={item}
+//               onItemClick={(e) => {
+//                 e.target.blur();
+//                 setShowResponsiveSidebar(false);
+//               }}
+//               collapsible={sidebarCollapsible}
+//               activePath={path}
+//             />
+//           ))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// }
+
 function DocSidebar(props) {
-  const [showResponsiveSidebar, setShowResponsiveSidebar] = useState(false);
-  const {
-    siteConfig: {
-      themeConfig: { navbar: { title, hideOnScroll = false } = {} },
-    } = {},
-    isClient,
-  } = useDocusaurusContext();
-  const { isAnnouncementBarClosed } = useUserPreferencesContext();
-  const [scrollY, setScrollY] = useState(0);
-  useScrollPosition(({ scrollY }) => { setScrollY(scrollY) });
-
-  const {
-    docsSidebars,
-    path,
-    sidebar: currentSidebar,
-    sidebarCollapsible,
-  } = props;
-
-  useLockBodyScroll(showResponsiveSidebar);
-  const windowSize = useWindowSize();
-
-  useEffect(() => {
-    if (windowSize === windowSizes.desktop) {
-      setShowResponsiveSidebar(false);
-    }
-  }, [windowSize]);
-
-  if (!currentSidebar) {
-    return null;
-  }
-
-  const sidebarData = docsSidebars[currentSidebar];
-
-  if (!sidebarData) {
-    throw new Error(
-      `Cannot find the sidebar "${currentSidebar}" in the sidebar config!`
-    );
-  }
-
-  return (
-    <div
-      className={clsx(styles.sidebar, {
-        [styles.sidebarWithHideableNavbar]: hideOnScroll,
-      })}
-    >
-      <div
-        className={clsx("menu", "menu--responsive", styles.menu, {
-          "menu--show": showResponsiveSidebar,
-          [styles.menuWithAnnouncementBar]:
-            !isAnnouncementBarClosed && scrollY === 0,
-        })}
-      >
-        <button
-          aria-label={showResponsiveSidebar ? "Close Menu" : "Open Menu"}
-          aria-haspopup="true"
-          className="button button--secondary button--sm menu__button"
-          type="button"
-          onClick={() => {
-            setShowResponsiveSidebar(!showResponsiveSidebar);
-          }}
-        >
-          {showResponsiveSidebar ? (
-            <span
-              className={clsx(
-                styles.sidebarMenuIcon,
-                styles.sidebarMenuCloseIcon
-              )}
-            >
-              &times;
-            </span>
-          ) : (
-            <svg
-              aria-label="Menu"
-              className={styles.sidebarMenuIcon}
-              xmlns="http://www.w3.org/2000/svg"
-              height={MOBILE_TOGGLE_SIZE}
-              width={MOBILE_TOGGLE_SIZE}
-              viewBox="0 0 32 32"
-              role="img"
-              focusable="false"
-            >
-              <title>Menu</title>
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeMiterlimit="10"
-                strokeWidth="2"
-                d="M4 7h22M4 15h22M4 23h22"
-              />
-            </svg>
-          )}
-        </button>
-        <ul className="menu__list">
-          {sidebarData.map((item, idx) => (
-            <DocSidebarItem
-              key={idx}
-              item={item}
-              onItemClick={(e) => {
-                e.target.blur();
-                setShowResponsiveSidebar(false);
-              }}
-              collapsible={sidebarCollapsible}
-              activePath={path}
-            />
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
+  return <div>TODO</div>;
 }
 
 export default DocSidebar;
