@@ -81,19 +81,17 @@ function Endpoint() {
                 />
               </FormItem>
             );
-          } else {
-            return (
-              <FormItem label={key}>
-                <FormTextInput
-                  placeholder={endpoint.variables[key].default}
-                  onChange={(e) => {
-                    setEndpointValue(key, e.target.value);
-                  }}
-                />
-              </FormItem>
-            );
           }
-          return null;
+          return (
+            <FormItem label={key}>
+              <FormTextInput
+                placeholder={endpoint.variables[key].default}
+                onChange={(e) => {
+                  setEndpointValue(key, e.target.value);
+                }}
+              />
+            </FormItem>
+          );
         })}
     </div>
   );

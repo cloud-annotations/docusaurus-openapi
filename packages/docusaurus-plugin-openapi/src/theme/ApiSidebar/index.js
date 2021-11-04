@@ -190,10 +190,7 @@ function DocSidebarItem(props) {
 function DocSidebar(props) {
   const [showResponsiveSidebar, setShowResponsiveSidebar] = useState(false);
   const {
-    siteConfig: {
-      themeConfig: { navbar: { title, hideOnScroll = false } = {} },
-    } = {},
-    isClient,
+    siteConfig: { themeConfig: { navbar: { hideOnScroll = false } = {} } } = {},
   } = useDocusaurusContext();
   const { isAnnouncementBarClosed } = useUserPreferencesContext();
   const [scrollY, setScrollY] = useState(0);

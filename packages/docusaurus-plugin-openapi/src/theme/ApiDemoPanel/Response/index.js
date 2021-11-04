@@ -23,7 +23,7 @@ function formatXml(xml) {
       indent = indent.substring(tab.length);
     }
     formatted += indent + "<" + node + ">\r\n";
-    if (node.match(/^<?\w[^>]*[^\/]$/)) {
+    if (node.match(/^<?\w[^>]*[^/]$/)) {
       // increase indent
       indent += tab;
     }

@@ -1,9 +1,15 @@
 #!/usr/bin/env ts-node-script
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
 
-// @ts-ignore
+import { basename, dirname } from "path";
+
 import concurrently, { CommandObj, Options } from "concurrently";
 import glob from "glob";
-import { basename, dirname } from "path";
 // import { chdir } from "process";
 
 const watch = process.argv.includes("--watch");
