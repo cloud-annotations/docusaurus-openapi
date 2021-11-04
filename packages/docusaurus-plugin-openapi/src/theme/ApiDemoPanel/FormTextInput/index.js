@@ -6,7 +6,7 @@ function FormTextInput({ placeholder, value, password, onChange }) {
   return (
     <input
       className={styles.input}
-      type={password ? 'password' : 'text'}
+      type={password ? "password" : "text"}
       placeholder={placeholder}
       value={value}
       onChange={onChange}

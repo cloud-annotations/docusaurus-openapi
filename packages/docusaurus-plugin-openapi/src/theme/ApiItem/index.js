@@ -1,7 +1,7 @@
 import React from "react";
 import MD from "react-markdown";
-import rehypeRaw from 'rehype-raw'
-import rehypeSanitize from 'rehype-sanitize'
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 import Head from "@docusaurus/Head";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -104,7 +104,10 @@ function ApiItem({ openapi, content: DescriptionContent }) {
                     <ParamsTable parameters={parameters} type="header" />
                     <ParamsTable parameters={parameters} type="cookie" />
 
-                    <RequestBodyTable body={requestBody} title={"Request Body"} />
+                    <RequestBodyTable
+                      body={requestBody}
+                      title={"Request Body"}
+                    />
 
                     <StatusCodesTable responses={responses} />
                   </div>

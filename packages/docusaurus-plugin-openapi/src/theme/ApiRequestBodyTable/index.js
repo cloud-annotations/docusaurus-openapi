@@ -1,7 +1,7 @@
 import React from "react";
 import MD from "react-markdown";
-import rehypeRaw from 'rehype-raw'
-import rehypeSanitize from 'rehype-sanitize'
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 import styles from "./styles.module.css";
 

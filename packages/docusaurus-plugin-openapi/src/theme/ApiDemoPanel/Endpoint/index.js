@@ -83,7 +83,7 @@ function Endpoint() {
                   }}
                 />
               </FormItem>
-            )
+            );
           }
           return null;
         })}

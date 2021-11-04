@@ -32,8 +32,9 @@ function StatusCodesTable({ responses }) {
                     </div>
                     <div>
                       <RequestBodyTable
-                        body={{ ...responses[code], description: '' }}
-                        title={responses[code].description} />
+                        body={{ ...responses[code], description: "" }}
+                        title={responses[code].description}
+                      />
                     </div>
                   </div>
                 </td>

@@ -4,7 +4,7 @@ function init({
   parameters = [],
   requestBody = {},
   responses = {},
-  'x-code-samples': codeSamples = [],
+  "x-code-samples": codeSamples = [],
   postman,
   jsonRequestBodyExample,
   servers,

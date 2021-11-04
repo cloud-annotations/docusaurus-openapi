@@ -196,7 +196,9 @@ function DocSidebar(props) {
   } = useDocusaurusContext();
   const { isAnnouncementBarClosed } = useUserPreferencesContext();
   const [scrollY, setScrollY] = useState(0);
-  useScrollPosition(({ scrollY }) => { setScrollY(scrollY) });
+  useScrollPosition(({ scrollY }) => {
+    setScrollY(scrollY);
+  });
 
   const {
     docsSidebars,
@@ -209,7 +211,7 @@ function DocSidebar(props) {
   const windowSize = useWindowSize();
 
   useEffect(() => {
-    if (windowSize === 'desktop') {
+    if (windowSize === "desktop") {
       setShowResponsiveSidebar(false);
     }
   }, [windowSize]);
