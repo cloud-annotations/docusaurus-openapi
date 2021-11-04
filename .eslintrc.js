@@ -76,6 +76,20 @@ module.exports = {
         "testing-library/prefer-screen-queries": "off",
       },
     },
+    {
+      files: ["**/scripts/**"],
+      rules: {
+        "import/no-extraneous-dependencies": [
+          "warn",
+          {
+            devDependencies: true,
+            optionalDependencies: false,
+            peerDependencies: true,
+            bundledDependencies: true,
+          },
+        ],
+      },
+    },
   ],
   settings: {
     "import/extensions": allExtensions,
