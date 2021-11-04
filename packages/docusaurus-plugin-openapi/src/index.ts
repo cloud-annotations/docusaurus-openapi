@@ -1,24 +1,25 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */
+ * ========================================================================== */
 
-import fs from "fs-extra";
 import path from "path";
-import admonitions from "remark-admonitions";
-import { normalizeUrl, docuHash } from "@docusaurus/utils";
+
 import {
   LoadContext,
   Plugin,
   RouteConfig,
   ConfigureWebpackUtils,
 } from "@docusaurus/types";
+import { normalizeUrl, docuHash } from "@docusaurus/utils";
+import fs from "fs-extra";
+import admonitions from "remark-admonitions";
 import webpack, { Configuration } from "webpack";
 
-import { PluginOptions, LoadedContent, ApiSection } from "./types";
 import { loadOpenapi } from "./openapi";
+import { PluginOptions, LoadedContent, ApiSection } from "./types";
 
 const DEFAULT_OPTIONS: PluginOptions = {
   routeBasePath: "api",

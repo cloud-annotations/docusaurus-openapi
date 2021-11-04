@@ -1,9 +1,17 @@
-// @ts-ignore - openapi-to-postmanv2 doesn't have types.
-import Converter from "openapi-to-postmanv2";
-import sdk, { Collection } from "postman-collection";
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
+import { normalizeUrl } from "@docusaurus/utils";
 import importFresh from "import-fresh";
 import JsonRefs from "json-refs";
 import kebabCase from "lodash.kebabcase";
+// @ts-ignore - openapi-to-postmanv2 doesn't have types.
+import Converter from "openapi-to-postmanv2";
+import sdk, { Collection } from "postman-collection";
 
 import { sampleFromSchema } from "./createExample";
 import {
@@ -18,7 +26,6 @@ import {
   RequestBodyObject,
   SchemaObject,
 } from "./types";
-import { normalizeUrl } from "@docusaurus/utils";
 
 function isOperationObject(
   item:

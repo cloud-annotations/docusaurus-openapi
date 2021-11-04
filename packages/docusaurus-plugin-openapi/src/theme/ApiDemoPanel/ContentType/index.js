@@ -1,8 +1,17 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
 import React from "react";
-import FormSelect from "./../FormSelect";
+
 import { useSelector } from "react-redux";
-import { useActions } from "./../redux/actions";
+
 import FormItem from "./../FormItem";
+import FormSelect from "./../FormSelect";
+import { useActions } from "./../redux/actions";
 
 function ContentType() {
   const contentTypeOptions = useSelector((state) => state.contentTypeOptions);

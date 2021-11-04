@@ -1,19 +1,20 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */
+ * ========================================================================== */
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import clsx from "clsx";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
-import useLockBodyScroll from "@theme/hooks/useLockBodyScroll";
-import useWindowSize from "@theme/hooks/useWindowSize";
-import { useScrollPosition } from "@docusaurus/theme-common";
-import Link from "@docusaurus/Link";
+
 import isInternalUrl from "@docusaurus/isInternalUrl";
+import Link from "@docusaurus/Link";
+import { useScrollPosition } from "@docusaurus/theme-common";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useLockBodyScroll from "@theme/hooks/useLockBodyScroll";
+import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext";
+import useWindowSize from "@theme/hooks/useWindowSize";
+import clsx from "clsx";
 
 import styles from "./styles.module.css";
 

@@ -1,14 +1,22 @@
-import React, { useState } from "react";
-import VSCode from "./../VSCode";
-import FormTextInput from "./../FormTextInput";
-import FormFileUpload from "./../FormFileUpload";
-import { useSelector } from "react-redux";
-import { useActions } from "./../redux/actions";
-import FormItem from "./../FormItem";
-import FormSelect from "../FormSelect";
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
 
-import styles from "./styles.module.css";
+import React, { useState } from "react";
+
+import { useSelector } from "react-redux";
+
 import ContentType from "../ContentType";
+import FormSelect from "../FormSelect";
+import FormFileUpload from "./../FormFileUpload";
+import FormItem from "./../FormItem";
+import FormTextInput from "./../FormTextInput";
+import { useActions } from "./../redux/actions";
+import VSCode from "./../VSCode";
+import styles from "./styles.module.css";
 
 function BodyWrap() {
   const [showOptional, setShowOptional] = useState(false);

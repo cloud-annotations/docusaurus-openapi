@@ -1,23 +1,27 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
 import React from "react";
+
+import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+import Head from "@docusaurus/Head";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { MDXProvider } from "@mdx-js/react";
+import ParamsTable from "@theme/ApiParamsTable";
+import RequestBodyTable from "@theme/ApiRequestBodyTable";
+import StatusCodesTable from "@theme/ApiStatusCodesTable";
+import DocPaginator from "@theme/DocPaginator";
+import MDXComponents from "@theme/MDXComponents";
 import MD from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 
-import Head from "@docusaurus/Head";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-
-import ParamsTable from "@theme/ApiParamsTable";
-import StatusCodesTable from "@theme/ApiStatusCodesTable";
-import RequestBodyTable from "@theme/ApiRequestBodyTable";
-import DocPaginator from "@theme/DocPaginator";
-
 import styles from "./styles.module.css";
 import "./styles.css";
-
-import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
-
-import { MDXProvider } from "@mdx-js/react";
-import MDXComponents from "@theme/MDXComponents";
 
 let ApiDemoPanel = () => <div />;
 

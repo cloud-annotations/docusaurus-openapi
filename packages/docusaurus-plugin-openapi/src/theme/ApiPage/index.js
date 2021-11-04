@@ -1,18 +1,18 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */
+ * ========================================================================== */
 
 import React from "react";
 
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import renderRoutes from "@docusaurus/renderRoutes";
-import Layout from "@theme/Layout";
-import ApiSidebar from "@theme/ApiSidebar";
-import NotFound from "@theme/NotFound";
 import { matchPath } from "@docusaurus/router";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import ApiSidebar from "@theme/ApiSidebar";
+import Layout from "@theme/Layout";
+import NotFound from "@theme/NotFound";
 
 import styles from "./styles.module.css";
 

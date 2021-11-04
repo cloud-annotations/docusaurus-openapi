@@ -1,10 +1,18 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
 
+import React from "react";
+
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { useSelector } from "react-redux";
+
+import buildPostmanRequest from "./../buildPostmanRequest";
 import { useActions } from "./../redux/actions";
 import makeRequest from "./makeRequest";
-import buildPostmanRequest from "./../buildPostmanRequest";
 
 function isRequestComplete(params) {
   for (let paramList of Object.values(params)) {

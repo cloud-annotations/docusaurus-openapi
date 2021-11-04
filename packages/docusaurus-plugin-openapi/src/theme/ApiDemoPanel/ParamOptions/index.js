@@ -1,13 +1,20 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
 import React, { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux";
-import { useActions } from "./../redux/actions";
-import FormMultiSelect from "./../FormMultiSelect";
-import FormTextInput from "./../FormTextInput";
 
-import styles from "./styles.module.css";
-import FormSelect from "./../FormSelect";
 import FormItem from "./../FormItem";
+import FormMultiSelect from "./../FormMultiSelect";
+import FormSelect from "./../FormSelect";
+import FormTextInput from "./../FormTextInput";
+import { useActions } from "./../redux/actions";
+import styles from "./styles.module.css";
 
 function ParamOption({ param }) {
   if (param.schema.type === "array" && param.schema.items.enum) {

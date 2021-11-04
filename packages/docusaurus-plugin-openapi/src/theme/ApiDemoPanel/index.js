@@ -1,22 +1,29 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
 import React from "react";
+
+import sdk from "postman-collection";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import sdk from "postman-collection";
 
-import reducer from "./redux/reducer";
-import init from "./redux/init";
-import MethodEndpoint from "./MethodEndpoint";
-import ParamOptions from "./ParamOptions";
+import Accept from "./Accept";
+import Authorization from "./Authorization";
 import Body from "./Body";
 import Curl from "./Curl";
-import Response from "./Response";
-import Execute from "./Execute";
-import Accept from "./Accept";
-
-import styles from "./styles.module.css";
 import Endpoint from "./Endpoint";
-import Authorization from "./Authorization";
+import Execute from "./Execute";
+import MethodEndpoint from "./MethodEndpoint";
+import ParamOptions from "./ParamOptions";
+import init from "./redux/init";
+import reducer from "./redux/reducer";
+import Response from "./Response";
+import styles from "./styles.module.css";
 
 function ApiDemoPanel({ item }) {
   item.postman = new sdk.Request(item.postman);

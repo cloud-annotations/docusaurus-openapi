@@ -1,12 +1,19 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
 import React, { useRef, useState, useEffect } from "react";
-import Highlight, { defaultProps } from "prism-react-renderer";
-import codegen from "postman-code-generators";
-import { useSelector } from "react-redux";
+
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import codegen from "postman-code-generators";
+import Highlight, { defaultProps } from "prism-react-renderer";
+import { useSelector } from "react-redux";
 
-import FloatingButton from "./../FloatingButton";
 import buildPostmanRequest from "./../buildPostmanRequest";
-
+import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
 
 const languageSet = [

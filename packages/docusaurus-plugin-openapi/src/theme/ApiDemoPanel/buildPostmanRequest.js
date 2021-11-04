@@ -1,5 +1,11 @@
-import cloneDeep from "lodash/cloneDeep";
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
 
+import cloneDeep from "lodash/cloneDeep";
 import sdk from "postman-collection";
 
 function setQueryParams(postman, queryParams) {
