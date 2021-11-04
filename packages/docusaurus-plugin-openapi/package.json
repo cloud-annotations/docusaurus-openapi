@@ -11,8 +11,8 @@
     "/dist"
   ],
   "scripts": {
-    "build": "./scripts/build.ts",
-    "watch": "./scripts/build.ts --watch"
+    "build": "scripts/build.ts",
+    "watch": "scripts/build.ts --watch"
   },
   "devDependencies": {
     "@types/concurrently": "^6.3.0",
@@ -20,8 +20,7 @@
     "@types/lodash": "^4.14.176",
     "@types/postman-collection": "^3.5.3",
     "concurrently": "^5.2.0",
-    "cpx": "^1.5.0",
-    "ts-node": "^10.4.0"
+    "cpx": "^1.5.0"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.9",
