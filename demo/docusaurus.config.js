@@ -20,9 +20,9 @@ const config = {
 
   plugins: [
     [
-      path.resolve(__dirname, "./docusaurus-plugin-openapi"),
+      "docusaurus-plugin-openapi",
       {
-        openapiPath: require.resolve("./openapi.json"),
+        openapiPath: require.resolve("./examples/openapi.json"),
         corsProxy: "https://cors-anywhere.herokuapp.com",
       },
     ],

@@ -195,13 +195,13 @@ export default function pluginOpenAPI(
             "~api": dataDir,
           },
           fallback: {
-            buffer: require.resolve('buffer/'),
+            buffer: require.resolve("buffer/"),
             process: require.resolve("process/browser"),
           },
         },
         plugins: [
           new webpack.ProvidePlugin({
-            Buffer: [require.resolve("buffer/"), 'Buffer'],
+            Buffer: [require.resolve("buffer/"), "Buffer"],
             process: require.resolve("process/browser"),
           }),
         ],
@@ -210,7 +210,7 @@ export default function pluginOpenAPI(
             {
               test: /(\.mdx?)$/,
               include: [dataDir],
-              use: compact([ 
+              use: compact([
                 getJSLoader({ isServer }),
                 {
                   loader: require.resolve("@docusaurus/mdx-loader"),

@@ -31,9 +31,9 @@
 
     //
     "incremental": true,
-    "tsBuildInfoFile": "./lib/.tsbuildinfo",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "rootDir": "src",
     "outDir": "dist"
   },
-  "exclude": ["scripts", "node_modules", "**/__tests__/**/*", "**/lib/**/*"]
+  "exclude": ["scripts", "node_modules", "**/__tests__/**/*", "**/dist/**/*"]
 }

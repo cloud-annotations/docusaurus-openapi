@@ -47,7 +47,7 @@ for (const src of glob.sync("src")) {
   // Notice that we include *.d.ts, they're perfectly valid to copy.
   commands.push({
     command:
-      `cpx '${src}/**/{*.d.ts,!(*.ts|*.tsx)}' '${src}/../lib'` +
+      `cpx '${src}/**/{*.d.ts,!(*.ts|*.tsx)}' '${src}/../dist'` +
       (watch ? " --watch" : ""),
     name: "cpx",
     prefixColor: "yellow",

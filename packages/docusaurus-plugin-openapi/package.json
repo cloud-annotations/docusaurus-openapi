@@ -6,9 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "files": [
-    "/lib"
+    "/dist"
   ],
   "scripts": {
     "build": "./scripts/build.ts",
