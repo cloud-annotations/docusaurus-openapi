@@ -71,13 +71,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["cypress/**"],
-      rules: {
-        "testing-library/prefer-screen-queries": "off",
-      },
-    },
-    {
-      files: ["**/scripts/**"],
+      files: ["**/scripts/**", "cypress/**"],
       rules: {
         "import/no-extraneous-dependencies": [
           "warn",
