@@ -6,13 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { chdir } from "process";
-
 import concurrently, { CommandObj } from "concurrently";
 
 const watch = process.argv.includes("--watch");
-
-chdir(`${__dirname}/..`);
 
 const watchFlag = watch ? "--watch" : "";
 
