@@ -14,8 +14,8 @@ import { createDryRun } from "./utils/dry-run";
 import { getOutput } from "./utils/get-output";
 import { printBanner } from "./utils/print-utils";
 
-const ORG = "elyra-ai";
-const REPO = "pipeline-editor";
+const ORG = "cloud-annotations";
+const REPO = "docusaurus-plugin-openapi";
 const BUILD_PATH = "build";
 const REPO_ROOT = path.join(BUILD_PATH, REPO);
 
@@ -70,7 +70,7 @@ function buildAndPublish() {
     stdio: "ignore",
   });
 
-  safeExec(`yarn build`, {
+  safeExec(`yarn lerna run build --no-private`, {
     cwd: REPO_ROOT,
   });
 

@@ -10,14 +10,11 @@ import pkg from "../lerna.json";
 import { getOutput } from "./utils/get-output";
 import { printBanner, printSpacer } from "./utils/print-utils";
 
-const ORG = "elyra-ai";
-const REPO = "pipeline-editor";
+const ORG = "cloud-annotations";
+const REPO = "docusaurus-plugin-openapi";
 const BRANCH = "master";
 
-const COMMIT_FILTERS = [
-  /prepare for next development iteration/i,
-  /\(release\) v.*/,
-];
+const COMMIT_FILTERS = [/\(release\) v.*/];
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
