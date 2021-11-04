@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "watch": "echo TODO",
+    "watch": "lerna run watch --parallel",
     "build": "lerna run build",
     "serve": "yarn workspace demo serve",
     "cy:run": "cypress run",
