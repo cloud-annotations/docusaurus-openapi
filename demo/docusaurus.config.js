@@ -16,21 +16,15 @@ const config = {
   organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "docusaurus", // Usually your repo name.
 
-  plugins: [
-    [
-      "docusaurus-plugin-openapi",
-      {
-        openapiPath: require.resolve("./examples/openapi.json"),
-        corsProxy: "https://cors-anywhere.herokuapp.com",
-      },
-    ],
-  ],
-
   presets: [
     [
-      "@docusaurus/preset-classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      "docusaurus-preset-openapi",
+      // TODO: Type this
+      // /** @type {import('@docusaurus/preset-classic').Options} */
+      {
+        api: {
+          openapiPath: require.resolve("./examples/openapi.json"),
+        },
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
@@ -45,13 +39,14 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
-      }),
+      },
     ],
   ],
 
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
+    // TODO: Type this
+    // /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    {
       navbar: {
         title: "My Site",
         logo: {
@@ -123,7 +118,8 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
-    }),
+      proxy: "https://cors-anywhere.herokuapp.com",
+    },
 };
 
 module.exports = config;

@@ -1,6 +1,6 @@
 {
   "name": "docusaurus-plugin-openapi",
-  "description": "OpenAPI plugin for Docusaurus",
+  "description": "OpenAPI plugin for Docusaurus.",
   "version": "0.1.1",
   "license": "MIT",
   "publishConfig": {

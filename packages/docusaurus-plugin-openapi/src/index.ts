@@ -39,6 +39,8 @@ export default function pluginOpenAPI(
 
   const options: PluginOptions = { ...DEFAULT_OPTIONS, ...opts };
 
+  console.log(options);
+
   if (options.admonitions) {
     options.remarkPlugins = options.remarkPlugins.concat([
       [admonitions, options.admonitions],
