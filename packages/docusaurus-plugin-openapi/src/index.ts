@@ -39,8 +39,6 @@ export default function pluginOpenAPI(
 
   const options: PluginOptions = { ...DEFAULT_OPTIONS, ...opts };
 
-  console.log(options);
-
   if (options.admonitions) {
     options.remarkPlugins = options.remarkPlugins.concat([
       [admonitions, options.admonitions],
@@ -53,10 +51,6 @@ export default function pluginOpenAPI(
 
   return {
     name: name,
-
-    getThemePath() {
-      return path.resolve(__dirname, "./theme");
-    },
 
     getPathsToWatch() {
       return [options.openapiPath];
@@ -197,17 +191,7 @@ export default function pluginOpenAPI(
           alias: {
             "~api": dataDir,
           },
-          fallback: {
-            buffer: require.resolve("buffer/"),
-            process: require.resolve("process/browser"),
-          },
         },
-        plugins: [
-          new webpack.ProvidePlugin({
-            Buffer: [require.resolve("buffer/"), "Buffer"],
-            process: require.resolve("process/browser"),
-          }),
-        ],
         module: {
           rules: [
             {

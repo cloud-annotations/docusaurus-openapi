@@ -47,6 +47,7 @@ export default function preset(
 
   const themes: PluginConfig[] = [];
   themes.push(makePluginConfig("@docusaurus/theme-classic", theme));
+  themes.push(makePluginConfig("docusaurus-theme-openapi"));
   if (algolia) {
     themes.push(require.resolve("@docusaurus/theme-search-algolia"));
   }
