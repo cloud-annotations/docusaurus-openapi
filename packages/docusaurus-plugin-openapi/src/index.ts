@@ -16,7 +16,7 @@ import {
 import { normalizeUrl, docuHash } from "@docusaurus/utils";
 import fs from "fs-extra";
 import admonitions from "remark-admonitions";
-import webpack, { Configuration } from "webpack";
+import { Configuration } from "webpack";
 
 import { loadOpenapi } from "./openapi";
 import { PluginOptions, LoadedContent, ApiSection } from "./types";
