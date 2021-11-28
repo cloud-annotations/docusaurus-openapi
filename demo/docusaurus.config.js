@@ -23,7 +23,7 @@ const config = {
       // /** @type {import('@docusaurus/preset-classic').Options} */
       {
         api: {
-          openapiPath: require.resolve("./examples/openapi.json"),
+          path: "examples/openapi.json",
         },
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),

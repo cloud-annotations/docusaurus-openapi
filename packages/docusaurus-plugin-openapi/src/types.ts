@@ -8,7 +8,7 @@
 import { Request } from "postman-collection";
 
 export interface PluginOptions {
-  openapiPath: string;
+  path: string;
   routeBasePath: string;
   apiLayoutComponent: string;
   apiItemComponent: string;

@@ -23,7 +23,7 @@ import { PluginOptions, LoadedContent, ApiSection } from "./types";
 
 const DEFAULT_OPTIONS: PluginOptions = {
   routeBasePath: "api",
-  openapiPath: "",
+  path: "openapi.json",
   apiLayoutComponent: "@theme/ApiPage",
   apiItemComponent: "@theme/ApiItem",
   remarkPlugins: [],
@@ -53,7 +53,7 @@ export default function pluginOpenAPI(
     name: name,
 
     getPathsToWatch() {
-      return [options.openapiPath];
+      return [options.path];
     },
 
     getClientModules() {
@@ -67,17 +67,13 @@ export default function pluginOpenAPI(
     },
 
     async loadContent() {
-      const { routeBasePath, openapiPath } = options;
+      const { routeBasePath, path } = options;
 
-      if (!openapiPath || !fs.existsSync(openapiPath)) {
+      if (!path || !fs.existsSync(path)) {
         return null;
       }
 
-      const openapiData = await loadOpenapi(
-        openapiPath,
-        baseUrl,
-        routeBasePath
-      );
+      const openapiData = await loadOpenapi(path, baseUrl, routeBasePath);
 
       return { openapiData };
     },
