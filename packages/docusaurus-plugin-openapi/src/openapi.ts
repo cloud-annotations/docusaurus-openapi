@@ -178,7 +178,6 @@ export async function loadOpenapi(
   baseUrl: string,
   routeBasePath: string
 ) {
-  // TODO: clean this up and prepend path with site dir.
   const openapiString = await fs.readFile(openapiPath, "utf-8");
   const openapiData = JSON.parse(openapiString) as OpenApiObject;
 

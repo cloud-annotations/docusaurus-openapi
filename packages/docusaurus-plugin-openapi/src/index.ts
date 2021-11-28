@@ -49,11 +49,13 @@ export default function pluginOpenAPI(
 
   const dataDir = path.join(generatedFilesDir, name);
 
+  const openapiPath = path.resolve(context.siteDir, options.path);
+
   return {
     name: name,
 
     getPathsToWatch() {
-      return [options.path];
+      return [openapiPath];
     },
 
     getClientModules() {
@@ -67,13 +69,17 @@ export default function pluginOpenAPI(
     },
 
     async loadContent() {
-      const { routeBasePath, path } = options;
+      const { routeBasePath } = options;
 
-      if (!path || !fs.existsSync(path)) {
+      if (!openapiPath || !fs.existsSync(openapiPath)) {
         return null;
       }
 
-      const openapiData = await loadOpenapi(path, baseUrl, routeBasePath);
+      const openapiData = await loadOpenapi(
+        openapiPath,
+        baseUrl,
+        routeBasePath
+      );
 
       return { openapiData };
     },
