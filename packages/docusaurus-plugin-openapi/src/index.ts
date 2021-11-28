@@ -17,6 +17,7 @@ import { normalizeUrl, docuHash } from "@docusaurus/utils";
 import fs from "fs-extra";
 import { Configuration } from "webpack";
 
+import { createMD } from "./markdown";
 import { loadOpenapi } from "./openapi";
 import { PluginOptions, LoadedContent, ApiSection } from "./types";
 
@@ -91,7 +92,7 @@ export default function pluginOpenAPI(
 
             const markdown = await createData(
               `${docuHash(pageId)}-description.mdx`,
-              item.description
+              createMD(item)
             );
             return {
               path: item.permalink,

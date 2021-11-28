@@ -98,10 +98,10 @@ function ApiItem({ openapi, content: DescriptionContent }) {
 
                     <DescriptionContent />
 
-                    <ParamsTable parameters={parameters} type="path" />
+                    {/* <ParamsTable parameters={parameters} type="path" />
                     <ParamsTable parameters={parameters} type="query" />
                     <ParamsTable parameters={parameters} type="header" />
-                    <ParamsTable parameters={parameters} type="cookie" />
+                    <ParamsTable parameters={parameters} type="cookie" /> */}
 
                     <RequestBodyTable
                       body={requestBody}

@@ -7,12 +7,12 @@
 
 import React from "react";
 
-import MD from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
+// import MD from "react-markdown";
+// import rehypeRaw from "rehype-raw";
+// import rehypeSanitize from "rehype-sanitize";
 
 import FullWidthTable from "../FullWidthTable";
-import styles from "./styles.module.css";
+// import styles from "./styles.module.css";
 
 function parseFinalSchema(schema) {
   if (schema.$ref) {
@@ -73,7 +73,7 @@ function ParamsTable({ parameters, type }) {
                     </strong>
                   </>
                 )}
-                {param.description && (
+                {/* {param.description && (
                   <div className={styles.description}>
                     <MD
                       rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -81,7 +81,7 @@ function ParamsTable({ parameters, type }) {
                       children={param.description}
                     />
                   </div>
-                )}
+                )} */}
                 {param.example && <div>Example: {param.example}</div>}
                 {param.examples &&
                   Object.keys(param.examples).map((key) => (
