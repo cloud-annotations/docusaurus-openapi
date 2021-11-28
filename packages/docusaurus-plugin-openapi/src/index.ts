@@ -15,35 +15,16 @@ import {
 } from "@docusaurus/types";
 import { normalizeUrl, docuHash } from "@docusaurus/utils";
 import fs from "fs-extra";
-import admonitions from "remark-admonitions";
 import { Configuration } from "webpack";
 
 import { loadOpenapi } from "./openapi";
 import { PluginOptions, LoadedContent, ApiSection } from "./types";
 
-const DEFAULT_OPTIONS: PluginOptions = {
-  routeBasePath: "api",
-  path: "openapi.json",
-  apiLayoutComponent: "@theme/ApiPage",
-  apiItemComponent: "@theme/ApiItem",
-  remarkPlugins: [],
-  rehypePlugins: [],
-  admonitions: {},
-};
-
 export default function pluginOpenAPI(
   context: LoadContext,
-  opts: Partial<PluginOptions>
+  options: PluginOptions
 ): Plugin<LoadedContent | null> {
   const name = "docusaurus-plugin-openapi";
-
-  const options: PluginOptions = { ...DEFAULT_OPTIONS, ...opts };
-
-  if (options.admonitions) {
-    options.remarkPlugins = options.remarkPlugins.concat([
-      [admonitions, options.admonitions],
-    ]);
-  }
 
   const { baseUrl, generatedFilesDir } = context;
 
@@ -222,3 +203,5 @@ export default function pluginOpenAPI(
 function compact<T>(elems: (T | null)[]): T[] {
   return elems.filter((t) => !!t) as T[];
 }
+
+export { validateOptions } from "./options";
