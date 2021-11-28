@@ -154,7 +154,12 @@ export default function pluginOpenAPI(
       isServer: boolean,
       { getJSLoader }: ConfigureWebpackUtils
     ) {
-      const { rehypePlugins, remarkPlugins } = options;
+      const {
+        rehypePlugins,
+        remarkPlugins,
+        beforeDefaultRehypePlugins,
+        beforeDefaultRemarkPlugins,
+      } = options;
 
       const wp: Configuration = {
         resolve: {
@@ -174,6 +179,8 @@ export default function pluginOpenAPI(
                   options: {
                     remarkPlugins,
                     rehypePlugins,
+                    beforeDefaultRehypePlugins,
+                    beforeDefaultRemarkPlugins,
                   },
                 },
               ]),
