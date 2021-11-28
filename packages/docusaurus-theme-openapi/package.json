@@ -46,7 +46,8 @@
     "redux-devtools-extension": "^2.13.8",
     "rehype-raw": "6.0.0",
     "rehype-sanitize": "^5.0.0",
-    "docusaurus-plugin-openapi": "0.1.1"
+    "docusaurus-plugin-openapi": "0.1.1",
+    "webpack": "^5.61.0"
   },
   "peerDependencies": {
     "react": "^16.8.4 || ^17.0.0",

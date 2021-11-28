@@ -39,16 +39,6 @@ export default function pluginOpenAPI(
       return [openapiPath];
     },
 
-    getClientModules() {
-      const modules = [];
-
-      if (options.admonitions) {
-        modules.push(require.resolve("remark-admonitions/styles/infima.css"));
-      }
-
-      return modules;
-    },
-
     async loadContent() {
       const { routeBasePath } = options;
 
