@@ -1,121 +1,53 @@
-# Docusaurus OpenAPI (beta)
+# Docusaurus Plugin OpenAPI (WIP)
 
 ![](https://user-images.githubusercontent.com/4212769/85324376-b9e3d900-b497-11ea-9765-c42a8ad1ff61.png)
 
-## Preset usage
+Install the plugin in your docusaurus project:
 
-Install the preset in your docusaurus project by running:
-
-```sh
-// with npm
-npm install docusaurus-preset-openapi
-
-// with yarn
-yarn add docusaurus-preset-openapi
+```
+yarn add docusaurus-plugin-openapi
 ```
 
-The OpenAPI preset can be used as a drop-in replacement to `@docusaurus/preset-classic`:
+Add it as a plugin to `docusaurus.config.js`:
 
 ```js
-/* docusaurus.config.js */
-
-{
-  presets: [
-    [
-      "docusaurus-preset-openapi",
-      {
-        // ... options
-      },
-    ],
-  ],
-}
-```
-
-The default preset options will expose a route, `/api`, and look for an OpenAPI definition at `./openapi.json`.
-
-To explictly configure this, add an `api` stanza as follows:
-
-```js
-/* docusaurus.config.js */
-
-{
-  presets: [
-    [
-      "docusaurus-preset-openapi",
-      {
-        api: {
-          path: 'openapi.json',
-          routeBasePath: 'api',
-        },
-        // ... other options
-      },
-    ],
-  ],
-}
-```
-
-To add a link to the API page, add a new item to the navbar by updating `themeConfig.navbar.items`:
-
-```js
-/* docusaurus.config.js */
-
-{
-  themeConfig: {
-    navbar: {
-      items: [
-        // ... other items
-        { to: "/api", label: "API", position: "left" },
-        // ... other items
-      ],
+plugins: [
+  [
+    "docusaurus-plugin-openapi",
+    {
+      openapiPath: require.resolve("./openapi.json"),
     },
-  },
-}
+  ],
+];
 ```
 
-## Multiple OpenAPI Definitions
-
-To have more than one OpenAPI pages, add additional OpenAPI plugin instances:
+Add it as a item in `docusaurus.config.js` to `themeConfig.navbar.items`:
 
 ```js
-/* docusaurus.config.js */
-
-{
-  presets: [
-    [
-      'docusaurus-preset-openapi',
-      {
-        api: {
-          // id: 'cars', // omitted => default instance
-          path: 'cars/openapi.json',
-          routeBasePath: 'cars',
-          // ... other options
-        },
-      },
-    ],
-  ],
-  plugins: [
-    [
-      'docusaurus-plugin-openapi',
-      {
-        id: 'trains',
-        path: 'trains/openapi.json',
-        routeBasePath: 'trains',
-        // ... other options
-      },
-    ],
-    [
-      'docusaurus-plugin-openapi',
-      {
-        id: 'bikes',
-        path: 'bikes/openapi.json',
-        routeBasePath: 'bikes',
-        // ... other options
-      },
-    ],
-  ],
-}
+{ to: "/api", label: "API", position: "left" }
 ```
 
-This will create routes for `/cars`, `/trains` and `/bikes`.
+For more than one OpenAPI definition, add them as multiple plugins to `docusaurus.config.js`:
 
-> **Note:** One instance of the plugin is included in the preset. All additional plugin instances will require an `id`.
+```js
+plugins: [
+  [
+    "docusaurus-plugin-openapi",
+    {
+      id: "plugin-1",
+      openapiPath: require.resolve("./openapi1.json"),
+      routeBasePath: "cars",
+    },
+  ],
+  [
+    "docusaurus-plugin-openapi",
+    {
+      id: "plugin-2",
+      openapiPath: require.resolve("./openapi2.json"),
+      routeBasePath: "bikes",
+    },
+  ],
+];
+```
+
+This will be resolved at /cars and /bikes endpoints respectively.
