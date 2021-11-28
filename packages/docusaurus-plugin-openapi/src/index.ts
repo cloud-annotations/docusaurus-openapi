@@ -90,7 +90,7 @@ export default function pluginOpenAPI(
             );
 
             const markdown = await createData(
-              `${docuHash(pageId)}-description.md`,
+              `${docuHash(pageId)}-description.mdx`,
               item.description
             );
             return {
@@ -99,10 +99,7 @@ export default function pluginOpenAPI(
               exact: true,
               modules: {
                 openapi: openapiDataPath,
-                content: {
-                  __import: true,
-                  path: markdown,
-                },
+                content: markdown,
               },
             };
           });
