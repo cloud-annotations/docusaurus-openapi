@@ -10,12 +10,10 @@ import React from "react";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import Head from "@docusaurus/Head";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { MDXProvider } from "@mdx-js/react";
 import ParamsTable from "@theme/ApiParamsTable";
 import RequestBodyTable from "@theme/ApiRequestBodyTable";
 import StatusCodesTable from "@theme/ApiStatusCodesTable";
 import DocPaginator from "@theme/DocPaginator";
-import MDXComponents from "@theme/MDXComponents";
 import MD from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
@@ -98,11 +96,8 @@ function ApiItem({ openapi, content: DescriptionContent }) {
                       </div>
                     )}
 
-                    <MDXProvider components={MDXComponents}>
-                      <DescriptionContent />
-                    </MDXProvider>
+                    <DescriptionContent />
 
-                    {/* <MD rehypePlugins={[rehypeRaw, rehypeSanitize]} children={description} /> */}
                     <ParamsTable parameters={parameters} type="path" />
                     <ParamsTable parameters={parameters} type="query" />
                     <ParamsTable parameters={parameters} type="header" />

@@ -10,8 +10,10 @@ import React from "react";
 import renderRoutes from "@docusaurus/renderRoutes";
 import { matchPath } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { MDXProvider } from "@mdx-js/react";
 import ApiSidebar from "@theme/ApiSidebar";
 import Layout from "@theme/Layout";
+import MDXComponents from "@theme/MDXComponents";
 import NotFound from "@theme/NotFound";
 
 import styles from "./styles.module.css";
@@ -48,7 +50,9 @@ function DocPage(props) {
           </div>
         )}
         <main className={styles.docMainContainer}>
-          {renderRoutes(baseRoute.routes)}
+          <MDXProvider components={MDXComponents}>
+            {renderRoutes(baseRoute.routes)}
+          </MDXProvider>
         </main>
       </div>
     </Layout>
