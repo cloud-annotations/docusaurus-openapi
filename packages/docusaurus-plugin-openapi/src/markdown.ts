@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { ApiItem } from "./types";
+import { ApiItem, ExampleObject, ParameterObject } from "./types";
 
 export function createMD(item: ApiItem) {
   return finalize([
@@ -15,6 +15,33 @@ export function createMD(item: ApiItem) {
     createParamsTable(item.parameters, "header"),
     createParamsTable(item.parameters, "cookie"),
   ]);
+}
+
+function create(tag: string, props: any, children: string | string[]): string {
+  let propString = "";
+  for (const [key, value] of Object.entries(props)) {
+    propString += ` ${key}={${JSON.stringify(value)}}`;
+  }
+
+  if (Array.isArray(children)) {
+    children = children.join("");
+  }
+
+  return `<${tag}${propString}>${children}</${tag}>`;
+}
+
+function cond<T>(
+  shouldRender: T | undefined,
+  cb: (x: T) => string | string[]
+): string {
+  if (shouldRender) {
+    let children = cb(shouldRender);
+    if (Array.isArray(children)) {
+      children = children.join("");
+    }
+    return children;
+  }
+  return "";
 }
 
 function parseFinalSchema(schema: any) {
@@ -32,7 +59,7 @@ function getSchemaName(schema: any) {
     return parseFinalSchema(schema.items) + "[]";
   }
 
-  return parseFinalSchema(schema);
+  return parseFinalSchema(schema) ?? "";
 }
 
 function createParamsTable(
@@ -42,56 +69,74 @@ function createParamsTable(
   if (parameters === undefined) {
     return undefined;
   }
-  const params = parameters.filter((param: any) => param.in === type);
+  const params = parameters.filter(
+    (param: any) => param?.in === type
+  ) as ParameterObject[];
   if (params.length === 0) {
     return undefined;
   }
 
-  return `
-  <table style={{ display: "table", width: "100%" }}>
-    <thead>
-      <tr>
-        <th style={{ textAlign: "left" }}>
-          ${type.charAt(0).toUpperCase() + type.slice(1)} Parameters
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-${params
-  .map((param: any) => {
-    return `<tr>
-<td>
-<code>${param.name}</code>
-<span style={{ opacity: "0.6" }}>&nbsp;${
-      getSchemaName(param.schema) || ""
-    }</span>
-${
-  (param.required &&
-    `<span style={{ opacity: "0.6" }}> — </span>
-<strong style={{ fontSize: "var(--ifm-code-font-size)", color: "var(--openapi-required)" }}>&nbsp;REQUIRED</strong>`) ||
-  ""
-}
-${
-  (param.description &&
-    `<div>
-${param.description}
-</div>`) ||
-  ""
-}
-${(param.example && `<div>Example: ${param.example}</div>`) || ""}
-${
-  (param.examples &&
-    Object.keys(param.examples)
-      .map((key) => `<div>Example (${key}): ${param.examples[key].value}</div>`)
-      .join("")) ||
-  ""
-}
-</td>
-</tr>`;
-  })
-  .join("")}
-</tbody>
-</table>`;
+  return create("table", { style: { display: "table", width: "100%" } }, [
+    create(
+      "thead",
+      {},
+      create(
+        "tr",
+        {},
+        create(
+          "th",
+          { style: { textAlign: "left" } },
+          `${type.charAt(0).toUpperCase() + type.slice(1)} Parameters`
+        )
+      )
+    ),
+    create(
+      "tbody",
+      {},
+      params.map((param) =>
+        create(
+          "tr",
+          {},
+          create("td", {}, [
+            create("code", {}, param.name),
+            create(
+              "span",
+              { style: { opacity: "0.6" } },
+              ` ${getSchemaName(param.schema)}`
+            ),
+            cond(param.required, () => [
+              create("span", { style: { opacity: "0.6" } }, " - "),
+              create(
+                "strong",
+                {
+                  style: {
+                    fontSize: "var(--ifm-code-font-size)",
+                    color: "var(--openapi-required)",
+                  },
+                },
+                " REQUIRED"
+              ),
+            ]),
+            cond(param.description, (description) =>
+              create("div", {}, `\n${description}\n`)
+            ),
+            cond(param.example, (example) =>
+              create("div", {}, `Example: ${example}`)
+            ),
+            cond(param.examples, (examples) =>
+              Object.entries(examples).map(([k, v]) =>
+                create(
+                  "div",
+                  {},
+                  `Example (${k}): ${(v as ExampleObject).value}`
+                )
+              )
+            ),
+          ])
+        )
+      )
+    ),
+  ]);
 }
 
 function finalize(items: (string | undefined)[]) {

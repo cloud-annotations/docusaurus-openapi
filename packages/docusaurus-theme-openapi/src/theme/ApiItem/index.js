@@ -10,7 +10,6 @@ import React from "react";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import Head from "@docusaurus/Head";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import ParamsTable from "@theme/ApiParamsTable";
 import RequestBodyTable from "@theme/ApiRequestBodyTable";
 import StatusCodesTable from "@theme/ApiStatusCodesTable";
 import DocPaginator from "@theme/DocPaginator";
@@ -35,7 +34,6 @@ function ApiItem({ openapi, content: DescriptionContent }) {
     summary,
     description,
     deprecated,
-    parameters,
     requestBody,
     "x-deprecated-description": deprecatedDescription,
     responses,
