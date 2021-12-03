@@ -158,10 +158,6 @@ function DocPage(props: any): JSX.Element {
 
   return (
     <>
-      {/* TODO */}
-      {/* <Head>
-        <html className={versionMetadata.className} />
-      </Head> */}
       <DocPageContent
         currentDocRoute={currentDocRoute}
         versionMetadata={docsMetadata}
