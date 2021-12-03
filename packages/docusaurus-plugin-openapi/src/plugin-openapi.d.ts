@@ -5,12 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import React from "react";
-
-import ObjectTable from "../ObjectTable";
-
-function RequestBodyTable({ body, title }) {
-  return <ObjectTable body={body} title={title} />;
+declare module "docusaurus-plugin-openapi" {
+  export type Options = Partial<import("./types").PluginOptions>;
 }
-
-export default RequestBodyTable;

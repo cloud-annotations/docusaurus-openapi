@@ -5,16 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-function FullWidthTable({
-  children,
-  style,
-  ...rest
-}: JSX.IntrinsicElements["table"]) {
-  return (
-    <table style={{ display: "table", width: "100%", ...style }} {...rest}>
-      {children}
-    </table>
-  );
-}
+import type {
+  Options as ClassicOptions,
+  ThemeConfig as ClassicThemeConfig,
+} from "@docusaurus/preset-classic";
 
-export default FullWidthTable;
+export type Options = {
+  api?: false | import("docusaurus-plugin-openapi").Options;
+} & ClassicOptions;
+
+export type ThemeConfig = import("docusaurus-theme-openapi").ThemeConfig &
+  ClassicThemeConfig;

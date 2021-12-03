@@ -67,15 +67,18 @@ export default function pluginOpenAPI(
 
       const sidebar = openapiData.map((category) => {
         return {
-          collapsed: true,
           type: "category",
           label: category.title,
+          collapsible: true,
+          collapsed: true,
           items: category.items.map((item) => {
             return {
               href: item.permalink,
               label: item.summary,
               type: "link",
-              deprecated: item.deprecated,
+              className: item.deprecated
+                ? "menu__list-item--deprecated"
+                : undefined,
             };
           }),
         };

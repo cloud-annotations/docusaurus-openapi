@@ -9,7 +9,6 @@ import { normalizeUrl } from "@docusaurus/utils";
 import fs from "fs-extra";
 import JsonRefs from "json-refs";
 import { kebabCase } from "lodash";
-// @ts-ignore - openapi-to-postmanv2 doesn't have types.
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 

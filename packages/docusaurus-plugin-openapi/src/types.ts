@@ -176,6 +176,7 @@ export interface OperationObject {
   requestBody?: RequestBodyObject | ReferenceObject;
   callbacks?: Map<CallbackObject | ReferenceObject>;
   deprecated?: boolean;
+  "x-deprecated-description"?: string;
   security?: SecurityRequirementObject[];
   servers?: ServerObject[];
   postman?: Request;
