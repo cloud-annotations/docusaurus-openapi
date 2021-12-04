@@ -20,7 +20,7 @@ export interface PluginOptions extends RemarkAndRehypePluginOptions {
 }
 
 export interface LoadedContent {
-  openapiData: any;
+  loadedApi: ApiSection[];
 }
 
 export enum Type {
@@ -348,10 +348,10 @@ export interface ApiSection {
 }
 
 export interface ApiItem extends OperationObject {
+  id: string;
+  title: string;
   method: string;
   path: string;
-  hashId: string;
-  summary: string;
   permalink: string;
   next: Page;
   previous: Page;

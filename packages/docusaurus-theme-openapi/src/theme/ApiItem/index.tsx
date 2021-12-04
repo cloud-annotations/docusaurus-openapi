@@ -13,7 +13,6 @@ import clsx from "clsx";
 
 import styles from "./styles.module.css";
 
-// TODO: type this
 let ApiDemoPanel = (_: { item: any }) => <div />;
 if (ExecutionEnvironment.canUseDOM) {
   ApiDemoPanel = require("@theme/ApiDemoPanel").default;

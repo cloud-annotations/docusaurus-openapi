@@ -30,15 +30,49 @@ type ApiPageContentProps = {
   readonly children: ReactNode;
 };
 
+type SidebarMetadata = Omit<ApiPageContentProps, "children">;
+
+function getSidebar({ currentApiRoute, apiMetadata }: SidebarMetadata) {
+  const sidebarName = currentApiRoute.sidebar;
+  const sidebar = sidebarName
+    ? apiMetadata.apiSidebars[sidebarName]
+    : undefined;
+
+  return sidebar;
+}
+
+function getSidebarPaths({
+  currentApiRoute,
+  apiMetadata,
+}: SidebarMetadata): string[] {
+  const sidebar = getSidebar({ currentApiRoute, apiMetadata });
+  if (!sidebar) {
+    return [];
+  }
+
+  return sidebar.flatMap((category) => {
+    if (category.type === "category") {
+      return category.items
+        .map((link) => {
+          if (link.type === "link") {
+            return link.href;
+          }
+          // kinda hacky but don't feel like wrestling typescript
+          // the empty string will get filtered our
+          return "";
+        })
+        .filter(Boolean);
+    }
+    return [];
+  });
+}
+
 function ApiPageContent({
   currentApiRoute,
   apiMetadata,
   children,
 }: ApiPageContentProps): JSX.Element {
-  const sidebarName = currentApiRoute.sidebar;
-  const sidebar = sidebarName
-    ? apiMetadata.apiSidebars[sidebarName]
-    : undefined;
+  const sidebar = getSidebar({ currentApiRoute, apiMetadata });
 
   const [hiddenSidebarContainer, setHiddenSidebarContainer] = useState(false);
   const [hiddenSidebar, setHiddenSidebar] = useState(false);
@@ -76,7 +110,7 @@ function ApiPageContent({
               key={
                 // Reset sidebar state on sidebar changes
                 // See https://github.com/facebook/docusaurus/issues/3414
-                sidebarName
+                currentApiRoute.sidebar
               }
               sidebar={sidebar}
               path={currentApiRoute.path}
@@ -134,11 +168,20 @@ function ApiPage(props: Props): JSX.Element {
     apiMetadata,
     location,
   } = props;
-  const currentApiRoute = apiRoutes.find((apiRoute) =>
+  let currentApiRoute = apiRoutes.find((apiRoute) =>
     matchPath(location.pathname, apiRoute)
   );
   if (!currentApiRoute) {
     return <NotFound />;
+  }
+
+  // Override the current route path to the first page if it can't be found on the sidebar.
+  const paths = getSidebarPaths({ currentApiRoute, apiMetadata });
+  if (!paths.includes(location.pathname)) {
+    currentApiRoute = {
+      ...currentApiRoute,
+      path: paths[0],
+    };
   }
 
   return (

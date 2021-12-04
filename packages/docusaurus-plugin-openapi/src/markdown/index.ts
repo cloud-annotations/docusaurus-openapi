@@ -14,7 +14,7 @@ import { createStatusCodesTable } from "./createStatusCodesTable";
 import { render } from "./utils";
 
 export function createMD({
-  summary,
+  title,
   deprecated,
   "x-deprecated-description": deprecatedDescription,
   description,
@@ -23,7 +23,7 @@ export function createMD({
   responses,
 }: ApiItem) {
   return render([
-    `# ${summary}\n\n`,
+    `# ${title}\n\n`,
     createDeprecationNotice({ deprecated, description: deprecatedDescription }),
     createDescription(description),
     createParamsTable({ parameters, type: "path" }),
