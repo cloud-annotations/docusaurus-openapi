@@ -9,6 +9,7 @@ import type { RemarkAndRehypePluginOptions } from "@docusaurus/mdx-loader";
 import { Request } from "postman-collection";
 
 export interface PluginOptions extends RemarkAndRehypePluginOptions {
+  id: string;
   path: string;
   routeBasePath: string;
   apiLayoutComponent: string;

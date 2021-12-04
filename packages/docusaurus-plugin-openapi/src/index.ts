@@ -7,6 +7,7 @@
 
 import path from "path";
 
+import { DEFAULT_PLUGIN_ID } from "@docusaurus/core/lib/constants";
 import {
   LoadContext,
   Plugin,
@@ -25,33 +26,60 @@ export default function pluginOpenAPI(
   context: LoadContext,
   options: PluginOptions
 ): Plugin<LoadedContent | null> {
-  const name = "docusaurus-plugin-openapi";
-
   const { baseUrl, generatedFilesDir } = context;
 
-  const dataDir = path.join(generatedFilesDir, name);
+  const pluginId = options.id ?? DEFAULT_PLUGIN_ID;
 
-  const openapiPath = path.resolve(context.siteDir, options.path);
+  const pluginDataDirRoot = path.join(
+    generatedFilesDir,
+    "docusaurus-plugin-openapi"
+  );
+  const dataDir = path.join(pluginDataDirRoot, pluginId);
+  // TODO
+  // const aliasedSource = (source: string) =>
+  //   `~api/${posixPath(path.relative(pluginDataDirRoot, source))}`;
+
+  const contentPath = path.resolve(context.siteDir, options.path);
 
   return {
-    name: name,
+    name: "docusaurus-plugin-openapi",
 
     getPathsToWatch() {
-      return [openapiPath];
+      return [contentPath];
     },
 
     async loadContent() {
       const { routeBasePath } = options;
 
-      if (!openapiPath || !fs.existsSync(openapiPath)) {
+      if (!contentPath || !fs.existsSync(contentPath)) {
         return null;
       }
 
       const openapiData = await loadOpenapi(
-        openapiPath,
+        contentPath,
         baseUrl,
         routeBasePath
       );
+
+      // TODO
+      // versionPath: string;
+      // mainDocId: string;
+      // docs: DocMetadata[];
+      // sidebars: Sidebars;
+      // versionName: VersionName; // 1.0.0
+      // versionLabel: string; // Version 1.0.0
+      // versionPath: string; // /baseUrl/docs/1.0.0
+      // tagsPath: string;
+      // versionEditUrl?: string | undefined;
+      // versionEditUrlLocalized?: string | undefined;
+      // versionBanner: VersionBanner | null;
+      // versionBadge: boolean;
+      // versionClassName: string;
+      // isLast: boolean;
+      // sidebarFilePath: string | false | undefined; // versioned_sidebars/1.0.0.json
+      // routePriority: number | undefined; // -1 for the latest docs
+      // contentPath: string;
+      // contentPathLocalized: string;
 
       return { openapiData };
     },
