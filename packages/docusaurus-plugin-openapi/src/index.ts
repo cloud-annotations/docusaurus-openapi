@@ -21,12 +21,11 @@ import {
   posixPath,
 } from "@docusaurus/utils";
 import chalk from "chalk";
-import fs from "fs-extra";
 import { Configuration } from "webpack";
 
 import { createMD } from "./markdown";
 import { loadOpenapi } from "./openapi";
-import { PluginOptions, LoadedContent, ApiSection } from "./types";
+import { PluginOptions, LoadedContent } from "./types";
 
 export default function pluginOpenAPI(
   context: LoadContext,

@@ -78,8 +78,6 @@ declare module "@theme/ApiPage" {
 }
 
 declare module "@theme/ApiItem" {
-  import type { PropApiMetadata } from "docusaurus-plugin-openapi";
-
   export type ApiRoute = {
     readonly component: () => JSX.Element;
     readonly exact: boolean;
