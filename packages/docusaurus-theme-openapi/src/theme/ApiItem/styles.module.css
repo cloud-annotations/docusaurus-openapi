@@ -1,5 +1,5 @@
-.docItemContainer article > *:first-child,
-.docItemContainer header + * {
+.apiItemContainer article > *:first-child,
+.apiItemContainer header + * {
   margin-top: 0;
 }
 

@@ -7,12 +7,12 @@
 
 import { ReactNode, useState, useCallback } from "react";
 
-// import Head from "@docusaurus/Head";
 import renderRoutes from "@docusaurus/renderRoutes";
 import { matchPath } from "@docusaurus/router";
-import { ThemeClassNames, docVersionSearchTag } from "@docusaurus/theme-common";
 import { translate } from "@docusaurus/Translate";
 import { MDXProvider } from "@mdx-js/react";
+import type { ApiRoute } from "@theme/ApiItem";
+import type { Props } from "@theme/ApiPage";
 import BackToTopButton from "@theme/BackToTopButton";
 import DocSidebar from "@theme/DocSidebar";
 import IconArrow from "@theme/IconArrow";
@@ -20,27 +20,24 @@ import Layout from "@theme/Layout";
 import MDXComponents from "@theme/MDXComponents";
 import NotFound from "@theme/NotFound";
 import clsx from "clsx";
+import { PropApiMetadata } from "docusaurus-plugin-openapi";
 
 import styles from "./styles.module.css";
 
-type DocPageContentProps = {
-  readonly currentDocRoute: any;
-  readonly versionMetadata: any;
+type ApiPageContentProps = {
+  readonly currentApiRoute: ApiRoute;
+  readonly apiMetadata: PropApiMetadata;
   readonly children: ReactNode;
 };
 
-function DocPageContent({
-  currentDocRoute,
-  versionMetadata,
+function ApiPageContent({
+  currentApiRoute,
+  apiMetadata,
   children,
-}: DocPageContentProps): JSX.Element {
-  const { pluginId, version } = versionMetadata;
-
-  // TODO
-  // const sidebarName = currentDocRoute.sidebar;
-  const sidebarName = "sidebar";
+}: ApiPageContentProps): JSX.Element {
+  const sidebarName = currentApiRoute.sidebar;
   const sidebar = sidebarName
-    ? versionMetadata.docsSidebars[sidebarName]
+    ? apiMetadata.apiSidebars[sidebarName]
     : undefined;
 
   const [hiddenSidebarContainer, setHiddenSidebarContainer] = useState(false);
@@ -54,25 +51,18 @@ function DocPageContent({
   }, [hiddenSidebar]);
 
   return (
-    <Layout
-      wrapperClassName={ThemeClassNames.wrapper.docsPages}
-      pageClassName={ThemeClassNames.page.docsDocPage}
-      searchMetadatas={{
-        version,
-        tag: docVersionSearchTag(pluginId, version),
-      }}
-    >
-      <div className={styles.docPage}>
+    <Layout wrapperClassName="api-wrapper" pageClassName="api-page">
+      <div className={styles.apiPage}>
         <BackToTopButton />
 
         {sidebar && (
           <aside
-            className={clsx(styles.docSidebarContainer, {
-              [styles.docSidebarContainerHidden]: hiddenSidebarContainer,
+            className={clsx(styles.apiSidebarContainer, {
+              [styles.apiSidebarContainerHidden]: hiddenSidebarContainer,
             })}
             onTransitionEnd={(e) => {
               if (
-                !e.currentTarget.classList.contains(styles.docSidebarContainer)
+                !e.currentTarget.classList.contains(styles.apiSidebarContainer)
               ) {
                 return;
               }
@@ -89,14 +79,14 @@ function DocPageContent({
                 sidebarName
               }
               sidebar={sidebar}
-              path={currentDocRoute.path}
+              path={currentApiRoute.path}
               onCollapse={toggleSidebar}
               isHidden={hiddenSidebar}
             />
 
             {hiddenSidebar && (
               <div
-                className={styles.collapsedDocSidebar}
+                className={styles.collapsedApiSidebar}
                 title={translate({
                   id: "theme.docs.sidebar.expandButtonTitle",
                   message: "Expand sidebar",
@@ -120,19 +110,15 @@ function DocPageContent({
           </aside>
         )}
         <main
-          className={clsx(styles.docMainContainer, {
-            [styles.docMainContainerEnhanced]:
+          className={clsx(styles.apiMainContainer, {
+            [styles.apiMainContainerEnhanced]:
               hiddenSidebarContainer || !sidebar,
           })}
         >
           <div
-            className={clsx(
-              "container padding-top--md padding-bottom--lg",
-              styles.docItemWrapper,
-              {
-                [styles.docItemWrapperEnhanced]: hiddenSidebarContainer,
-              }
-            )}
+            className={clsx("container padding-top--md padding-bottom--lg", {
+              [styles.apiItemWrapperEnhanced]: hiddenSidebarContainer,
+            })}
           >
             <MDXProvider components={MDXComponents}>{children}</MDXProvider>
           </div>
@@ -142,30 +128,29 @@ function DocPageContent({
   );
 }
 
-function DocPage(props: any): JSX.Element {
+function ApiPage(props: Props): JSX.Element {
   const {
-    route: { routes: docRoutes },
-    // versionMetadata,
-    docsMetadata,
+    route: { routes: apiRoutes },
+    apiMetadata,
     location,
   } = props;
-  const currentDocRoute = docRoutes.find((docRoute: any) =>
-    matchPath(location.pathname, docRoute)
+  const currentApiRoute = apiRoutes.find((apiRoute) =>
+    matchPath(location.pathname, apiRoute)
   );
-  if (!currentDocRoute) {
+  if (!currentApiRoute) {
     return <NotFound />;
   }
 
   return (
     <>
-      <DocPageContent
-        currentDocRoute={currentDocRoute}
-        versionMetadata={docsMetadata}
+      <ApiPageContent
+        currentApiRoute={currentApiRoute}
+        apiMetadata={apiMetadata}
       >
-        {renderRoutes(docRoutes, { versionMetadata: docsMetadata })}
-      </DocPageContent>
+        {renderRoutes(apiRoutes)}
+      </ApiPageContent>
     </>
   );
 }
 
-export default DocPage;
+export default ApiPage;

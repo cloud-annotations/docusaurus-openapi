@@ -6,51 +6,35 @@
  * ========================================================================== */
 
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
-import { ThemeClassNames } from "@docusaurus/theme-common";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import type { Props } from "@theme/ApiItem";
 import DocPaginator from "@theme/DocPaginator";
 import Seo from "@theme/Seo";
 import clsx from "clsx";
 
 import styles from "./styles.module.css";
-import "./styles.css";
 
-let ApiDemoPanel: any = () => <div />;
+// TODO: type this
+let ApiDemoPanel = (_: { item: any }) => <div />;
 if (ExecutionEnvironment.canUseDOM) {
   ApiDemoPanel = require("@theme/ApiDemoPanel").default;
 }
 
-export default function ApiItem(props: any): JSX.Element {
-  const { openapi, content: DocContent } = props;
-  // const { metadata, frontMatter } = DocContent;
-  // const { image, keywords } = frontMatter;
-  // const { description, title } = metadata;
-
-  // TODO: OLD
-  const { siteConfig } = useDocusaurusContext();
-  const { title: siteTitle } = siteConfig;
-
-  const { summary, description, next, previous } = openapi;
-
-  const title = summary ? `${summary} | ${siteTitle}` : siteTitle;
-
-  const metadata = { next, previous };
-  // OLD
+function ApiItem(props: Props): JSX.Element {
+  const { content: ApiContent } = props;
+  const { metadata, frontMatter } = ApiContent;
+  const { image, keywords } = frontMatter;
+  const { description, title, api } = metadata;
 
   return (
     <>
-      {/* TODO */}
-      {/* <Seo {...{ title, description, keywords, image }} /> */}
-      <Seo {...{ title, description }} />
+      <Seo {...{ title, description, keywords, image }} />
 
       <div className="row">
         <div className="col">
-          <div className={styles.docItemContainer}>
+          <div className={styles.apiItemContainer}>
             <article>
-              <div
-                className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}
-              >
-                <DocContent />
+              <div className={clsx("theme-api-markdown", "markdown")}>
+                <ApiContent />
               </div>
             </article>
 
@@ -58,9 +42,11 @@ export default function ApiItem(props: any): JSX.Element {
           </div>
         </div>
         <div className="col col--5">
-          <ApiDemoPanel item={openapi} />
+          <ApiDemoPanel item={api} />
         </div>
       </div>
     </>
   );
 }
+
+export default ApiItem;

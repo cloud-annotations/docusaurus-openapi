@@ -7,14 +7,18 @@
 
 import path from "path";
 
-import { DEFAULT_PLUGIN_ID } from "@docusaurus/core/lib/constants";
 import {
   LoadContext,
   Plugin,
   RouteConfig,
   ConfigureWebpackUtils,
 } from "@docusaurus/types";
-import { normalizeUrl, docuHash } from "@docusaurus/utils";
+import {
+  normalizeUrl,
+  docuHash,
+  addTrailingPathSeparator,
+  posixPath,
+} from "@docusaurus/utils";
 import fs from "fs-extra";
 import { Configuration } from "webpack";
 
@@ -28,16 +32,13 @@ export default function pluginOpenAPI(
 ): Plugin<LoadedContent | null> {
   const { baseUrl, generatedFilesDir } = context;
 
-  const pluginId = options.id ?? DEFAULT_PLUGIN_ID;
-
   const pluginDataDirRoot = path.join(
     generatedFilesDir,
     "docusaurus-plugin-openapi"
   );
-  const dataDir = path.join(pluginDataDirRoot, pluginId);
-  // TODO
-  // const aliasedSource = (source: string) =>
-  //   `~api/${posixPath(path.relative(pluginDataDirRoot, source))}`;
+
+  const aliasedSource = (source: string) =>
+    `~api/${posixPath(path.relative(pluginDataDirRoot, source))}`;
 
   const contentPath = path.resolve(context.siteDir, options.path);
 
@@ -93,12 +94,15 @@ export default function pluginOpenAPI(
       const { routeBasePath, apiLayoutComponent, apiItemComponent } = options;
       const { addRoute, createData } = actions;
 
+      // TODO: This should be unique so it doesn't clash with other sidebar keys for react render
+      const SIDEBAR_NAME = "openapi-sidebar";
+
       const sidebar = openapiData.map((category) => {
         return {
           type: "category",
           label: category.title,
-          collapsible: true,
-          collapsed: true,
+          collapsible: options.sidebarCollapsible,
+          collapsed: options.sidebarCollapsed,
           items: category.items.map((item) => {
             return {
               href: item.permalink,
@@ -116,13 +120,34 @@ export default function pluginOpenAPI(
         .map((section) => {
           return section.items.map(async (item) => {
             const pageId = `site-${routeBasePath}-${item.hashId}`;
-            const openapiDataPath = await createData(
+
+            await createData(
               `${docuHash(pageId)}.json`,
-              JSON.stringify(item)
+              JSON.stringify(
+                {
+                  unversionedId: item.hashId,
+                  id: item.hashId,
+                  isDocsHomePage: false, // TODO: Where does this come from?
+                  title: item.summary,
+                  description: item.description,
+                  // source: "@site/docs/tutorial-basics/congratulations.md",
+                  // sourceDirName: "tutorial-basics",
+                  slug: "/" + item.hashId, // TODO: Should this really be prepended with "/"?
+                  permalink: item.permalink,
+                  frontMatter: {},
+                  sidebar: SIDEBAR_NAME,
+                  previous: item.previous,
+                  next: item.next,
+                  api: item,
+                },
+                null,
+                2
+              )
             );
 
+            // TODO: "-content" should be inside hash to prevent name too long errors.
             const markdown = await createData(
-              `${docuHash(pageId)}-description.mdx`,
+              `${docuHash(pageId)}-content.mdx`,
               createMD(item)
             );
             return {
@@ -130,9 +155,9 @@ export default function pluginOpenAPI(
               component: apiItemComponent,
               exact: true,
               modules: {
-                openapi: openapiDataPath,
                 content: markdown,
               },
+              sidebar: SIDEBAR_NAME,
             };
           });
         })
@@ -140,28 +165,19 @@ export default function pluginOpenAPI(
 
       const routes = (await Promise.all(promises)) as RouteConfig[];
 
-      const permalinkToSidebar = routes.reduce(
-        (acc: { [key: string]: string }, item) => {
-          acc[item.path] = "sidebar";
-          return acc;
-        },
-        {}
-      );
-
       // Important: the layout component should not end with /,
       // as it conflicts with the home doc
       // Workaround fix for https://github.com/facebook/docusaurus/issues/2917
       const apiBaseRoute = normalizeUrl([baseUrl, routeBasePath]);
       const basePath = apiBaseRoute === "/" ? "" : apiBaseRoute;
 
-      const docsBaseMetadataPath = await createData(
-        `${docuHash(normalizeUrl([apiBaseRoute, ":route"]))}.json`,
+      const apiBaseMetadataPath = await createData(
+        `${docuHash(`api-metadata-prop`)}.json`,
         JSON.stringify(
           {
-            docsSidebars: {
-              sidebar: sidebar,
+            apiSidebars: {
+              [SIDEBAR_NAME]: sidebar,
             },
-            permalinkToSidebar: permalinkToSidebar,
           },
           null,
           2
@@ -174,7 +190,7 @@ export default function pluginOpenAPI(
         component: apiLayoutComponent, // main docs component (DocPage)
         routes, // subroute for each doc
         modules: {
-          docsMetadata: docsBaseMetadataPath,
+          apiMetadata: aliasedSource(apiBaseMetadataPath),
         },
       });
 
@@ -193,18 +209,18 @@ export default function pluginOpenAPI(
         beforeDefaultRemarkPlugins,
       } = options;
 
-      const wp: Configuration = {
+      return {
         resolve: {
           alias: {
-            "~api": dataDir,
+            "~api": pluginDataDirRoot,
           },
         },
         module: {
           rules: [
             {
               test: /(\.mdx?)$/,
-              include: [dataDir],
-              use: compact([
+              include: [pluginDataDirRoot].map(addTrailingPathSeparator),
+              use: [
                 getJSLoader({ isServer }),
                 {
                   loader: require.resolve("@docusaurus/mdx-loader"),
@@ -213,21 +229,18 @@ export default function pluginOpenAPI(
                     rehypePlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
+                    metadataPath: (mdxPath: string) => {
+                      return mdxPath.replace(/(-content\.mdx?)$/, ".json");
+                    },
                   },
                 },
-              ]),
+              ].filter(Boolean),
             },
           ],
         },
       };
-
-      return wp;
     },
   };
-}
-
-function compact<T>(elems: (T | null)[]): T[] {
-  return elems.filter((t) => !!t) as T[];
 }
 
 export { validateOptions } from "./options";
