@@ -3,6 +3,11 @@
   margin-top: 0;
 }
 
+/* default markdown margins look really silly in a table */
+:global(.theme-api-markdown table *:last-child) {
+  margin-bottom: 0;
+}
+
 @media (min-width: 997px) {
   .docItemCol {
     max-width: 75% !important;
