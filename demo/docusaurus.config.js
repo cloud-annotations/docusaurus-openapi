@@ -146,7 +146,10 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
-      proxy: "https://cors-anywhere.herokuapp.com",
+      api: {
+        proxy: "https://cors-anywhere.herokuapp.com",
+        authPersistance: "localStorage",
+      },
     }),
 };
 
