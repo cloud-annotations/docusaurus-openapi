@@ -2,7 +2,7 @@
 
 ![](https://user-images.githubusercontent.com/4212769/85324376-b9e3d900-b497-11ea-9765-c42a8ad1ff61.png)
 
-> [💥 0.1.0 -> 0.2.0 breaking changes](./CHANGELOG.md)
+> 💥 0.1.0 -> 0.2.0 [breaking changes](./CHANGELOG.md)
 
 ## Preset usage
 
