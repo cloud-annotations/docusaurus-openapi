@@ -119,6 +119,10 @@ function storeObject(
   }
 }
 
+function uniqueKey(relationship: Security[], security: Security) {
+  return relationship.map((r) => r.key).join("+") + ":" + security.key;
+}
+
 export function loadAuth({
   securitySchemes,
   security,
@@ -133,7 +137,7 @@ export function loadAuth({
   return securities.map((relationship) =>
     relationship.map((security) => {
       const data = hydrateObject(getAuthDataKeys(security), {
-        prefix: security.key, // prefix with key so schemes don't overwrite each other.
+        prefix: uniqueKey(relationship, security),
         persistance,
       });
       return { ...security, data };
@@ -155,9 +159,47 @@ export function persistAuth({
   for (const relationship of securities) {
     for (const security of relationship) {
       storeObject(security.data, {
-        prefix: security.key, // prefix with key so schemes don't overwrite each other.
+        prefix: uniqueKey(relationship, security),
         persistance,
       });
     }
   }
+}
+
+export function persistSelectedAuth({
+  key,
+  selectedAuthID,
+  persistance,
+}: {
+  key: string;
+  selectedAuthID: string;
+  persistance: Persistance;
+}) {
+  if (persistance === false) {
+    return;
+  }
+
+  if (persistance === "sessionStorage") {
+    sessionStorage.setItem(key, selectedAuthID);
+  }
+
+  localStorage.setItem(key, selectedAuthID);
+}
+
+export function loadSelectedAuth({
+  key,
+  persistance,
+}: {
+  key: string;
+  persistance: Persistance;
+}): string | undefined {
+  if (persistance === false) {
+    return undefined;
+  }
+
+  if (persistance === "sessionStorage") {
+    return sessionStorage.getItem(key) ?? undefined;
+  }
+
+  return localStorage.getItem(key) ?? undefined;
 }

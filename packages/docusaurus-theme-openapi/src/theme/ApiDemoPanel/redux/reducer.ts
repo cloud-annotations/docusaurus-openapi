@@ -8,7 +8,7 @@
 import produce from "immer";
 
 import { types } from "./actions";
-import { persistAuth } from "./persistance";
+import { persistAuth, persistSelectedAuth } from "./persistance";
 
 const reducer = produce((draft, action) => {
   switch (action.type) {
@@ -60,6 +60,16 @@ const reducer = produce((draft, action) => {
         persistance: draft.options.authPersistance,
       });
       draft.auth = action.auth;
+      break;
+    }
+    case types.setSelectedAuthID: {
+      //  TODO: This is a side effect and shouldn't be done here.
+      persistSelectedAuth({
+        key: draft._uniqueAuthKey,
+        selectedAuthID: action.selectedAuthID,
+        persistance: draft.options.authPersistance,
+      });
+      draft.selectedAuthID = action.selectedAuthID;
       break;
     }
     default:

@@ -6,7 +6,7 @@
  * ========================================================================== */
 
 import { ThemeConfig } from "../../../types";
-import { loadAuth } from "./persistance";
+import { loadAuth, loadSelectedAuth } from "./persistance";
 
 function init(
   {
@@ -65,6 +65,27 @@ function init(
     persistance: options.authPersistance,
   });
 
+  function createOptionIDs(auth: any): string[] {
+    return auth
+      .map((a: { key: string }[]) =>
+        a.reduce((acc, cur) => {
+          if (acc === undefined) {
+            return cur.key;
+          }
+          return `${acc} and ${cur.key}`;
+        }, undefined as string | undefined)
+      )
+      .filter(Boolean);
+  }
+  const authOptionIDs = createOptionIDs(auth);
+  const _uniqueAuthKey = authOptionIDs.join("&");
+
+  const selectedAuthID =
+    loadSelectedAuth({
+      key: _uniqueAuthKey,
+      persistance: options.authPersistance,
+    }) ?? authOptionIDs[0];
+
   return {
     jsonRequestBodyExample,
     requestBodyMetadata: requestBody, // TODO: no...
@@ -84,6 +105,9 @@ function init(
     security,
     securitySchemes,
     auth,
+    selectedAuthID,
+    authOptionIDs,
+    _uniqueAuthKey,
     options,
   };
 }

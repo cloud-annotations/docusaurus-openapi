@@ -5,25 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { PropsWithChildren, useState } from "react";
+import React, { useState } from "react";
 
 import clsx from "clsx";
+import produce from "immer";
 import { useSelector } from "react-redux";
 
 // @ts-ignore
-import FloatingButton from "../FloatingButton";
-// @ts-ignore
 import FormItem from "../FormItem";
+// @ts-ignore
+import FormSelect from "../FormSelect";
 // @ts-ignore
 import FormTextInput from "../FormTextInput";
 import { useActions } from "../redux/actions";
+import styles from "../styles.module.css";
 
-type Props = PropsWithChildren<{
+type Props = {
   mode: "locked" | "unlocked";
-  onClick?(): any;
-}>;
+} & JSX.IntrinsicElements["button"];
 
-function LockButton({ mode, onClick, children }: Props) {
+function LockButton({ mode, children, style, ...rest }: Props) {
   return (
     <button
       className={clsx("button", "button--primary", {
@@ -34,8 +35,9 @@ function LockButton({ mode, onClick, children }: Props) {
         display: "flex",
         alignItems: "center",
         marginBottom: "var(--ifm-spacing-vertical)",
+        ...style,
       }}
-      onClick={onClick}
+      {...rest}
     >
       <span>{children}</span>
 
@@ -60,121 +62,133 @@ function LockButton({ mode, onClick, children }: Props) {
 }
 
 function Authorization() {
+  const { setAuth, setSelectedAuthID } = useActions();
   const auth = useSelector((state: any) => state.auth);
-  // const security = useSelector((state: any) => state.security);
-  // const bearerToken = useSelector((state: any) => state.bearerToken);
-  const { setAuth } = useActions();
+  const selectedAuthID = useSelector((state: any) => state.selectedAuthID);
+  const authOptionIDs = useSelector((state: any) => state.authOptionIDs);
   const [editing, setEditing] = useState(false);
-  // const [basicMode, setBasicMode] = useState(true);
-  // const [token, setToken] = useState(null);
-  // const [password, setPassword] = useState(null);
-  // const requiresAuthorization = security?.length > 0;
 
-  console.log(auth);
+  const noAuthorization = selectedAuthID === undefined;
+
+  if (noAuthorization) {
+    return null;
+  }
+
+  const selectedAuthIndex = authOptionIDs.indexOf(selectedAuthID);
+  const selectedAuth = auth[selectedAuthIndex] as any[];
+
+  const values = selectedAuth.flat().flatMap((a) => Object.values(a.data));
+  const authenticated = !values.includes(undefined);
 
   if (editing) {
     return (
-      <button
-        onClick={() => {
-          setAuth(auth);
-        }}
-      >
-        persist
-      </button>
+      <div className={styles.optionsPanel}>
+        {authOptionIDs.length > 1 && (
+          <FormItem label="Security Scheme">
+            <FormSelect
+              options={authOptionIDs}
+              value={selectedAuthID}
+              onChange={(e: any) => {
+                setSelectedAuthID(e.target.value);
+              }}
+            />
+          </FormItem>
+        )}
+        {selectedAuth.map((a, i) => {
+          if (a.type === "http" && a.scheme === "bearer") {
+            return (
+              <FormItem label="Bearer Token" key={selectedAuthID + "-bearer"}>
+                <FormTextInput
+                  placeholder="Bearer Token"
+                  value={a.data.token ?? ""}
+                  onChange={(e: any) => {
+                    const newAuth = produce(auth, (draft: any) => {
+                      let value = (e.target.value ?? "").trim();
+                      value = !value ? undefined : value;
+                      draft[selectedAuthIndex][i].data.token = value;
+                    });
+                    setAuth(newAuth);
+                  }}
+                />
+              </FormItem>
+            );
+          }
+
+          if (a.type === "http" && a.scheme === "basic") {
+            return (
+              <React.Fragment key={selectedAuthID + "-basic"}>
+                <FormItem label="Username">
+                  <FormTextInput
+                    placeholder="Username"
+                    value={a.data.username ?? ""}
+                    onChange={(e: any) => {
+                      const newAuth = produce(auth, (draft: any) => {
+                        let value = (e.target.value ?? "").trim();
+                        value = !value ? undefined : value;
+                        draft[selectedAuthIndex][i].data.username = value;
+                      });
+                      setAuth(newAuth);
+                    }}
+                  />
+                </FormItem>
+                <FormItem label="Password">
+                  <FormTextInput
+                    placeholder="Password"
+                    value={a.data.password ?? ""}
+                    onChange={(e: any) => {
+                      const newAuth = produce(auth, (draft: any) => {
+                        let value = (e.target.value ?? "").trim();
+                        value = !value ? undefined : value;
+                        draft[selectedAuthIndex][i].data.password = value;
+                      });
+                      setAuth(newAuth);
+                    }}
+                  />
+                </FormItem>
+              </React.Fragment>
+            );
+          }
+
+          return null;
+        })}
+        <LockButton
+          mode="unlocked"
+          style={{
+            marginTop: "var(--ifm-spacing-vertical)",
+            marginBottom: 0,
+          }}
+          onClick={() => {
+            setEditing(false);
+          }}
+        >
+          Save
+        </LockButton>
+      </div>
     );
   }
 
-  // if (!requiresAuthorization) {
-  //   return null;
-  // }
-
-  // if (editing) {
-  //   return (
-  //     <div style={{ display: "flex", flexDirection: "column" }}>
-  //       <LockButton
-  //         mode="unlocked"
-  //         onClick={() => {
-  //           setBearerToken(
-  //             `${basicMode ? "Basic" : "Bearer"} ${
-  //               basicMode ? btoa(`${token}:${password}`) : token
-  //             }`
-  //           );
-  //           setEditing(false);
-  //         }}
-  //       >
-  //         Save
-  //       </LockButton>
-  //       <FloatingButton
-  //         onClick={() => setBasicMode((mode) => !mode)}
-  //         label="Switch Mode"
-  //       >
-  //         <pre>
-  //           {!basicMode ? (
-  //             <FormItem label="Bearer Token">
-  //               <FormTextInput
-  //                 placeholder="Bearer Token"
-  //                 value={token}
-  //                 onChange={(e: any) => {
-  //                   setToken(e.target.value);
-  //                 }}
-  //               />
-  //             </FormItem>
-  //           ) : (
-  //             <>
-  //               <FormItem label="Username">
-  //                 <FormTextInput
-  //                   placeholder="Username"
-  //                   value={token}
-  //                   onChange={(e: any) => {
-  //                     setToken(e.target.value);
-  //                   }}
-  //                 />
-  //               </FormItem>
-  //               <FormItem label="Password">
-  //                 <FormTextInput
-  //                   password
-  //                   placeholder="Password"
-  //                   value={password}
-  //                   onChange={(e: any) => {
-  //                     setPassword(e.target.value);
-  //                   }}
-  //                 />
-  //               </FormItem>
-  //             </>
-  //           )}
-  //         </pre>
-  //       </FloatingButton>
-  //     </div>
-  //   );
-  // }
-
-  // if (!!bearerToken) {
-  //   return (
-  //     <div style={{ display: "flex" }}>
-  //       <LockButton
-  //         mode="locked"
-  //         onClick={() => {
-  //           // clearSession();
-  //           setEditing(true);
-  //         }}
-  //       >
-  //         Authorized
-  //       </LockButton>
-  //     </div>
-  //   );
-  // }
-
-  return (
-    <div style={{ display: "flex" }}>
+  if (authenticated) {
+    return (
       <LockButton
-        mode="unlocked"
+        mode="locked"
         onClick={() => {
           setEditing(true);
         }}
       >
-        Authorize
+        Authorized
       </LockButton>
-    </div>
+    );
+  }
+
+  return (
+    <LockButton
+      mode="unlocked"
+      onClick={() => {
+        setEditing(true);
+      }}
+    >
+      Authorize
+    </LockButton>
   );
 }
 

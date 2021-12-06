@@ -17,6 +17,7 @@ export const types = {
   setEndpoint: "SET_ENDPOINT",
   setEndpointValue: "SET_ENDPOINT_VALUE",
   setAuth: "SET_AUTH",
+  setSelectedAuthID: "SET_SELECTED_AUTH_ID",
 };
 
 export function useActions() {
@@ -62,6 +63,10 @@ export function useActions() {
     dispatch({ type: types.setAuth, auth });
   }
 
+  function setSelectedAuthID(selectedAuthID: string) {
+    dispatch({ type: types.setSelectedAuthID, selectedAuthID });
+  }
+
   return {
     setAccept,
     setContentType,
@@ -73,5 +78,6 @@ export function useActions() {
     setBody,
     setForm,
     setAuth,
+    setSelectedAuthID,
   };
 }
