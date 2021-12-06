@@ -134,6 +134,7 @@ function Authorization() {
                 <FormItem label="Password">
                   <FormTextInput
                     placeholder="Password"
+                    password
                     value={a.data.password ?? ""}
                     onChange={(e: any) => {
                       const newAuth = produce(auth, (draft: any) => {

@@ -147,7 +147,6 @@ const config = {
         darkTheme: darkCodeTheme,
       },
       api: {
-        proxy: "https://cors-anywhere.herokuapp.com",
         authPersistance: "localStorage",
       },
     }),
