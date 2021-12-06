@@ -1,4 +1,7 @@
 {
+  "infiniteLoopProtection": true,
+  "hardReloadOnChange": true,
+  "view": "browser",
   "template": "docusaurus",
   "container": {
     "startScript": "watch",
