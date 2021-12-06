@@ -61,7 +61,7 @@ function init(
 
   const auth = loadAuth({
     securitySchemes,
-    security,
+    security: security ?? [],
     persistance: options.authPersistance,
   });
 
@@ -102,8 +102,6 @@ function init(
     postman,
     servers,
     endpoint: servers[0],
-    security,
-    securitySchemes,
     auth,
     selectedAuthID,
     authOptionIDs,
