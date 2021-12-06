@@ -1,11 +1,7 @@
 {
-  "startScript": "watch",
-  "infiniteLoopProtection": true,
-  "hardReloadOnChange": true,
-  "view": "browser",
   "template": "docusaurus",
-  "node": "14",
   "container": {
+    "startScript": "watch",
     "node": "14"
   }
 }
