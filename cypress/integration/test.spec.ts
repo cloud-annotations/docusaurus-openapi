@@ -15,6 +15,11 @@ describe("test", () => {
   });
 
   it("loads when clicking on tabs", () => {
+    cy.on("uncaught:exception", () => {
+      // there is an uncaught error trying to load monaco in ci
+      return false;
+    });
+
     function checkTab(tab: RegExp, heading: RegExp) {
       cy.get(".navbar").findByRole("link", { name: tab }).click();
       cy.findByRole("heading", { name: heading, level: 1 }).should("exist");
