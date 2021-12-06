@@ -1,4 +1,5 @@
 {
+  "buildCommand": "build-packages",
   "sandboxes": ["/demo"],
   "node": "14"
 }
