@@ -33,7 +33,7 @@ export interface OpenApiObjectWithRef {
   externalDocs?: ExternalDocumentationObject;
 }
 
-interface InfoObject {
+export interface InfoObject {
   title: string;
   description?: string;
   termsOfService?: string;
@@ -42,30 +42,30 @@ interface InfoObject {
   version: string;
 }
 
-interface ContactObject {
+export interface ContactObject {
   name?: string;
   url?: string;
   email?: string;
 }
 
-interface LicenseObject {
+export interface LicenseObject {
   name: string;
   url?: string;
 }
 
-interface ServerObject {
+export interface ServerObject {
   url: string;
   description?: string;
   variables?: Map<ServerVariable>;
 }
 
-interface ServerVariable {
+export interface ServerVariable {
   enum?: string[];
   default: string;
   description?: string;
 }
 
-interface ComponentsObject {
+export interface ComponentsObject {
   schemas?: Map<SchemaObject>;
   responses?: Map<ResponseObject>;
   parameters?: Map<ParameterObject>;
@@ -77,7 +77,7 @@ interface ComponentsObject {
   callbacks?: Map<CallbackObject>;
 }
 
-interface ComponentsObjectWithRef {
+export interface ComponentsObjectWithRef {
   schemas?: Map<SchemaObjectWithRef | ReferenceObject>;
   responses?: Map<ResponseObjectWithRef | ReferenceObject>;
   parameters?: Map<ParameterObjectWithRef | ReferenceObject>;
@@ -89,11 +89,11 @@ interface ComponentsObjectWithRef {
   callbacks?: Map<CallbackObjectWithRef | ReferenceObject>;
 }
 
-type PathsObject = Map<PathItemObject>;
+export type PathsObject = Map<PathItemObject>;
 
-type PathsObjectWithRef = Map<PathItemObjectWithRef>;
+export type PathsObjectWithRef = Map<PathItemObjectWithRef>;
 
-interface PathItemObject {
+export interface PathItemObject {
   $ref?: string;
   summary?: string;
   description?: string;
@@ -109,7 +109,7 @@ interface PathItemObject {
   parameters?: ParameterObject[];
 }
 
-interface PathItemObjectWithRef {
+export interface PathItemObjectWithRef {
   $ref?: string;
   summary?: string;
   description?: string;
@@ -125,7 +125,7 @@ interface PathItemObjectWithRef {
   parameters?: (ParameterObjectWithRef | ReferenceObject)[];
 }
 
-interface OperationObject {
+export interface OperationObject {
   tags?: string[];
   summary?: string;
   description?: string;
@@ -143,7 +143,7 @@ interface OperationObject {
   "x-deprecated-description"?: string;
 }
 
-interface OperationObjectWithRef {
+export interface OperationObjectWithRef {
   tags?: string[];
   summary?: string;
   description?: string;
@@ -161,12 +161,12 @@ interface OperationObjectWithRef {
   "x-deprecated-description"?: string;
 }
 
-interface ExternalDocumentationObject {
+export interface ExternalDocumentationObject {
   description?: string;
   url: string;
 }
 
-interface ParameterObject {
+export interface ParameterObject {
   name: string;
   in: string;
   description?: string;
@@ -186,7 +186,7 @@ interface ParameterObject {
   // pipeDelimited and deepObject
 }
 
-interface ParameterObjectWithRef {
+export interface ParameterObjectWithRef {
   name: string;
   in: string;
   description?: string;
@@ -206,33 +206,33 @@ interface ParameterObjectWithRef {
   // pipeDelimited and deepObject
 }
 
-interface RequestBodyObject {
+export interface RequestBodyObject {
   description?: string;
   content: Map<MediaTypeObject>;
   required?: boolean;
 }
 
-interface RequestBodyObjectWithRef {
+export interface RequestBodyObjectWithRef {
   description?: string;
   content: Map<MediaTypeObjectWithRef>;
   required?: boolean;
 }
 
-interface MediaTypeObject {
+export interface MediaTypeObject {
   schema?: SchemaObject;
   example?: any;
   examples?: Map<ExampleObject>;
   encoding?: Map<EncodingObject>;
 }
 
-interface MediaTypeObjectWithRef {
+export interface MediaTypeObjectWithRef {
   schema?: SchemaObjectWithRef | ReferenceObject;
   example?: any;
   examples?: Map<ExampleObject | ReferenceObject>;
   encoding?: Map<EncodingObjectWithRef>;
 }
 
-interface EncodingObject {
+export interface EncodingObject {
   contentType?: string;
   headers?: Map<HeaderObject>;
   style?: string;
@@ -240,7 +240,7 @@ interface EncodingObject {
   allowReserved?: boolean;
 }
 
-interface EncodingObjectWithRef {
+export interface EncodingObjectWithRef {
   contentType?: string;
   headers?: Map<HeaderObjectWithRef | ReferenceObject>;
   style?: string;
@@ -248,36 +248,38 @@ interface EncodingObjectWithRef {
   allowReserved?: boolean;
 }
 
-type ResponsesObject = Map<ResponseObject>;
+export type ResponsesObject = Map<ResponseObject>;
 
-type ResponsesObjectWithRef = Map<ResponseObjectWithRef | ReferenceObject>;
+export type ResponsesObjectWithRef = Map<
+  ResponseObjectWithRef | ReferenceObject
+>;
 
-interface ResponseObject {
+export interface ResponseObject {
   description: string;
   headers?: Map<HeaderObject>;
   content?: Map<MediaTypeObject>;
   links?: Map<LinkObject>;
 }
 
-interface ResponseObjectWithRef {
+export interface ResponseObjectWithRef {
   description: string;
   headers?: Map<HeaderObjectWithRef | ReferenceObject>;
   content?: Map<MediaTypeObjectWithRef>;
   links?: Map<LinkObject | ReferenceObject>;
 }
 
-type CallbackObject = Map<PathItemObject>;
+export type CallbackObject = Map<PathItemObject>;
 
-type CallbackObjectWithRef = Map<PathItemObjectWithRef>;
+export type CallbackObjectWithRef = Map<PathItemObjectWithRef>;
 
-interface ExampleObject {
+export interface ExampleObject {
   summary?: string;
   description?: string;
   value?: any;
   externalValue?: string;
 }
 
-interface LinkObject {
+export interface LinkObject {
   operationRef?: string;
   operationId?: string;
   parameters?: Map<any>;
@@ -286,22 +288,22 @@ interface LinkObject {
   server?: ServerObject;
 }
 
-type HeaderObject = Omit<ParameterObject, "name" | "in">;
+export type HeaderObject = Omit<ParameterObject, "name" | "in">;
 
-type HeaderObjectWithRef = Omit<ParameterObjectWithRef, "name" | "in">;
+export type HeaderObjectWithRef = Omit<ParameterObjectWithRef, "name" | "in">;
 
-interface TagObject {
+export interface TagObject {
   name: string;
   description?: string;
   externalDocs?: ExternalDocumentationObject;
 }
 
-interface ReferenceObject {
+export interface ReferenceObject {
   $ref: string;
 }
 
-type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;
-type SchemaObject = Omit<
+export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;
+export type SchemaObject = Omit<
   JSONSchema,
   | "type"
   | "allOf"
@@ -333,7 +335,7 @@ type SchemaObject = Omit<
   deprecated?: boolean;
 };
 
-type SchemaObjectWithRef = Omit<
+export type SchemaObjectWithRef = Omit<
   JSONSchema,
   | "type"
   | "allOf"
@@ -365,12 +367,12 @@ type SchemaObjectWithRef = Omit<
   deprecated?: boolean;
 };
 
-interface DiscriminatorObject {
+export interface DiscriminatorObject {
   propertyName: string;
   mapping?: Map<string>;
 }
 
-interface XMLObject {
+export interface XMLObject {
   name?: string;
   namespace?: string;
   prefix?: string;
@@ -378,50 +380,50 @@ interface XMLObject {
   wrapped?: boolean;
 }
 
-type SecuritySchemeObject =
+export type SecuritySchemeObject =
   | ApiKeySecuritySchemeObject
   | HttpSecuritySchemeObject
   | Oauth2SecuritySchemeObject
   | OpenIdConnectSecuritySchemeObject;
 
-interface ApiKeySecuritySchemeObject {
+export interface ApiKeySecuritySchemeObject {
   type: "apiKey";
   description?: string;
   name: string;
   in: "query" | "header" | "cookie";
 }
 
-interface HttpSecuritySchemeObject {
+export interface HttpSecuritySchemeObject {
   type: "http";
   description?: string;
   scheme: string;
   bearerFormat?: string;
 }
 
-interface Oauth2SecuritySchemeObject {
+export interface Oauth2SecuritySchemeObject {
   type: "oauth2";
   description?: string;
   flows: OAuthFlowsObject;
 }
 
-interface OpenIdConnectSecuritySchemeObject {
+export interface OpenIdConnectSecuritySchemeObject {
   type: "openIdConnect";
   description?: string;
   openIdConnectUrl: string;
 }
 
-interface OAuthFlowsObject {
+export interface OAuthFlowsObject {
   implicit?: OAuthFlowObject;
   password?: OAuthFlowObject;
   clientCredentials?: OAuthFlowObject;
   authorizationCode?: OAuthFlowObject;
 }
 
-interface OAuthFlowObject {
+export interface OAuthFlowObject {
   authorizationUrl?: string; // required for some
   tokenUrl?: string; // required for some
   refreshUrl?: string;
   scopes: Map<string>;
 }
 
-type SecurityRequirementObject = Map<string[]>;
+export type SecurityRequirementObject = Map<string[]>;

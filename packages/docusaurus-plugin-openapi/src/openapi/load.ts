@@ -13,45 +13,9 @@ import { kebabCase } from "lodash";
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 
+import { ApiItem, ApiSection } from "../types";
 import { sampleFromSchema } from "./createExample";
-import {
-  OpenApiObject,
-  PathItemObject,
-  ApiSection,
-  OperationObject,
-  ServerObject,
-  ReferenceObject,
-  ParameterObject,
-  ApiItem,
-  RequestBodyObject,
-  SchemaObject,
-  HttpSecuritySchemeObject,
-  ApiKeySecuritySchemeObject,
-  Oauth2SecuritySchemeObject,
-  OpenIdConnectSecuritySchemeObject,
-} from "./types";
-
-function isHttpSecuritySchemeObject(
-  item:
-    | ReferenceObject
-    | ApiKeySecuritySchemeObject
-    | HttpSecuritySchemeObject
-    | Oauth2SecuritySchemeObject
-    | OpenIdConnectSecuritySchemeObject
-): item is HttpSecuritySchemeObject {
-  return (item as HttpSecuritySchemeObject).type === "http";
-}
-
-function isOperationObject(
-  item:
-    | string
-    | PathItemObject
-    | ServerObject[]
-    | ReferenceObject[]
-    | ParameterObject[]
-): item is OperationObject {
-  return (item as OperationObject).responses !== undefined;
-}
+import { OpenApiObject, OpenApiObjectWithRef } from "./types";
 
 function getPaths(spec: OpenApiObject): ApiItem[] {
   const seen: { [key: string]: number } = {};
@@ -59,47 +23,44 @@ function getPaths(spec: OpenApiObject): ApiItem[] {
     .map(([path, pathObject]) => {
       const entries = Object.entries(pathObject);
       return entries.map(([key, val]) => {
-        if (isOperationObject(val)) {
-          let method = key;
-          let operationObject = val as OperationObject;
+        let method = key;
+        let operationObject = val;
 
-          const title =
-            operationObject.summary ??
-            operationObject.operationId ??
-            "Missing summary";
-          if (operationObject.description === undefined) {
-            operationObject.description =
-              operationObject.summary ?? operationObject.operationId ?? "";
-          }
-
-          const baseId = kebabCase(title);
-          let count = seen[baseId];
-
-          let id;
-          if (count) {
-            id = `${baseId}-${count}`;
-            seen[baseId] = count + 1;
-          } else {
-            id = baseId;
-            seen[baseId] = 1;
-          }
-
-          const servers =
-            operationObject.servers ?? pathObject.servers ?? spec.servers;
-
-          // TODO: Don't include summary temporarilly
-          const { summary, ...defaults } = operationObject;
-
-          return {
-            ...defaults,
-            id,
-            title,
-            method,
-            path,
-            servers,
-          };
+        const title =
+          operationObject.summary ??
+          operationObject.operationId ??
+          "Missing summary";
+        if (operationObject.description === undefined) {
+          operationObject.description =
+            operationObject.summary ?? operationObject.operationId ?? "";
         }
-        return undefined;
+
+        const baseId = kebabCase(title);
+        let count = seen[baseId];
+
+        let id;
+        if (count) {
+          id = `${baseId}-${count}`;
+          seen[baseId] = count + 1;
+        } else {
+          id = baseId;
+          seen[baseId] = 1;
+        }
+
+        const servers =
+          operationObject.servers ?? pathObject.servers ?? spec.servers;
+
+        // TODO: Don't include summary temporarilly
+        const { summary, ...defaults } = operationObject;
+
+        return {
+          ...defaults,
+          id,
+          title,
+          method,
+          path,
+          servers,
+        };
       });
     })
     .flat()
@@ -147,15 +108,16 @@ function organizeSpec(spec: OpenApiObject) {
 }
 
 async function convertToPostman(
-  openapiData: OpenApiObject
+  openapiData: OpenApiObjectWithRef
 ): Promise<Collection> {
   // The conversions mutates whatever you pass here, create a new object.
-  const openapiClone = JSON.parse(JSON.stringify(openapiData));
+  const openapiClone = JSON.parse(
+    JSON.stringify(openapiData)
+  ) as OpenApiObjectWithRef;
 
   // seems to be a weird bug with postman and servers...
   delete openapiClone.servers;
-  for (let value of Object.values(openapiClone.paths)) {
-    let pathItemObject = value as PathItemObject;
+  for (let pathItemObject of Object.values(openapiClone.paths)) {
     delete pathItemObject.servers;
     delete pathItemObject.get?.servers;
     delete pathItemObject.put?.servers;
@@ -192,7 +154,7 @@ export async function loadOpenapi(
   routeBasePath: string
 ) {
   const openapiString = await fs.readFile(openapiPath, "utf-8");
-  const openapiData = yaml.load(openapiString) as OpenApiObject;
+  const openapiData = yaml.load(openapiString) as OpenApiObjectWithRef;
 
   // Attach a postman request object to the openapi spec.
   const postmanCollection = await convertToPostman(openapiData);
@@ -221,7 +183,8 @@ export async function loadOpenapi(
 
         const operationObject = openapiData.paths[path][method];
         if (operationObject) {
-          operationObject.postman = item.request;
+          // TODO
+          (operationObject as any).postman = item.request;
         }
         break;
       default:
@@ -229,6 +192,7 @@ export async function loadOpenapi(
     }
   });
 
+  // TODO: Why do we dereff here and not earlier? I think it had something to do with object names?
   const { resolved: dereffed } = await JsonRefs.resolveRefs(openapiData);
 
   const dereffedSpec = dereffed as OpenApiObject;
@@ -251,7 +215,7 @@ export async function loadOpenapi(
 
       // Make sure schemes are lowercase. See: https://github.com/cloud-annotations/docusaurus-plugin-openapi/issues/79
       Object.values(item.securitySchemes ?? {}).forEach((auth) => {
-        if (isHttpSecuritySchemeObject(auth)) {
+        if (auth.type === "http") {
           auth.scheme = auth.scheme.toLowerCase();
         }
       });
@@ -278,8 +242,8 @@ export async function loadOpenapi(
         };
       }
 
-      const content = (item.requestBody as RequestBodyObject)?.content;
-      const schema = content?.["application/json"]?.schema as SchemaObject;
+      const content = item.requestBody?.content;
+      const schema = content?.["application/json"]?.schema;
       if (schema) {
         item.jsonRequestBodyExample = sampleFromSchema(schema);
       }

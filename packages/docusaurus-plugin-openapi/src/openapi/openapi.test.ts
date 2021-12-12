@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import "./openapi";
+import ".";
 
 it("hello world", () => {
   expect("hello world").toBe("hello world");

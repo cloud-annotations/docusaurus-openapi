@@ -5,7 +5,29 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { Primitives, Schema, Type } from "./types";
+interface Schema {
+  type?: "string" | "number" | "integer" | "boolean" | "object" | "array";
+  format?: string;
+  example?: any;
+  additionalProperties?: any;
+  enum?: any;
+  default?: any;
+  deprecated?: boolean;
+
+  properties?: Schema;
+  items?: Schema;
+  oneOf?: Schema;
+  anyOf?: Schema;
+}
+
+interface Primitives {
+  string: { [key: string]: (schema: Schema) => any };
+  number: { [key: string]: (schema: Schema) => any };
+  integer: { [key: string]: (schema: Schema) => any };
+  boolean: { [key: string]: (schema: Schema) => any };
+  object: { [key: string]: (schema: Schema) => any };
+  array: { [key: string]: (schema: Schema) => any };
+}
 
 const primitives: Primitives = {
   string: {
@@ -25,7 +47,7 @@ const primitives: Primitives = {
     default: () => 0,
   },
   boolean: {
-    default: (schema: Schema) =>
+    default: (schema) =>
       typeof schema.default === "boolean" ? schema.default : true,
   },
   object: {},
@@ -41,15 +63,15 @@ export const sampleFromSchema = (schema: Schema = {}): any => {
 
   if (!type) {
     if (properties) {
-      type = Type.object;
+      type = "object";
     } else if (items) {
-      type = Type.array;
+      type = "array";
     } else {
       return;
     }
   }
 
-  if (type === Type.object) {
+  if (type === "object") {
     let obj: any = {};
     for (let [name, prop] of Object.entries(properties || {})) {
       if (prop && prop.deprecated) {
@@ -60,7 +82,7 @@ export const sampleFromSchema = (schema: Schema = {}): any => {
     return obj;
   }
 
-  if (type === Type.array) {
+  if (type === "array") {
     if (Array.isArray(items?.anyOf)) {
       return items?.anyOf.map((item) => sampleFromSchema(item));
     }
