@@ -316,12 +316,12 @@ export type SchemaObject = Omit<
 > & {
   // OpenAPI specific overrides
   type?: "string" | "number" | "integer" | "boolean" | "object" | "array";
-  allOf?: SchemaObject;
-  oneOf?: SchemaObject;
-  anyOf?: SchemaObject;
+  allOf?: SchemaObject[];
+  oneOf?: SchemaObject[];
+  anyOf?: SchemaObject[];
   not?: SchemaObject;
   items?: SchemaObject;
-  properties?: SchemaObject;
+  properties?: Map<SchemaObject>;
   additionalProperties?: boolean | SchemaObject;
 
   // OpenAPI additions
@@ -348,12 +348,12 @@ export type SchemaObjectWithRef = Omit<
 > & {
   // OpenAPI specific overrides
   type?: "string" | "number" | "integer" | "boolean" | "object" | "array";
-  allOf?: SchemaObject | ReferenceObject;
-  oneOf?: SchemaObject | ReferenceObject;
-  anyOf?: SchemaObject | ReferenceObject;
+  allOf?: (SchemaObject | ReferenceObject)[];
+  oneOf?: (SchemaObject | ReferenceObject)[];
+  anyOf?: (SchemaObject | ReferenceObject)[];
   not?: SchemaObject | ReferenceObject;
   items?: SchemaObject | ReferenceObject;
-  properties?: SchemaObject | ReferenceObject;
+  properties?: Map<SchemaObject | ReferenceObject>;
   additionalProperties?: boolean | SchemaObject | ReferenceObject;
 
   // OpenAPI additions

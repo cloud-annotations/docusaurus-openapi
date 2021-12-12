@@ -148,14 +148,11 @@ async function convertToPostman(
   });
 }
 
-export async function loadOpenapi(
-  openapiPath: string,
+export async function _loadOpenapi(
+  openapiData: OpenApiObjectWithRef,
   baseUrl: string,
   routeBasePath: string
 ) {
-  const openapiString = await fs.readFile(openapiPath, "utf-8");
-  const openapiData = yaml.load(openapiString) as OpenApiObjectWithRef;
-
   // Attach a postman request object to the openapi spec.
   const postmanCollection = await convertToPostman(openapiData);
   postmanCollection.forEachItem((item) => {
@@ -251,4 +248,157 @@ export async function loadOpenapi(
   });
 
   return order;
+}
+
+async function resolveRefs(openapiData: OpenApiObjectWithRef) {
+  const { resolved } = await JsonRefs.resolveRefs(openapiData);
+  return resolved as OpenApiObject;
+}
+
+function jsonToCollection(data: OpenApiObject): Promise<Collection> {
+  return new Promise((resolve, reject) => {
+    Converter.convert(
+      { type: "json", data },
+      {},
+      (_err: any, conversionResult: any) => {
+        if (!conversionResult.result) {
+          return reject(conversionResult.reason);
+        }
+        return resolve(new sdk.Collection(conversionResult.output[0].data));
+      }
+    );
+  });
+}
+
+async function createPostmanCollection(
+  openapiData: OpenApiObject
+): Promise<Collection> {
+  const data = JSON.parse(JSON.stringify(openapiData)) as OpenApiObject;
+
+  // Including `servers` breaks postman, so delete all of them.
+  delete data.servers;
+  for (let pathItemObject of Object.values(data.paths)) {
+    delete pathItemObject.servers;
+    delete pathItemObject.get?.servers;
+    delete pathItemObject.put?.servers;
+    delete pathItemObject.post?.servers;
+    delete pathItemObject.delete?.servers;
+    delete pathItemObject.options?.servers;
+    delete pathItemObject.head?.servers;
+    delete pathItemObject.patch?.servers;
+    delete pathItemObject.trace?.servers;
+  }
+
+  return await jsonToCollection(data);
+}
+
+function findOperationObject(
+  openapiData: OpenApiObject,
+  method: string,
+  path: string
+) {
+  //type narrowing
+  switch (method) {
+    case "get":
+    case "put":
+    case "post":
+    case "delete":
+    case "options":
+    case "head":
+    case "patch":
+    case "trace":
+      return openapiData.paths[path]?.[method];
+  }
+
+  return undefined;
+}
+
+export async function _newLoadOpenapi(
+  openapiDataWithRefs: OpenApiObjectWithRef,
+  baseUrl: string,
+  routeBasePath: string
+) {
+  const openapiData = await resolveRefs(openapiDataWithRefs);
+
+  // Attach a postman request object to the openapi spec.
+  const postmanCollection = await createPostmanCollection(openapiData);
+
+  postmanCollection.forEachItem((item) => {
+    const method = item.request.method.toLowerCase();
+    const path = item.request.url
+      .getPath({ unresolved: true }) // unresolved returns "/:variableName" instead of "/<type>"
+      .replace(/:([a-z0-9-_]+)/gi, "{$1}"); // replace "/:variableName" with "/{variableName}"
+
+    const operationObject = findOperationObject(openapiData, method, path);
+    if (operationObject) {
+      // TODO
+      (operationObject as any).postman = item.request;
+    }
+  });
+
+  const order = organizeSpec(openapiData);
+
+  order.forEach((category, i) => {
+    category.items.forEach((item, ii) => {
+      // don't override already defined servers.
+      if (item.servers === undefined) {
+        item.servers = openapiData.servers;
+      }
+
+      if (item.security === undefined) {
+        item.security = openapiData.security;
+      }
+
+      // Add security schemes so we know how to handle security.
+      item.securitySchemes = openapiData.components?.securitySchemes;
+
+      // Make sure schemes are lowercase. See: https://github.com/cloud-annotations/docusaurus-plugin-openapi/issues/79
+      Object.values(item.securitySchemes ?? {}).forEach((auth) => {
+        if (auth.type === "http") {
+          auth.scheme = auth.scheme.toLowerCase();
+        }
+      });
+
+      item.permalink = normalizeUrl([baseUrl, routeBasePath, item.id]);
+
+      const prev =
+        order[i].items[ii - 1] ||
+        order[i - 1]?.items[order[i - 1].items.length - 1];
+      const next =
+        order[i].items[ii + 1] || (order[i + 1] ? order[i + 1].items[0] : null);
+
+      if (prev) {
+        item.previous = {
+          title: prev.title,
+          permalink: normalizeUrl([baseUrl, routeBasePath, prev.id]),
+        };
+      }
+
+      if (next) {
+        item.next = {
+          title: next.title,
+          permalink: normalizeUrl([baseUrl, routeBasePath, next.id]),
+        };
+      }
+
+      const content = item.requestBody?.content;
+      const schema = content?.["application/json"]?.schema;
+      if (schema) {
+        item.jsonRequestBodyExample = sampleFromSchema(schema);
+      }
+    });
+  });
+
+  return order;
+}
+
+export async function loadOpenapi(
+  openapiPath: string,
+  baseUrl: string,
+  routeBasePath: string
+) {
+  const openapiString = await fs.readFile(openapiPath, "utf-8");
+  const openapiData = yaml.load(openapiString) as OpenApiObjectWithRef;
+
+  return _loadOpenapi(openapiData, baseUrl, routeBasePath);
 }

@@ -5,4 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-export * from "./load";
+export { loadOpenapi } from "./load";

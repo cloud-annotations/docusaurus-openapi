@@ -5,29 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-interface Schema {
-  type?: "string" | "number" | "integer" | "boolean" | "object" | "array";
-  format?: string;
-  example?: any;
-  additionalProperties?: any;
-  enum?: any;
-  default?: any;
-  deprecated?: boolean;
+import { SchemaObject } from "./types";
 
-  properties?: Schema;
-  items?: Schema;
-  oneOf?: Schema;
-  anyOf?: Schema;
+interface OASTypeToTypeMap {
+  string: string;
+  number: number;
+  integer: number;
+  boolean: boolean;
+  object: any;
+  array: any[];
 }
 
-interface Primitives {
-  string: { [key: string]: (schema: Schema) => any };
-  number: { [key: string]: (schema: Schema) => any };
-  integer: { [key: string]: (schema: Schema) => any };
-  boolean: { [key: string]: (schema: Schema) => any };
-  object: { [key: string]: (schema: Schema) => any };
-  array: { [key: string]: (schema: Schema) => any };
-}
+type Primitives = {
+  [OASType in keyof OASTypeToTypeMap]: {
+    [format: string]: (schema: SchemaObject) => OASTypeToTypeMap[OASType];
+  };
+};
 
 const primitives: Primitives = {
   string: {
@@ -54,7 +47,7 @@ const primitives: Primitives = {
   array: {},
 };
 
-export const sampleFromSchema = (schema: Schema = {}): any => {
+export const sampleFromSchema = (schema: SchemaObject = {}): any => {
   let { type, example, properties, items } = schema;
 
   if (example !== undefined) {
@@ -104,7 +97,7 @@ export const sampleFromSchema = (schema: Schema = {}): any => {
   return primitive(schema);
 };
 
-function primitive(schema: Schema = {}) {
+function primitive(schema: SchemaObject = {}) {
   let { type, format } = schema;
 
   if (type === undefined) {
