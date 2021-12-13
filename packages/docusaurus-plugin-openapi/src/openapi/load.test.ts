@@ -204,5 +204,7 @@ it("hello world", async () => {
     "@<routeBasePath>"
   );
 
-  expect(actual).toStrictEqual(expected);
+  expect(JSON.parse(JSON.stringify(actual))).toStrictEqual(
+    JSON.parse(JSON.stringify(expected))
+  );
 });
