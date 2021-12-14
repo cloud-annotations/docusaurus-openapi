@@ -77,7 +77,8 @@ export default function pluginOpenAPI(
 
       const sidebarName = `openapi-sidebar-${pluginId}`;
 
-      const sidebar = loadedApi.map((category) => {
+      // TODO: type this
+      const sidebar: any = loadedApi.map((category) => {
         return {
           type: "category",
           label: category.title,
@@ -94,6 +95,12 @@ export default function pluginOpenAPI(
             };
           }),
         };
+      });
+
+      sidebar.unshift({
+        href: normalizeUrl([baseUrl, routeBasePath, "introduction"]),
+        label: "Introduction",
+        type: "link",
       });
 
       const promises = loadedApi.flatMap((section) => {
@@ -144,6 +151,50 @@ export default function pluginOpenAPI(
         });
       });
 
+      async function introRoute() {
+        const pageId = `site-${routeBasePath}-introduction`;
+
+        const permalink = normalizeUrl([
+          baseUrl,
+          routeBasePath,
+          "introduction",
+        ]);
+
+        await createData(
+          `${docuHash(pageId)}.json`,
+          JSON.stringify(
+            {
+              unversionedId: "introduction",
+              id: "introduction",
+              isDocsHomePage: false, // TODO: Where does this come from?
+              title: "THIS IS TITLE",
+              description: "THIS IS DESCRIPTION",
+              slug: "/introduction",
+              permalink,
+              frontMatter: {},
+              sidebar: sidebarName,
+            },
+            null,
+            2
+          )
+        );
+
+        // TODO: "-content" should be inside hash to prevent name too long errors.
+        const markdown = await createData(
+          `${docuHash(pageId)}-content.mdx`,
+          "This is a markdown description"
+        );
+        return {
+          path: permalink,
+          component: apiItemComponent,
+          exact: true,
+          modules: {
+            content: markdown,
+          },
+          sidebar: sidebarName,
+        };
+      }
+
       // Important: the layout component should not end with /,
       // as it conflicts with the home doc
       // Workaround fix for https://github.com/facebook/docusaurus/issues/2917
@@ -167,6 +218,7 @@ export default function pluginOpenAPI(
       }
 
       const routes = (await Promise.all([
+        introRoute(),
         ...promises,
         rootRoute(),
       ])) as RouteConfig[];
