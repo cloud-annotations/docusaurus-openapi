@@ -68,7 +68,7 @@ export function createParamsTable({ parameters, type }: Props) {
                     style: { marginTop: "var(--ifm-table-cell-padding)" },
                     children: `Items Enum: ${options
                       .map((option) =>
-                        create("code", { children: option?.toString() })
+                        create("code", { children: `"${option}"` })
                       )
                       .join(", ")}`,
                   })
@@ -78,7 +78,7 @@ export function createParamsTable({ parameters, type }: Props) {
                     style: { marginTop: "var(--ifm-table-cell-padding)" },
                     children: `Enum: ${options
                       .map((option) =>
-                        create("code", { children: option?.toString() })
+                        create("code", { children: `"${option}"` })
                       )
                       .join(", ")}`,
                   })
