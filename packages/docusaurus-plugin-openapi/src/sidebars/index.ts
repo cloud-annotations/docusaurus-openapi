@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { ApiItemMetadata } from "../types";
+import { ApiMetadata, ApiPageMetadata } from "../types";
 
 interface Options {
   sidebarCollapsible: boolean;
@@ -13,12 +13,35 @@ interface Options {
 }
 
 function groupByTags(
-  items: ApiItemMetadata[],
+  items: ApiMetadata[],
   { sidebarCollapsible, sidebarCollapsed }: Options
 ) {
+  const intros = items
+    .filter((item) => {
+      if (item.type === "info") {
+        return true;
+      }
+      return false;
+    })
+    .map((item) => {
+      return {
+        type: "link",
+        label: item.title,
+        href: item.permalink,
+        docId: item.id,
+      };
+    });
+
   const tags = [
     ...new Set(
-      items.flatMap((item) => item.data.tags).filter(Boolean) as string[]
+      items
+        .flatMap((item) => {
+          if (item.type === "info") {
+            return undefined;
+          }
+          return item.api.tags;
+        })
+        .filter(Boolean) as string[]
     ),
   ];
 
@@ -30,14 +53,19 @@ function groupByTags(
         collapsible: sidebarCollapsible,
         collapsed: sidebarCollapsed,
         items: items
-          .filter((item) => item.data.tags?.includes(tag))
+          .filter((item) => {
+            if (item.type === "info") {
+              return false;
+            }
+            return item.api.tags?.includes(tag);
+          })
           .map((item) => {
             return {
               type: "link",
               label: item.title,
               href: item.permalink,
               docId: item.id,
-              className: item.data.deprecated
+              className: (item as ApiPageMetadata).api.deprecated // TODO: we should have filtered out all info pages, but I don't like this
                 ? "menu__list-item--deprecated"
                 : undefined,
             };
@@ -46,8 +74,7 @@ function groupByTags(
     })
     .filter((item) => item.items.length > 0);
 
-  return [
-    ...tagged,
+  const untagged = [
     {
       type: "category",
       label: "API",
@@ -55,7 +82,12 @@ function groupByTags(
       collapsed: sidebarCollapsed,
       items: items
         .filter((item) => {
-          if (item.data.tags === undefined || item.data.tags.length === 0) {
+          // Filter out info pages and pages with tags
+          if (item.type === "info") {
+            return false;
+          }
+          if (item.api.tags === undefined || item.api.tags.length === 0) {
+            // no tags
             return true;
           }
           return false;
@@ -66,15 +98,17 @@ function groupByTags(
             label: item.title,
             href: item.permalink,
             docId: item.id,
-            className: item.data.deprecated
+            className: (item as ApiPageMetadata).api.deprecated // TODO: we should have filtered out all info pages, but I don't like this
               ? "menu__list-item--deprecated"
               : undefined,
           };
         }),
     },
   ];
+
+  return [...intros, ...tagged, ...untagged];
 }
 
-export function generateSidebars(items: ApiItemMetadata[], options: Options) {
+export function generateSidebars(items: ApiMetadata[], options: Options) {
   return groupByTags(items, options);
 }

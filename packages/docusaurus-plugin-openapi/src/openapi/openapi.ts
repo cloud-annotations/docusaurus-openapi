@@ -13,7 +13,7 @@ import { kebabCase } from "lodash";
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 
-import { ApiItemMetadata } from "../types";
+import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
 import { sampleFromSchema } from "./createExample";
 import { OpenApiObject, OpenApiObjectWithRef } from "./types";
 
@@ -68,12 +68,31 @@ async function createPostmanCollection(
   return await jsonToCollection(data);
 }
 
-function createItems(openapiData: OpenApiObject): ApiItemMetadata[] {
+type PartialPage<T> = Omit<T, "permalink" | "source" | "sourceDirName">;
+
+function createItems(openapiData: OpenApiObject): ApiMetadata[] {
   const seen: { [key: string]: number } = {};
 
   // TODO: Find a better way to handle this
-  let items: Omit<ApiItemMetadata, "permalink" | "source" | "sourceDirName">[] =
-    [];
+  let items: PartialPage<ApiMetadata>[] = [];
+
+  // Only create an info page if we have a description.
+  if (openapiData.info.description) {
+    const infoPage: PartialPage<InfoPageMetadata> = {
+      type: "info",
+      id: "introduction",
+      unversionedId: "introduction",
+      title: "Introduction",
+      description: openapiData.info.description,
+      slug: "/introduction",
+      frontMatter: {},
+      info: {
+        ...openapiData.info,
+        title: openapiData.info.title ?? "Introduction",
+      },
+    };
+    items.push(infoPage);
+  }
 
   for (let [path, pathObject] of Object.entries(openapiData.paths)) {
     const { $ref, description, parameters, servers, summary, ...rest } =
@@ -126,14 +145,15 @@ function createItems(openapiData: OpenApiObject): ApiItemMetadata[] {
       // TODO: Don't include summary temporarilly
       const { summary, ...defaults } = operationObject;
 
-      items.push({
+      const apiPage: PartialPage<ApiPageMetadata> = {
+        type: "api",
         id,
         unversionedId: id,
         title: title,
         description: description ?? "",
-        slug: "/" + id, // TODO: Should this really be prepended with "/"?
+        slug: "/" + id,
         frontMatter: {},
-        data: {
+        api: {
           ...defaults,
           method,
           path,
@@ -142,18 +162,20 @@ function createItems(openapiData: OpenApiObject): ApiItemMetadata[] {
           securitySchemes,
           jsonRequestBodyExample,
         },
-      });
+      };
+
+      items.push(apiPage);
     }
   }
 
-  return items as ApiItemMetadata[];
+  return items as ApiMetadata[];
 }
 
 /**
  * Attach Postman Request objects to the corresponding ApiItems.
  */
 function bindCollectionToApiItems(
-  items: ApiItemMetadata[],
+  items: ApiMetadata[],
   postmanCollection: sdk.Collection
 ) {
   postmanCollection.forEachItem((item) => {
@@ -162,11 +184,15 @@ function bindCollectionToApiItems(
       .getPath({ unresolved: true }) // unresolved returns "/:variableName" instead of "/<type>"
       .replace(/:([a-z0-9-_]+)/gi, "{$1}"); // replace "/:variableName" with "/{variableName}"
 
-    const apiItem = items.find(
-      (item) => item.data.path === path && item.data.method === method
-    );
-    if (apiItem) {
-      apiItem.data.postman = item.request;
+    const apiItem = items.find((item) => {
+      if (item.type === "info") {
+        return false;
+      }
+      return item.api.path === path && item.api.method === method;
+    });
+
+    if (apiItem?.type === "api") {
+      apiItem.api.postman = item.request;
     }
   });
 }
@@ -179,7 +205,7 @@ interface OpenApiFiles {
 
 export async function readOpenapiFiles(
   openapiPath: string,
-  options: {}
+  _options: {}
 ): Promise<OpenApiFiles[]> {
   const stat = await fs.lstat(openapiPath);
   if (stat.isDirectory()) {
@@ -190,7 +216,7 @@ export async function readOpenapiFiles(
   const data = yaml.load(openapiString) as OpenApiObjectWithRef;
   return [
     {
-      source: openapiPath, // TODO: alias this
+      source: openapiPath, // This will be aliased in process.
       sourceDirName: ".",
       data,
     },
@@ -204,7 +230,7 @@ export async function processOpenapiFiles(
     routeBasePath: string;
     siteDir: string;
   }
-): Promise<ApiItemMetadata[]> {
+): Promise<ApiMetadata[]> {
   const promises = files.map(async (file) => {
     const items = await processOpenapiFile(file.data, options);
     return items.map((item) => ({
@@ -226,7 +252,7 @@ export async function processOpenapiFile(
     baseUrl: string;
     routeBasePath: string;
   }
-): Promise<ApiItemMetadata[]> {
+): Promise<ApiMetadata[]> {
   const openapiData = await resolveRefs(openapiDataWithRefs);
   const postmanCollection = await createPostmanCollection(openapiData);
   const items = createItems(openapiData);

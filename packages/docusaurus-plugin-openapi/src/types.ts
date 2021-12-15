@@ -8,7 +8,11 @@
 import type { RemarkAndRehypePluginOptions } from "@docusaurus/mdx-loader";
 import { Request } from "postman-collection";
 
-import { OperationObject, SecuritySchemeObject } from "./openapi/types";
+import {
+  InfoObject,
+  OperationObject,
+  SecuritySchemeObject,
+} from "./openapi/types";
 
 export interface PluginOptions extends RemarkAndRehypePluginOptions {
   id: string;
@@ -22,37 +26,12 @@ export interface PluginOptions extends RemarkAndRehypePluginOptions {
 }
 
 export interface LoadedContent {
-  loadedApi: ApiItemMetadata[];
+  loadedApi: ApiMetadata[];
 }
 
-// export interface ApiSection {
-//   title: string;
-//   description: string;
-//   items: ApiItem[];
-// }
+export type ApiMetadata = ApiPageMetadata | InfoPageMetadata;
 
-// TODO: Clean up this object
-// export interface ApiItem extends OperationObject {
-//   id: string;
-//   title: string;
-//   method: string;
-//   path: string;
-//   permalink: string;
-//   next: Page;
-//   previous: Page;
-//   jsonRequestBodyExample: string;
-//   securitySchemes?: {
-//     [key: string]: SecuritySchemeObject;
-//   };
-//   postman?: Request;
-// }
-
-export interface ApiNavLink {
-  title: string;
-  permalink: string;
-}
-
-export interface ApiItemMetadata {
+export interface ApiMetadataBase {
   sidebar?: string;
   previous?: ApiNavLink;
   next?: ApiNavLink;
@@ -67,8 +46,11 @@ export interface ApiItemMetadata {
   permalink: string;
   sidebarPosition?: number;
   frontMatter: Record<string, unknown>;
-  //
-  data: ApiItem;
+}
+
+export interface ApiPageMetadata extends ApiMetadataBase {
+  type: "api";
+  api: ApiItem;
 }
 
 export interface ApiItem extends OperationObject {
@@ -79,4 +61,16 @@ export interface ApiItem extends OperationObject {
     [key: string]: SecuritySchemeObject;
   };
   postman?: Request;
+}
+
+export interface InfoPageMetadata extends ApiMetadataBase {
+  type: "info";
+  info: ApiInfo;
+}
+
+export type ApiInfo = InfoObject;
+
+export interface ApiNavLink {
+  title: string;
+  permalink: string;
 }

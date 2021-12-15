@@ -23,7 +23,7 @@ import {
 import chalk from "chalk";
 import { Configuration } from "webpack";
 
-import { createMD } from "./markdown";
+import { createApiPageMD, createInfoPageMD } from "./markdown";
 import { readOpenapiFiles, processOpenapiFiles } from "./openapi";
 import { generateSidebars } from "./sidebars";
 import { PluginOptions, LoadedContent } from "./types";
@@ -90,26 +90,17 @@ export default function pluginOpenAPI(
       });
 
       const promises = loadedApi.map(async (item) => {
-        const { data, ...rest } = item;
-
-        const pageId = `site-${routeBasePath}-${rest.id}`;
+        const pageId = `site-${routeBasePath}-${item.id}`;
 
         await createData(
           `${docuHash(pageId)}.json`,
-          JSON.stringify(
-            {
-              ...rest,
-              api: data,
-            },
-            null,
-            2
-          )
+          JSON.stringify(item, null, 2)
         );
 
         // TODO: "-content" should be inside hash to prevent name too long errors.
         const markdown = await createData(
           `${docuHash(pageId)}-content.mdx`,
-          createMD(item)
+          item.type === "api" ? createApiPageMD(item) : createInfoPageMD(item)
         );
         return {
           path: item.permalink,

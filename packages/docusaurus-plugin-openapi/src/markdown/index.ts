@@ -7,17 +7,18 @@
 
 import { escape } from "lodash";
 
-import { ApiItemMetadata } from "../types";
+import { ApiPageMetadata, InfoPageMetadata } from "../types";
 import { createDeprecationNotice } from "./createDeprecationNotice";
 import { createDescription } from "./createDescription";
 import { createParamsTable } from "./createParamsTable";
 import { createRequestBodyTable } from "./createRequestBodyTable";
 import { createStatusCodesTable } from "./createStatusCodesTable";
+import { createVersionBadge } from "./createVersionBadge";
 import { render } from "./utils";
 
-export function createMD({
+export function createApiPageMD({
   title,
-  data: {
+  api: {
     deprecated,
     "x-deprecated-description": deprecatedDescription,
     description,
@@ -25,7 +26,7 @@ export function createMD({
     requestBody,
     responses,
   },
-}: ApiItemMetadata) {
+}: ApiPageMetadata) {
   return render([
     `# ${escape(title)}\n\n`,
     createDeprecationNotice({ deprecated, description: deprecatedDescription }),
@@ -36,5 +37,15 @@ export function createMD({
     createParamsTable({ parameters, type: "cookie" }),
     createRequestBodyTable({ title: "Request Body", body: requestBody }),
     createStatusCodesTable({ responses }),
+  ]);
+}
+
+export function createInfoPageMD({
+  info: { title, version, description },
+}: InfoPageMetadata) {
+  return render([
+    createVersionBadge(version),
+    `# ${escape(title)}\n\n`,
+    createDescription(description),
   ]);
 }

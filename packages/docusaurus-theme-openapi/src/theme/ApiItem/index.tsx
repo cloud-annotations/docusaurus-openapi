@@ -42,7 +42,9 @@ function ApiItem(props: Props): JSX.Element {
             <DocPaginator previous={previous} next={next} />
           </div>
         </div>
-        <div className="col col--5">{api && <ApiDemoPanel item={api} />}</div>
+        <div className={clsx("col", api ? "col--5" : "col--3")}>
+          {api && <ApiDemoPanel item={api} />}
+        </div>
       </div>
     </>
   );
