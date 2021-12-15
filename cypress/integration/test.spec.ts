@@ -7,7 +7,7 @@
 
 describe("test", () => {
   before(() => {
-    cy.visit("/api");
+    cy.visit("/api/recursive");
   });
 
   it("renders query parameters", () => {
@@ -20,15 +20,25 @@ describe("test", () => {
       return false;
     });
 
-    function checkTab(tab: RegExp, heading: RegExp) {
+    function checkTab(tab: RegExp, links: RegExp[], heading: RegExp) {
       cy.get(".navbar").findByRole("link", { name: tab }).click();
+
+      for (let link of links) {
+        cy.get("nav.menu").findByRole("link", { name: link }).click();
+      }
+
       cy.findByRole("heading", { name: heading, level: 1 }).should("exist");
     }
 
-    checkTab(/issue 21/i, /missing summary/i);
-    checkTab(/cos/i, /generating an iam token/i);
-    checkTab(/yaml/i, /hello world/i);
-    checkTab(/api/i, /recursive/i);
+    checkTab(/issue 21/i, [], /missing summary/i);
+    checkTab(/cos/i, [], /generating an iam token/i);
+    checkTab(/yaml/i, [/api/i, /hello world/i], /hello world/i);
+    checkTab(
+      /petstore/i,
+      [/pet/i, /add a new pet to the store/i],
+      /add a new pet to the store/i
+    );
+    checkTab(/api/i, [/^pet$/i, /recursive/i], /recursive/i);
   });
 
   it("loads a page with authentication", () => {
