@@ -22,32 +22,61 @@ export interface PluginOptions extends RemarkAndRehypePluginOptions {
 }
 
 export interface LoadedContent {
-  loadedApi: ApiSection[];
+  loadedApi: ApiItemMetadata[];
 }
 
-export interface ApiSection {
-  title: string;
-  description: string;
-  items: ApiItem[];
-}
+// export interface ApiSection {
+//   title: string;
+//   description: string;
+//   items: ApiItem[];
+// }
 
 // TODO: Clean up this object
-export interface ApiItem extends OperationObject {
-  id: string;
+// export interface ApiItem extends OperationObject {
+//   id: string;
+//   title: string;
+//   method: string;
+//   path: string;
+//   permalink: string;
+//   next: Page;
+//   previous: Page;
+//   jsonRequestBodyExample: string;
+//   securitySchemes?: {
+//     [key: string]: SecuritySchemeObject;
+//   };
+//   postman?: Request;
+// }
+
+export interface ApiNavLink {
   title: string;
-  method: string;
-  path: string;
   permalink: string;
-  next: Page;
-  previous: Page;
+}
+
+export interface ApiItemMetadata {
+  sidebar?: string;
+  previous?: ApiNavLink;
+  next?: ApiNavLink;
+  //
+  id: string; // TODO legacy versioned id => try to remove
+  unversionedId: string; // TODO new unversioned id => try to rename to "id"
+  title: string;
+  description: string;
+  source: string; // @site aliased source => "@site/docs/folder/subFolder/subSubFolder/myDoc.md"
+  sourceDirName: string; // relative to the versioned docs folder (can be ".") => "folder/subFolder/subSubFolder"
+  slug: string;
+  permalink: string;
+  sidebarPosition?: number;
+  frontMatter: Record<string, unknown>;
+  //
+  data: ApiItem;
+}
+
+export interface ApiItem extends OperationObject {
+  method: string; // get, post, put, etc...
+  path: string; // The endpoint path => "/api/getPets"
   jsonRequestBodyExample: string;
   securitySchemes?: {
     [key: string]: SecuritySchemeObject;
   };
   postman?: Request;
-}
-
-export interface Page {
-  title: string;
-  permalink: string;
 }

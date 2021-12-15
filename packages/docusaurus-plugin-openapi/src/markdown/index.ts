@@ -7,7 +7,7 @@
 
 import { escape } from "lodash";
 
-import { ApiItem } from "../types";
+import { ApiItemMetadata } from "../types";
 import { createDeprecationNotice } from "./createDeprecationNotice";
 import { createDescription } from "./createDescription";
 import { createParamsTable } from "./createParamsTable";
@@ -17,13 +17,15 @@ import { render } from "./utils";
 
 export function createMD({
   title,
-  deprecated,
-  "x-deprecated-description": deprecatedDescription,
-  description,
-  parameters,
-  requestBody,
-  responses,
-}: ApiItem) {
+  data: {
+    deprecated,
+    "x-deprecated-description": deprecatedDescription,
+    description,
+    parameters,
+    requestBody,
+    responses,
+  },
+}: ApiItemMetadata) {
   return render([
     `# ${escape(title)}\n\n`,
     createDeprecationNotice({ deprecated, description: deprecatedDescription }),
