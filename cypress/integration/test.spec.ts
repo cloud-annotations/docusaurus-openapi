@@ -56,7 +56,9 @@ function checkTab(tab: RegExp, links: RegExp[], heading: RegExp) {
   cy.get(".navbar").findByRole("link", { name: tab }).click();
 
   for (let link of links) {
-    cy.get("nav.menu").findByRole("link", { name: link }).click();
+    cy.get("nav.menu")
+      .findByRole("link", { name: link })
+      .click({ force: true }); // sometimes the sidebar items get covered by the navbar in CI.
   }
 
   cy.findByRole("heading", { name: heading, level: 1 }).should("exist");
