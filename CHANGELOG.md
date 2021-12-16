@@ -4,6 +4,14 @@ High level enhancements
 
 - Docusaurus beta.13 support (Thanks @Josh-Cena!)
 
+  ```jsonc
+  // Be sure to update @docusaurus/core:
+  "dependencies": {
+    "@docusaurus/core": "2.0.0-beta.13",
+    // ...
+  }
+  ```
+
 - The OpenAPI `info` stanza will now generate an "Introduction" page
 
   ```yaml
