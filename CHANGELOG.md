@@ -4,7 +4,7 @@ High level enhancements
 
 - Docusaurus beta.13 support (Thanks @Josh-Cena!)
 
-  ```jsonc
+  ```js
   // Be sure to update @docusaurus/core:
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.13",
