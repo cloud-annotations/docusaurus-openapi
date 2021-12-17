@@ -78,8 +78,6 @@ async function createPostmanCollection(
 type PartialPage<T> = Omit<T, "permalink" | "source" | "sourceDirName">;
 
 function createItems(openapiData: OpenApiObject): ApiMetadata[] {
-  const seen: { [key: string]: number } = {};
-
   // TODO: Find a better way to handle this
   let items: PartialPage<ApiMetadata>[] = [];
 
@@ -115,16 +113,6 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
       }
 
       const baseId = kebabCase(title);
-      let count = seen[baseId];
-
-      let id;
-      if (count) {
-        id = `${baseId}-${count}`;
-        seen[baseId] = count + 1;
-      } else {
-        id = baseId;
-        seen[baseId] = 1;
-      }
 
       const servers =
         operationObject.servers ?? pathObject.servers ?? openapiData.servers;
@@ -154,11 +142,11 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
 
       const apiPage: PartialPage<ApiPageMetadata> = {
         type: "api",
-        id,
-        unversionedId: id,
+        id: baseId,
+        unversionedId: baseId,
         title: title,
         description: description ?? "",
-        slug: "/" + id,
+        slug: "/" + baseId,
         frontMatter: {},
         api: {
           ...defaults,
@@ -257,7 +245,7 @@ export async function processOpenapiFiles(
   }
 ): Promise<ApiMetadata[]> {
   const promises = files.map(async (file) => {
-    const items = await processOpenapiFile(file.data, options);
+    const items = await processOpenapiFile(file.data);
     return items.map((item) => ({
       ...item,
       source: aliasedSitePath(file.source, options.siteDir),
@@ -324,14 +312,7 @@ export async function processOpenapiFiles(
 }
 
 export async function processOpenapiFile(
-  openapiDataWithRefs: OpenApiObjectWithRef,
-  {
-    baseUrl,
-    routeBasePath,
-  }: {
-    baseUrl: string;
-    routeBasePath: string;
-  }
+  openapiDataWithRefs: OpenApiObjectWithRef
 ): Promise<ApiMetadata[]> {
   const openapiData = await resolveRefs(openapiDataWithRefs);
   const postmanCollection = await createPostmanCollection(openapiData);
