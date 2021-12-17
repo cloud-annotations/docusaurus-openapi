@@ -5,7 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { aliasedSitePath, normalizeUrl } from "@docusaurus/utils";
+import path from "path";
+
+import {
+  aliasedSitePath,
+  Globby,
+  GlobExcludeDefault,
+  normalizeUrl,
+} from "@docusaurus/utils";
 import fs from "fs-extra";
 import yaml from "js-yaml";
 import JsonRefs from "json-refs";
@@ -210,7 +217,25 @@ export async function readOpenapiFiles(
   const stat = await fs.lstat(openapiPath);
   if (stat.isDirectory()) {
     // TODO: load all specs in folder
-    throw Error("Plugin doesn't support directories yet");
+    // throw Error("Plugin doesn't support directories yet");
+    // TODO: Add config for inlcude/ignore
+    const sources = await Globby(["**/*.{json,yaml,yml}"], {
+      cwd: openapiPath,
+      ignore: GlobExcludeDefault,
+    });
+    return Promise.all(
+      sources.map(async (source) => {
+        // TODO: make a function for this
+        const fullPath = path.join(openapiPath, source);
+        const openapiString = await fs.readFile(fullPath, "utf-8");
+        const data = yaml.load(openapiString) as OpenApiObjectWithRef;
+        return {
+          source: fullPath, // This will be aliased in process.
+          sourceDirName: ".",
+          data,
+        };
+      })
+    );
   }
   const openapiString = await fs.readFile(openapiPath, "utf-8");
   const data = yaml.load(openapiString) as OpenApiObjectWithRef;
@@ -240,7 +265,62 @@ export async function processOpenapiFiles(
     }));
   });
   const metadata = await Promise.all(promises);
-  return metadata.flat();
+  const items = metadata.flat();
+
+  let seen: { [key: string]: number } = {};
+  for (let i = 0; i < items.length; i++) {
+    const baseId = items[i].id;
+    let count = seen[baseId];
+
+    let id;
+    if (count) {
+      id = `${baseId}-${count}`;
+      seen[baseId] = count + 1;
+    } else {
+      id = baseId;
+      seen[baseId] = 1;
+    }
+
+    items[i].id = id;
+    items[i].unversionedId = id;
+    items[i].slug = "/" + id;
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    const current = items[i];
+    const prev = items[i - 1];
+    const next = items[i + 1];
+
+    current.permalink = normalizeUrl([
+      options.baseUrl,
+      options.routeBasePath,
+      current.id,
+    ]);
+
+    if (prev) {
+      current.previous = {
+        title: prev.title,
+        permalink: normalizeUrl([
+          options.baseUrl,
+          options.routeBasePath,
+          prev.id,
+        ]),
+      };
+    }
+
+    if (next) {
+      current.next = {
+        title: next.title,
+        permalink: normalizeUrl([
+          options.baseUrl,
+          options.routeBasePath,
+          next.id,
+        ]),
+      };
+    }
+  }
+
+  return items;
 }
 
 export async function processOpenapiFile(
@@ -258,28 +338,6 @@ export async function processOpenapiFile(
   const items = createItems(openapiData);
 
   bindCollectionToApiItems(items, postmanCollection);
-
-  for (let i = 0; i < items.length; i++) {
-    const current = items[i];
-    const prev = items[i - 1];
-    const next = items[i + 1];
-
-    current.permalink = normalizeUrl([baseUrl, routeBasePath, current.id]);
-
-    if (prev) {
-      current.previous = {
-        title: prev.title,
-        permalink: normalizeUrl([baseUrl, routeBasePath, prev.id]),
-      };
-    }
-
-    if (next) {
-      current.next = {
-        title: next.title,
-        permalink: normalizeUrl([baseUrl, routeBasePath, next.id]),
-      };
-    }
-  }
 
   return items;
 }
