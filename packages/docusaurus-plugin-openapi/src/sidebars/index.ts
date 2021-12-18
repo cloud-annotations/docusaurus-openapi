@@ -7,15 +7,46 @@
 
 import clsx from "clsx";
 
-import { ApiMetadata, ApiPageMetadata } from "../types";
+import { ApiPageMetadata } from "../types";
 
 interface Options {
   sidebarCollapsible: boolean;
   sidebarCollapsed: boolean;
 }
+// todo: theme-common.d.ts
+type NavbarItem = {
+  type?: string | undefined;
+  items?: NavbarItem[];
+  label?: string;
+  position?: "left" | "right";
+} & Record<string, unknown>;
+
+type Item =
+  | {
+      [key: string]: any;
+      type: "info";
+      info: any;
+      title: string;
+      permalink: string;
+      id: string;
+    }
+  | {
+      [key: string]: any;
+      type: "api";
+      api: {
+        // todo: include info
+        // info: {
+        // title: string;
+        // },
+        tags?: string[] | undefined;
+      };
+      title: string;
+      permalink: string;
+      id: string;
+    };
 
 function groupByTags(
-  items: ApiMetadata[],
+  items: Item[],
   { sidebarCollapsible, sidebarCollapsed }: Options
 ) {
   const intros = items
@@ -117,6 +148,9 @@ function groupByTags(
   return [...intros, ...tagged, ...untagged];
 }
 
-export function generateSidebars(items: ApiMetadata[], options: Options) {
+export function generateSidebars(
+  items: Item[],
+  options: Options
+): NavbarItem[] {
   return groupByTags(items, options);
 }
