@@ -5,68 +5,56 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import path from "path";
-
-import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/validation";
-import { posixPath } from "@docusaurus/utils";
-import chalk from "chalk";
-import clsx from "clsx";
-import fs from "fs-extra";
-import Yaml from "js-yaml";
-import _ from "lodash";
-
-import type { PropSidebar } from "../types";
 import { ApiPageMetadata } from "../types";
 
 interface Options {
   sidebarCollapsible: boolean;
   sidebarCollapsed: boolean;
 }
+// todo: theme-common.d.ts
+type NavbarItem = {
+  type?: string | undefined;
+  items?: NavbarItem[];
+  label?: string;
+  position?: "left" | "right";
+} & Record<string, unknown>;
 
-export type BaseItem = {
-  title: string;
-  permalink: string;
-  id: string;
-  source: string;
-  sourceDirName: string;
-};
-
-export type InfoItem = BaseItem & {
-  type: "info";
-};
-
-export type ApiItem = BaseItem & {
-  type: "api";
-  api: {
-    info?: {
-      title?: string;
+type Item =
+  | {
+      [key: string]: any;
+      type: "info";
+      info: any;
+      title: string;
+      permalink: string;
+      id: string;
+    }
+  | {
+      [key: string]: any;
+      type: "api";
+      api: {
+        // todo: include info
+        // info: {
+        // title: string;
+        // },
+        tags?: string[] | undefined;
+      };
+      title: string;
+      permalink: string;
+      id: string;
     };
-    tags?: string[] | undefined;
-  };
-};
 
-type Item = InfoItem | ApiItem;
-
-function isApiItem(item: Item): item is ApiItem {
-  return item.type === "api";
-}
-
-function isInfoItem(item: Item): item is InfoItem {
-  return item.type === "info";
-}
-
-export async function generateSidebars(
+function groupByTags(
   items: Item[],
-  options: Options
-): Promise<PropSidebar> {
-  const sections = _(items)
-    .groupBy((item) => item.source)
-    .mapValues((items, source) => {
-      const prototype = items.filter(isApiItem).find((item) => {
-        return item.api?.info != null;
-      });
-      const info = prototype?.api?.info;
-      const fileName = path.basename(source).split(".")[0];
+  { sidebarCollapsible, sidebarCollapsed }: Options
+) {
+  const intros = items
+    .filter((item) => {
+      if (item.type === "info") {
+        return true;
+      }
+      return false;
+    })
+    .map((item) => {
       return {
         source: prototype?.source,
         sourceDirName: prototype?.sourceDirName ?? ".",
@@ -226,34 +214,9 @@ function groupByTags(
   return [...intros, ...tagged, ...untagged];
 }
 
-export const CategoryMetadataFilenameBase = "_category_";
-
-async function readCategoryMetadataFile(
-  categoryDirPath: string
-): Promise<any | null> {
-  async function tryReadFile(filePath: string): Promise<any> {
-    const contentString = await fs.readFile(filePath, { encoding: "utf8" });
-    const unsafeContent = Yaml.load(contentString);
-    try {
-      return validateCategoryMetadataFile(unsafeContent);
-    } catch (e) {
-      console.error(
-        chalk.red(
-          `The docs sidebar category metadata file looks invalid!\nPath: ${filePath}`
-        )
-      );
-      throw e;
-    }
-  }
-  // eslint-disable-next-line no-restricted-syntax
-  for (const ext of [".json", ".yml", ".yaml"]) {
-    // Simpler to use only posix paths for mocking file metadata in tests
-    const filePath = posixPath(
-      path.join(categoryDirPath, `${CategoryMetadataFilenameBase}${ext}`)
-    );
-    if (await fs.pathExists(filePath)) {
-      return tryReadFile(filePath);
-    }
-  }
-  return null;
+export function generateSidebars(
+  items: Item[],
+  options: Options
+): NavbarItem[] {
+  return groupByTags(items, options);
 }
