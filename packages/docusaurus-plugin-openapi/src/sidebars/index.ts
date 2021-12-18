@@ -8,6 +8,7 @@
 import path from "path";
 
 import clsx from "clsx";
+import _ from "lodash";
 
 import { ApiPageMetadata } from "../types";
 
@@ -48,6 +49,35 @@ export type ApiItem = BaseItem & {
 };
 
 type Item = InfoItem | ApiItem;
+
+export function generateSidebars(
+  items: Item[],
+  options: Options
+): NavbarItem[] {
+  const sections = _(items)
+    .groupBy((item) => item.source)
+    .mapValues((items, source) => {
+      const prototype = items.find((x) => {
+        return x.api?.info != null;
+      });
+      const info = prototype?.api?.info;
+      const fileName = path.basename(source).split(".")[0];
+      return {
+        ...options,
+        type: "category",
+        label: info?.title || fileName,
+        items: groupByTags(items, options),
+      };
+    })
+    .values()
+    .value();
+
+  if (sections.length === 1) {
+    return sections[0].items;
+  }
+
+  return sections;
+}
 
 function groupByTags(
   items: Item[],
@@ -203,9 +233,6 @@ function groupByTags(
         .map((item) => {
           const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
           return {
-            source: item.source,
-            info: item.api.info,
-
             type: "link",
             label: apiPage.title,
             href: apiPage.permalink,
@@ -218,26 +245,7 @@ function groupByTags(
           };
         }),
     },
-  ].map((categoryItem) => {
-    const [prototype] = categoryItem.items;
-    if (!prototype) {
-      return categoryItem;
-    }
-    const { info } = prototype;
-    const fileName = path.basename(prototype.source).split(".")[0];
+  ];
 
-    return {
-      ...categoryItem,
-      label: info?.title ?? fileName,
-    };
-  });
-
-  return [...intros, ...tagged, ...untagged];
-}
-
-export function generateSidebars(
-  items: Item[],
-  options: Options
-): NavbarItem[] {
-  return groupByTags(items, options);
+  return [...intros, ...tagged, ...untagged[0].items];
 }
