@@ -127,7 +127,7 @@ This will create routes for `/cars`, `/trains` and `/bikes`.
 ## Contributing
 
 We encourage you to contribute to Docusaurus OpenAPI! Please check out the
-[Contributing to Docusaurus OpenAPI guide](CONTRIBUTING.md) for guidelines about how to proceed.
+[Contributing to Docusaurus OpenAPI guide](https://github.com/cloud-annotations/docusaurus-plugin-openapi/blob/main/CONTRIBUTING.md) for guidelines about how to proceed.
 
 ## License
 
