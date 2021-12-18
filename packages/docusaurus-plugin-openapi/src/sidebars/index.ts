@@ -70,6 +70,7 @@ function groupByTags(
               docId: apiPage.id,
               className: clsx({
                 "menu__list-item--deprecated": apiPage.api.deprecated,
+                "api-method": !!apiPage.api.method,
                 [apiPage.api.method]: !!apiPage.api.method,
               }),
             };
@@ -105,6 +106,7 @@ function groupByTags(
             docId: apiPage.id,
             className: clsx({
               "menu__list-item--deprecated": apiPage.api.deprecated,
+              "api-method": !!apiPage.api.method,
               [apiPage.api.method]: !!apiPage.api.method,
             }),
           };
