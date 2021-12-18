@@ -1,0 +1,1 @@
+# Contributing to Docusaurus OpenAPI
