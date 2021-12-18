@@ -61,6 +61,7 @@ export interface ApiItem extends OperationObject {
     [key: string]: SecuritySchemeObject;
   };
   postman?: Request;
+  info: InfoObject;
 }
 
 export interface InfoPageMetadata extends ApiMetadataBase {

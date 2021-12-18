@@ -156,6 +156,7 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
           security,
           securitySchemes,
           jsonRequestBodyExample,
+          info: openapiData.info,
         },
       };
 
