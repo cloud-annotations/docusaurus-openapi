@@ -5,59 +5,56 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import path from "path";
-
-import clsx from "clsx";
-import _ from "lodash";
-
-import type { PropSidebar } from "../types";
 import { ApiPageMetadata } from "../types";
 
 interface Options {
   sidebarCollapsible: boolean;
   sidebarCollapsed: boolean;
 }
+// todo: theme-common.d.ts
+type NavbarItem = {
+  type?: string | undefined;
+  items?: NavbarItem[];
+  label?: string;
+  position?: "left" | "right";
+} & Record<string, unknown>;
 
-export type BaseItem = {
-  title: string;
-  permalink: string;
-  id: string;
-  source: string;
-};
-
-export type InfoItem = BaseItem & {
-  type: "info";
-};
-
-export type ApiItem = BaseItem & {
-  type: "api";
-  api: {
-    info?: {
-      title?: string;
+type Item =
+  | {
+      [key: string]: any;
+      type: "info";
+      info: any;
+      title: string;
+      permalink: string;
+      id: string;
+    }
+  | {
+      [key: string]: any;
+      type: "api";
+      api: {
+        // todo: include info
+        // info: {
+        // title: string;
+        // },
+        tags?: string[] | undefined;
+      };
+      title: string;
+      permalink: string;
+      id: string;
     };
-    tags?: string[] | undefined;
-  };
-};
 
-type Item = InfoItem | ApiItem;
-
-function isApiItem(item: Item): item is ApiItem {
-  return item.type === "api";
-}
-
-function isInfoItem(item: Item): item is InfoItem {
-  return item.type === "info";
-}
-
-export function generateSidebars(items: Item[], options: Options): PropSidebar {
-  const sections = _(items)
-    .groupBy((item) => item.source)
-    .mapValues((items, source) => {
-      const prototype = items.filter(isApiItem).find((item) => {
-        return item.api?.info != null;
-      });
-      const info = prototype?.api?.info;
-      const fileName = path.basename(source).split(".")[0];
+function groupByTags(
+  items: Item[],
+  { sidebarCollapsible, sidebarCollapsed }: Options
+) {
+  const intros = items
+    .filter((item) => {
+      if (item.type === "info") {
+        return true;
+      }
+      return false;
+    })
+    .map((item) => {
       return {
         collapsible: options.sidebarCollapsible,
         collapsed: options.sidebarCollapsed,
@@ -170,4 +167,11 @@ function groupByTags(
   ];
 
   return [...intros, ...tagged, ...untagged];
+}
+
+export function generateSidebars(
+  items: Item[],
+  options: Options
+): NavbarItem[] {
+  return groupByTags(items, options);
 }
