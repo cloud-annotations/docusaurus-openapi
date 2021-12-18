@@ -22,7 +22,11 @@
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.13",
     "@docusaurus/mdx-loader": "^2.0.0-beta.13",
+<<<<<<< HEAD
     "@docusaurus/plugin-content-docs": "^2.0.0-beta.13",
+=======
+    "@docusaurus/theme-common": "^2.0.0-beta.13",
+>>>>>>> eff7b42 (pull down type from @docusaurus/theme-common)
     "@docusaurus/types": "^2.0.0-beta.13",
     "@docusaurus/utils": "^2.0.0-beta.13",
     "@docusaurus/utils-validation": "^2.0.0-beta.13",

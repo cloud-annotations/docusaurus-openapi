@@ -8,6 +8,7 @@
 import path from "path";
 
 import clsx from "clsx";
+import { NavbarItem } from "@docusaurus/theme-common";
 import _ from "lodash";
 
 import { ApiPageMetadata } from "../types";
@@ -16,13 +17,6 @@ interface Options {
   sidebarCollapsible: boolean;
   sidebarCollapsed: boolean;
 }
-// todo: theme-common.d.ts
-type NavbarItem = {
-  type?: string | undefined;
-  items?: NavbarItem[];
-  label?: string;
-  position?: "left" | "right";
-} & Record<string, unknown>;
 
 export type BaseItem = {
   [key: string]: any;
@@ -40,10 +34,9 @@ export type InfoItem = BaseItem & {
 export type ApiItem = BaseItem & {
   type: "api";
   api: {
-    // todo: include info
-    // info: {
-    // title: string;
-    // },
+    info?: {
+      title?: string;
+    };
     tags?: string[] | undefined;
   };
 };
