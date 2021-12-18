@@ -7,34 +7,34 @@ PRs
 Fork the cloud-annotations/docusaurus-plugin-openapi repository
 
 ```sh
-$ git clone git@github.com:your-username/docusaurus-plugin-openapi.git
+git clone git@github.com:your-username/docusaurus-plugin-openapi.git
 ```
 
 ```sh
-$ cd where-you-cloned-docusaurus-plugin-openapi
-$ yarn install
+cd where-you-cloned-docusaurus-plugin-openapi
+yarn install
 ```
 
 ```sh
-$ yarn watch
+yarn watch
 ```
 
 ```sh
-$ yarn watch:demo
+yarn watch:demo
 ```
 
 ```sh
-$ yarn build
+yarn build
 ```
 
 ```sh
-$ yarn serve
+yarn serve
 ```
 
 ```sh
-$ yarn test
+yarn test
 ```
 
 ```sh
-$ yarn test:cypress
+yarn test:cypress
 ```
