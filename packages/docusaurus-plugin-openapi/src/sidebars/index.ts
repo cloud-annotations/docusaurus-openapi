@@ -5,6 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
+import path from "path";
+
+import clsx from "clsx";
+
 import { ApiPageMetadata } from "../types";
 
 interface Options {
@@ -19,29 +23,31 @@ type NavbarItem = {
   position?: "left" | "right";
 } & Record<string, unknown>;
 
-type Item =
-  | {
-      [key: string]: any;
-      type: "info";
-      info: any;
-      title: string;
-      permalink: string;
-      id: string;
-    }
-  | {
-      [key: string]: any;
-      type: "api";
-      api: {
-        // todo: include info
-        // info: {
-        // title: string;
-        // },
-        tags?: string[] | undefined;
-      };
-      title: string;
-      permalink: string;
-      id: string;
-    };
+export type BaseItem = {
+  [key: string]: any;
+  title: string;
+  permalink: string;
+  id: string;
+  source: string;
+};
+
+export type InfoItem = BaseItem & {
+  type: "info";
+  info: any;
+};
+
+export type ApiItem = BaseItem & {
+  type: "api";
+  api: {
+    // todo: include info
+    // info: {
+    // title: string;
+    // },
+    tags?: string[] | undefined;
+  };
+};
+
+type Item = InfoItem | ApiItem;
 
 function groupByTags(
   items: Item[],
@@ -197,6 +203,9 @@ function groupByTags(
         .map((item) => {
           const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
           return {
+            source: item.source,
+            info: item.api.info,
+
             type: "link",
             label: apiPage.title,
             href: apiPage.permalink,
@@ -209,7 +218,19 @@ function groupByTags(
           };
         }),
     },
-  ];
+  ].map((categoryItem) => {
+    const [prototype] = categoryItem.items;
+    if (!prototype) {
+      return categoryItem;
+    }
+    const { info } = prototype;
+    const fileName = path.basename(prototype.source).split(".")[0];
+
+    return {
+      ...categoryItem,
+      label: info?.title ?? fileName,
+    };
+  });
 
   return [...intros, ...tagged, ...untagged];
 }

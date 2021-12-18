@@ -7,7 +7,12 @@
 
 // import path from "path";
 
-import { generateSidebars } from ".";
+import fs from "fs";
+import path from "path";
+
+import cloneDeep from "lodash/cloneDeep";
+
+import { generateSidebars, InfoItem } from ".";
 
 // npx jest packages/docusaurus-plugin-openapi/src/sidebars/sidebars.test.ts --watch
 
@@ -44,55 +49,49 @@ describe("sidebars", () => {
   });
 
   describe.only("YAML", () => {
-    it("rendering", () => {
-      const input = [
-        {
-          type: "info" as const,
-          id: "introduction",
-          unversionedId: "introduction",
-          title: "Introduction",
+    let introMd: InfoItem;
+    beforeEach(() => {
+      introMd = cloneDeep({
+        type: "info" as const,
+        id: "introduction",
+        unversionedId: "introduction",
+        title: "Introduction",
+        description: "Sample description.",
+        slug: "/introduction",
+        frontMatter: {},
+        info: {
+          title: "YAML Example",
+          version: "1.0.0",
           description: "Sample description.",
-          slug: "/introduction",
-          frontMatter: {},
-          info: {
-            title: "YAML Example",
-            version: "1.0.0",
-            description: "Sample description.",
-          },
-          source: "@site/examples/openapi.yaml",
-          sourceDirName: ".",
-          permalink: "/yaml/introduction",
-          next: {
-            title: "Hello World",
-            permalink: "/yaml/hello-world",
-          },
         },
+        source: "@site/examples/openapi.yaml",
+        sourceDirName: ".",
+        permalink: "/yaml/introduction",
+        next: {
+          title: "Hello World",
+          permalink: "/yaml/hello-world",
+        },
+      });
+    });
+
+    it("base case & should create a category defaulting to source filename", () => {
+      const input = [
+        introMd,
         {
           type: "api" as const,
           id: "hello-world",
-          unversionedId: "hello-world",
           title: "Hello World",
-          description: "",
-          slug: "/hello-world",
-          frontMatter: {},
           api: {
-            description: "Example OpenApi definition with YAML.",
-            method: "get",
-            path: "/hello",
             tags: [],
           },
           source: "@site/examples/openapi.yaml",
           sourceDirName: ".",
           permalink: "/yaml/hello-world",
-          previous: {
-            title: "Introduction",
-            permalink: "/yaml/introduction",
-          },
         },
       ];
 
       const output = generateSidebars(input, getOpts());
-      console.log(JSON.stringify(output, null, 2));
+      //   console.log(JSON.stringify(output, null, 2));
 
       // intro.md
       const info = output.find((x) => x.type === "link");
@@ -102,7 +101,7 @@ describe("sidebars", () => {
 
       // swagger rendering
       const api = output.find((x) => x.type === "category");
-      expect(api?.label).toBe("API");
+      expect(api?.label).toBe("openapi");
       expect(api?.items).toBeInstanceOf(Array);
       expect(api?.items).toHaveLength(1);
 
@@ -113,65 +112,30 @@ describe("sidebars", () => {
       expect(output).toBeInstanceOf(Array);
     });
 
-    it("child folders", async () => {
+    it("should leverage the info.title if provided", () => {
       const input = [
+        introMd,
         {
           type: "api" as const,
-          id: "cats",
-          title: "Cats",
+          id: "hello-world",
+          title: "Hello World",
           api: {
-            info: { title: "Cat Store" },
-            tags: ["Cats"],
+            info: { title: "Cloud Object Storage", version: "1.0.1" },
+            tags: [],
           },
-          source: "@site/examples/animals/pets/cats.yaml",
-          sourceDirName: "animals/pets",
-          permalink: "/yaml/cats",
-        },
-        {
-          type: "api" as const,
-          id: "burgers",
-          title: "Burgers",
-          api: {
-            info: { title: "Burger Store" },
-            tags: ["Burgers"],
-          },
-          source: "@site/examples/food/fast/burgers.yaml",
-          sourceDirName: "food/fast",
-          permalink: "/yaml/burgers",
+          source: "@site/examples/openapi.yaml",
+          sourceDirName: ".",
+          permalink: "/yaml/hello-world",
         },
       ];
 
-      const output = await generateSidebars(input, getOpts());
-      expect(output).toBeTruthy();
-      // console.log(JSON.stringify(output, null, 2));
-      // console.log(output);
-      const [animals, foods] = output;
-      expect(animals.type).toBe("category");
-      expect(foods.type).toBe("category");
+      const output = generateSidebars(input, getOpts());
 
-      /*
-        animals
-          pets
-            Cat Store
-              cats
-        Foods
-          Buger Store
-            Burger Example
-              burgers
-      */
-      output.filter(isCategory).forEach((category) => {
-        // console.log(category.label);
-        expect(category.items[0].type).toBe("category");
-        category.items.filter(isCategory).forEach((subCategory) => {
-          expect(subCategory.items[0].type).toBe("category");
-          subCategory.items.filter(isCategory).forEach((groupCategory) => {
-            expect(groupCategory.items[0].type).toBe("category");
-            groupCategory.items.forEach((linkItem) => {
-              expect(linkItem.type).toBe("category");
-            });
-          });
-        });
-      });
+      //   console.log(JSON.stringify(output, null, 2));
+
+      // swagger rendering
+      const api = output.find((x) => x.type === "category");
+      expect(api?.label).toBe("Cloud Object Storage");
     });
   });
 });
