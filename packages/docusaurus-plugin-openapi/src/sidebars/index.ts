@@ -19,7 +19,6 @@ interface Options {
 }
 
 export type BaseItem = {
-  [key: string]: any;
   title: string;
   permalink: string;
   id: string;
@@ -42,6 +41,14 @@ export type ApiItem = BaseItem & {
 
 type Item = InfoItem | ApiItem;
 
+function isApiItem(item: Item): item is ApiItem {
+  return item.type === "api";
+}
+
+function isInfoItem(item: Item): item is InfoItem {
+  return item.type === "info";
+}
+
 export function generateSidebars(
   items: Item[],
   options: Options
@@ -49,8 +56,8 @@ export function generateSidebars(
   const sections = _(items)
     .groupBy((item) => item.source)
     .mapValues((items, source) => {
-      const prototype = items.find((x) => {
-        return x.api?.info != null;
+      const prototype = items.filter(isApiItem).find((item) => {
+        return item.api?.info != null;
       });
       const info = prototype?.api?.info;
       const fileName = path.basename(source).split(".")[0];
@@ -76,77 +83,6 @@ function groupByTags(
   items: Item[],
   { sidebarCollapsible, sidebarCollapsed }: Options
 ): PropSidebarItem[] {
-  const intros = items
-    .filter((item) => {
-      if (item.type === "info") {
-        return true;
-      }
-      return false;
-    })
-    .map((item) => {
-      return {
-        type: "link" as const,
-        label: item.title,
-        href: item.permalink,
-        docId: item.id,
-      };
-    })
-    .values()
-    .value();
-
-  if (sections.length === 1) {
-    return sections[0].items;
-  }
-
-  // group into folders and build recursive category tree
-  const rootSections = sections.filter((x) => x.sourceDirName === ".");
-  const childSections = sections.filter((x) => x.sourceDirName !== ".");
-
-  const subCategories = [] as any;
-
-  for (const childSection of childSections) {
-    const basePathRegex = new RegExp(`${childSection.sourceDirName}.*$`);
-    const basePath =
-      childSection.source?.replace(basePathRegex, "").replace("@site", ".") ??
-      ".";
-
-    const dirs = childSection.sourceDirName.split("/");
-
-    let root = subCategories;
-    const parents: string[] = [];
-    while (dirs.length) {
-      const currentDir = dirs.shift() as string;
-      // todo: optimize?
-      const folderPath = path.join(basePath, ...parents, currentDir);
-      const meta = await readCategoryMetadataFile(folderPath);
-      const label = meta?.label ?? currentDir;
-      const existing = root.find((x: any) => x.label === label);
-
-      if (!existing) {
-        const child = {
-          collapsible: options.sidebarCollapsible,
-          collapsed: options.sidebarCollapsed,
-          type: "category" as const,
-          label,
-          items: [],
-        };
-        root.push(child);
-        root = child.items;
-      } else {
-        root = existing.items;
-      }
-      parents.push(currentDir);
-    }
-    root.push(childSection);
-  }
-
-  return [...rootSections, ...subCategories];
-}
-
-function groupByTags(
-  items: Item[],
-  { sidebarCollapsible, sidebarCollapsed }: Options
-): PropSidebar {
   const intros = items.filter(isInfoItem).map((item) => {
     return {
       type: "link" as const,
