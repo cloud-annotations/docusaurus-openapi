@@ -5,12 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import type {
-  PropSidebarItemCategory,
-  SidebarItemLink,
-} from "@docusaurus/plugin-content-docs-types";
-
 import { generateSidebars } from ".";
+import type { PropSidebarItemCategory, SidebarItemLink } from "../types";
 
 // npx jest packages/docusaurus-plugin-openapi/src/sidebars/sidebars.test.ts --watch
 
