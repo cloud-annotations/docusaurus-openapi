@@ -17,7 +17,7 @@ import {
 export type {
   PropSidebarItemCategory,
   SidebarItemLink,
-  PropSidebarItem,
+  PropSidebar,
 } from "@docusaurus/plugin-content-docs-types";
 export interface PluginOptions extends RemarkAndRehypePluginOptions {
   id: string;
