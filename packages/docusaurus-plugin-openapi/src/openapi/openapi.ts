@@ -13,6 +13,7 @@ import {
   GlobExcludeDefault,
   normalizeUrl,
 } from "@docusaurus/utils";
+import chalk from "chalk";
 import fs from "fs-extra";
 import yaml from "js-yaml";
 import JsonRefs from "json-refs";
@@ -205,8 +206,12 @@ export async function readOpenapiFiles(
 ): Promise<OpenApiFiles[]> {
   const stat = await fs.lstat(openapiPath);
   if (stat.isDirectory()) {
-    // TODO: load all specs in folder
-    // throw Error("Plugin doesn't support directories yet");
+    console.warn(
+      chalk.yellow(
+        "WARNING: Loading a directory of OpenAPI definitions is experimental and subject to unannounced breaking changes."
+      )
+    );
+
     // TODO: Add config for inlcude/ignore
     const sources = await Globby(["**/*.{json,yaml,yml}"], {
       cwd: openapiPath,
