@@ -25,38 +25,78 @@ Docusaurus OpenAPI has one primary branch `main`. We don't use separate branches
 
 ## Proposing a Change
 
+If you would like to request a new feature or enhancement, but are not yet thinking about opening a pull request, you can also [open an issue](https://github.com/cloud-annotations/docusaurus-plugin-openapi/issues/new).
+
+If you intend to change the public API (e.g., changes to the options available to the user in `docusaurus.config.js`) or make any non-trivial changes to the implementation, we recommend filing an issue to propose your change. This lets us reach an agreement on your proposal before you put significant effort into it. These types of issues should be rare.
+
+If you're only fixing a bug, it's fine to submit a pull request right away but we still recommend filing an issue detailing what you're fixing. This is helpful in case we don't accept that specific fix but want to keep track of the issue.
+
 ### Bugs
+
+We use [GitHub Issues](https://github.com/cloud-annotations/docusaurus-plugin-openapi/issues) for our public bugs. If you would like to report a problem, take a look around and see if someone already opened an issue about it. If you are certain this is a new, unreported bug, you can submit a bug report.
+
+If you have questions about using Docusaurus OpenAPI, contact our maintainer on Twitter at [@bourdakos1](https://twitter.com/bourdakos1), and we will do our best to answer your questions.
 
 ## Pull Requests
 
 ### Your First Pull Request
 
-Fork the cloud-annotations/docusaurus-plugin-openapi repository
+So you have decided to contribute code back to upstream by opening a pull request. You've invested a good chunk of time, and we appreciate it. We will do our best to work with you and get the PR looked at.
+
+#### Repo Setup
+
+1. Fork [the repository](https://github.com/cloud-annotations/docusaurus-plugin-openapi) and create your branch from `main`.
 
 ```sh
 git clone git@github.com:your-username/docusaurus-plugin-openapi.git
+git checkout -b your-feature-or-fix-name
 ```
+
+#### Installation
+
+1. Ensure you have [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/) installed.
+2. After cloning the repository, run `yarn install` in the root of the repository.
 
 ```sh
 cd where-you-cloned-docusaurus-plugin-openapi
 yarn install
 ```
 
-```sh
-yarn watch
-```
+#### Build
 
-```sh
-yarn watch:demo
-```
+1. Build all packages and generate the static content of the demo.
 
 ```sh
 yarn build
 ```
 
+2. Serve the generated demo site.
+
 ```sh
 yarn serve
 ```
+
+3. Visit [http://localhost:3000/](http://localhost:3000/) or wherever the build directory is being served.
+
+#### Development Workflow
+
+For faster iterations, packages can be built and watched by running:
+
+```sh
+yarn watch
+```
+
+And in a seperate terminal window, the demo can be built and watched by running:
+
+```sh
+yarn watch:demo
+```
+
+#### Testing
+
+Husky and Prettier
+
+eslint
 
 ```sh
 yarn test
