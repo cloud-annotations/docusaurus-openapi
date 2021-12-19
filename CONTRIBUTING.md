@@ -94,13 +94,24 @@ yarn watch:demo
 
 #### Testing
 
-Husky and Prettier
+Before we merge your code into our main branch, we expect it to pass four test groups (format, linting, unit tests and end-to-end tests).
 
-eslint
+1. **Format**: We use Husky pre-commit hooks and Prettier to automatically format your code, so you shouldn't need to worry too much about this one.
+   Husky and Prettier
+
+2. **Linting**: We use ESLint to testing for linting errors and warnings. To check to see if your code has any linting issues you can run:
+
+```sh
+yarn lint
+```
+
+3. **Unit Tests**: We use Jest for unit testing. Run the unit tests with:
 
 ```sh
 yarn test
 ```
+
+4. **End-to-End Tests**: We use Cypress for end-to-end testing. Run the end-to-end with:
 
 ```sh
 yarn test:cypress
