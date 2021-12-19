@@ -19,7 +19,6 @@ interface Options {
 }
 
 export type BaseItem = {
-  [key: string]: any;
   title: string;
   permalink: string;
   id: string;
@@ -42,6 +41,14 @@ export type ApiItem = BaseItem & {
 
 type Item = InfoItem | ApiItem;
 
+function isApiItem(item: Item): item is ApiItem {
+  return item.type === "api";
+}
+
+function isInfoItem(item: Item): item is InfoItem {
+  return item.type === "info";
+}
+
 export function generateSidebars(
   items: Item[],
   options: Options
@@ -49,8 +56,8 @@ export function generateSidebars(
   const sections = _(items)
     .groupBy((item) => item.source)
     .mapValues((items, source) => {
-      const prototype = items.find((x) => {
-        return x.api?.info != null;
+      const prototype = items.filter(isApiItem).find((item) => {
+        return item.api?.info != null;
       });
       const info = prototype?.api?.info;
       const fileName = path.basename(source).split(".")[0];
@@ -76,35 +83,6 @@ function groupByTags(
   items: Item[],
   { sidebarCollapsible, sidebarCollapsed }: Options
 ): PropSidebarItem[] {
-  const intros = items
-    .filter((item) => {
-      if (item.type === "info") {
-        return true;
-      }
-      return false;
-    })
-    .map((item) => {
-      return {
-        type: "link" as const,
-        label: item.title,
-        href: item.permalink,
-        docId: item.id,
-      };
-    })
-    .values()
-    .value();
-
-  if (sections.length === 1) {
-    return sections[0].items;
-  }
-
-  return sections;
-}
-
-function groupByTags(
-  items: Item[],
-  { sidebarCollapsible, sidebarCollapsed }: Options
-): PropSidebar {
   const intros = items.filter(isInfoItem).map((item) => {
     return {
       type: "link" as const,
