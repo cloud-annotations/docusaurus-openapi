@@ -24,7 +24,7 @@ describe("test", () => {
 
   it("loads yaml tab", () => {
     checkTab(/yaml/i, [/Introduction/i], /YAML Example/i);
-    checkTab(/yaml/i, [/Hello World/i], /Hello World/i);
+    checkTab(/yaml/i, [/api/i, /hello world/i], /hello world/i);
   });
 
   it("loads petstore tab", () => {
