@@ -6,9 +6,20 @@
  * ========================================================================== */
 
 import { generateSidebars } from ".";
-import type { PropSidebarItemCategory, SidebarItemLink } from "../types";
+import type {
+  PropSidebarItemCategory,
+  SidebarItemLink,
+  PropSidebarItem,
+} from "../types";
 
 // npx jest packages/docusaurus-plugin-openapi/src/sidebars/sidebars.test.ts --watch
+
+function isCategory(item: PropSidebarItem): item is PropSidebarItemCategory {
+  return item.type === "category";
+}
+function isLink(item: PropSidebarItem): item is SidebarItemLink {
+  return item.type === "link";
+}
 
 describe("sidebars", () => {
   const getOpts = () => ({
@@ -40,7 +51,7 @@ describe("sidebars", () => {
   });
 
   describe("Single Spec - YAML", () => {
-    it("base case - single spec with untagged routes should render flat with no categories", () => {
+    it("base case - single spec with untagged routes should render flat with a default category", () => {
       const input = [
         getIntro(),
         {
@@ -67,11 +78,12 @@ describe("sidebars", () => {
       expect(info?.label).toBe("Introduction");
       expect(info?.href).toBe("/yaml/introduction");
 
-      // swagger rendering
-      const api = output.find(
-        (x) => x.type === "link" && x.docId === "hello-world"
-      );
+      const category = output.find(isCategory);
+      expect(category?.label).toBe("API");
+
+      const api = category?.items.find(isLink);
       expect(api?.label).toBe("Hello World");
+      expect(api?.docId).toBe("hello-world");
     });
 
     it("single spec tags case - should render root level categories per tag", () => {
@@ -122,7 +134,7 @@ describe("sidebars", () => {
           id: "cats",
           title: "Cats",
           api: {
-            info: { title: "Cats", version: "1.0.1" },
+            info: { title: "Cats" },
             tags: [],
           },
           source: "@site/examples/cats.yaml",
@@ -134,7 +146,7 @@ describe("sidebars", () => {
           id: "dogs",
           title: "Dogs",
           api: {
-            info: { title: "Dogs", version: "1.0.1" },
+            info: { title: "Dogs" },
             tags: [],
           },
           source: "@site/examples/dogs.yaml",
@@ -153,7 +165,10 @@ describe("sidebars", () => {
       const [cats, dogs] = output;
       expect(cats.type).toBe("category");
       expect(cats.items).toHaveLength(1);
-      const [catLink] = cats.items ?? [];
+
+      const [catApi] = (cats.items ?? []).filter(isCategory);
+      expect(catApi.type).toBe("category");
+      const [catLink] = catApi?.items;
       expect(catLink.type).toBe("link");
       expect(dogs.type).toBe("category");
       expect(dogs.items).toHaveLength(1);
@@ -167,7 +182,7 @@ describe("sidebars", () => {
           id: "cats",
           title: "Cats",
           api: {
-            info: { title: "Cats", version: "1.0.1" },
+            info: { title: "Cats" },
             tags: [],
           },
           source: "@site/examples/cats.yaml",
@@ -177,9 +192,9 @@ describe("sidebars", () => {
         {
           type: "api" as const,
           id: "dogs",
-          title: "Dogs",
+          title: "List Dogs",
           api: {
-            info: { title: "", version: "1.0.1" },
+            info: { title: "" },
             tags: [],
           },
           source: "@site/examples/dogs.yaml",
@@ -189,9 +204,9 @@ describe("sidebars", () => {
         {
           type: "api" as const,
           id: "dogs-id",
-          title: "Dogs By Id",
+          title: "Dog By Id",
           api: {
-            info: { title: "", version: "1.0.1" },
+            info: { title: "" },
             tags: [],
           },
           source: "@site/examples/dogs.yaml",
@@ -206,11 +221,14 @@ describe("sidebars", () => {
       ) as PropSidebarItemCategory[];
 
       // console.log(JSON.stringify(output, null, 2));
-      const [cats, dogs] = output;
+      const [cats, dogsSpec] = output;
       expect(cats.items).toHaveLength(1);
-      expect(dogs.type).toBe("category");
-      expect(dogs.items).toHaveLength(2);
-      expect(dogs.label).toBe("dogs");
+      expect(dogsSpec.type).toBe("category");
+      const [dogApi] = dogsSpec.items.filter(isCategory);
+      expect(dogApi?.items).toHaveLength(2);
+      expect(dogApi.label).toBe("API");
+      const [dogsItem] = dogApi.items;
+      expect(dogsItem.label).toBe("List Dogs");
     });
 
     it("multi spec, multi tag", () => {
@@ -220,7 +238,7 @@ describe("sidebars", () => {
           id: "tails",
           title: "List Tails",
           api: {
-            info: { title: "Cats", version: "1.0.1" },
+            info: { title: "Cats" },
             tags: ["Tails"],
           },
           source: "@site/examples/cats.yaml",
@@ -232,7 +250,7 @@ describe("sidebars", () => {
           id: "tails-by-id",
           title: "Tails By Id",
           api: {
-            info: { title: "Cats", version: "1.0.1" },
+            info: { title: "Cats" },
             tags: ["Tails"],
           },
           source: "@site/examples/cats.yaml",
@@ -244,7 +262,7 @@ describe("sidebars", () => {
           id: "whiskers",
           title: "List whiskers",
           api: {
-            info: { title: "Cats", version: "1.0.1" },
+            info: { title: "Cats" },
             tags: ["Whiskers"],
           },
           source: "@site/examples/cats.yaml",
@@ -254,9 +272,9 @@ describe("sidebars", () => {
         {
           type: "api" as const,
           id: "dogs",
-          title: "Dogs",
+          title: "List Dogs",
           api: {
-            info: { title: "Dogs", version: "1.0.1" },
+            info: { title: "Dogs" },
             tags: ["Doggos"],
           },
           source: "@site/examples/dogs.yaml",
@@ -268,7 +286,7 @@ describe("sidebars", () => {
           id: "dogs-id",
           title: "Dogs By Id",
           api: {
-            info: { title: "Dogs", version: "1.0.1" },
+            info: { title: "Dogs" },
             tags: ["Doggos"],
           },
           source: "@site/examples/dogs.yaml",
@@ -280,7 +298,7 @@ describe("sidebars", () => {
           id: "toys",
           title: "Toys",
           api: {
-            info: { title: "Dogs", version: "1.0.1" },
+            info: { title: "Dogs" },
             tags: ["Toys"],
           },
           source: "@site/examples/dogs.yaml",
@@ -297,8 +315,8 @@ describe("sidebars", () => {
       // console.log(JSON.stringify(output, null, 2));
       const [cats, dogs] = output;
       expect(cats.type).toBe("category");
-      expect(cats.items).toHaveLength(2);
-      const [tails, whiskers] = (cats.items || []) as PropSidebarItemCategory[];
+      expect(cats.items).toHaveLength(3); // extra api item category is included but gets filtered out later
+      const [tails, whiskers] = (cats.items || []).filter(isCategory);
       expect(tails.type).toBe("category");
       expect(whiskers.type).toBe("category");
       expect(tails.items).toHaveLength(2);
@@ -309,7 +327,7 @@ describe("sidebars", () => {
       expect(whiskers.items?.[0].label).toBe("List whiskers");
 
       expect(dogs.type).toBe("category");
-      expect(dogs.items).toHaveLength(2);
+      expect(dogs.items).toHaveLength(3); // extra api item category is included but gets filtered out later
       expect(dogs.label).toBe("Dogs");
       const [doggos, toys] = (dogs.items || []) as PropSidebarItemCategory[];
       expect(doggos.type).toBe("category");
