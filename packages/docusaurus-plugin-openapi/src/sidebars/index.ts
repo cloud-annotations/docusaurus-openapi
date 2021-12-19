@@ -7,7 +7,7 @@
 
 import path from "path";
 
-import { PropSidebarItem } from "@docusaurus/plugin-content-docs-types";
+import type { PropSidebarItem } from "@docusaurus/plugin-content-docs-types";
 import clsx from "clsx";
 import _ from "lodash";
 
@@ -28,7 +28,6 @@ export type BaseItem = {
 
 export type InfoItem = BaseItem & {
   type: "info";
-  info: any;
 };
 
 export type ApiItem = BaseItem & {
