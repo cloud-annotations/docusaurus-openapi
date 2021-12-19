@@ -7,7 +7,7 @@
 
 import path from "path";
 
-import { NavbarItem } from "@docusaurus/theme-common";
+import { PropSidebarItem } from "@docusaurus/plugin-content-docs-types";
 import clsx from "clsx";
 import _ from "lodash";
 
@@ -46,7 +46,7 @@ type Item = InfoItem | ApiItem;
 export function generateSidebars(
   items: Item[],
   options: Options
-): NavbarItem[] {
+): PropSidebarItem[] {
   const sections = _(items)
     .groupBy((item) => item.source)
     .mapValues((items, source) => {
@@ -56,8 +56,9 @@ export function generateSidebars(
       const info = prototype?.api?.info;
       const fileName = path.basename(source).split(".")[0];
       return {
-        ...options,
-        type: "category",
+        collapsible: options.sidebarCollapsible,
+        collapsed: options.sidebarCollapsed,
+        type: "category" as const,
         label: info?.title || fileName,
         items: groupByTags(items, options),
       };
@@ -75,7 +76,7 @@ export function generateSidebars(
 function groupByTags(
   items: Item[],
   { sidebarCollapsible, sidebarCollapsed }: Options
-) {
+): PropSidebarItem[] {
   const intros = items
     .filter((item) => {
       if (item.type === "info") {
@@ -85,7 +86,7 @@ function groupByTags(
     })
     .map((item) => {
       return {
-        type: "link",
+        type: "link" as const,
         label: item.title,
         href: item.permalink,
         docId: item.id,
@@ -108,7 +109,7 @@ function groupByTags(
   const tagged = tags
     .map((tag) => {
       return {
-        type: "category",
+        type: "category" as const,
         label: tag,
         collapsible: sidebarCollapsible,
         collapsed: sidebarCollapsed,
@@ -139,7 +140,7 @@ function groupByTags(
 
   const untagged = [
     {
-      type: "category",
+      type: "category" as const,
       label: "API",
       collapsible: sidebarCollapsible,
       collapsed: sidebarCollapsed,
