@@ -10,7 +10,7 @@ import path from "path";
 import clsx from "clsx";
 import _ from "lodash";
 
-import type { PropSidebarItem } from "../types";
+import type { PropSidebar } from "../types";
 import { ApiPageMetadata } from "../types";
 
 interface Options {
@@ -49,10 +49,7 @@ function isInfoItem(item: Item): item is InfoItem {
   return item.type === "info";
 }
 
-export function generateSidebars(
-  items: Item[],
-  options: Options
-): PropSidebarItem[] {
+export function generateSidebars(items: Item[], options: Options): PropSidebar {
   const sections = _(items)
     .groupBy((item) => item.source)
     .mapValues((items, source) => {
@@ -82,7 +79,7 @@ export function generateSidebars(
 function groupByTags(
   items: Item[],
   { sidebarCollapsible, sidebarCollapsed }: Options
-): PropSidebarItem[] {
+): PropSidebar {
   const intros = items.filter(isInfoItem).map((item) => {
     return {
       type: "link" as const,
