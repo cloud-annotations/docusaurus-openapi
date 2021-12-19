@@ -119,7 +119,7 @@ function groupByTags(
           .map((item) => {
             const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
             return {
-              type: "link",
+              type: "link" as const,
               label: apiPage.title,
               href: apiPage.permalink,
               docId: apiPage.id,
@@ -155,7 +155,7 @@ function groupByTags(
         .map((item) => {
           const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
           return {
-            type: "link",
+            type: "link" as const,
             label: apiPage.title,
             href: apiPage.permalink,
             docId: apiPage.id,
