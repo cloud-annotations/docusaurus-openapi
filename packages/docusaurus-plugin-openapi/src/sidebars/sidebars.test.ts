@@ -5,6 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
+import {
+  PropSidebarItemCategory,
+  SidebarItemLink,
+} from "@docusaurus/plugin-content-docs-types";
+
 import { generateSidebars } from ".";
 
 // npx jest packages/docusaurus-plugin-openapi/src/sidebars/sidebars.test.ts --watch
@@ -59,14 +64,17 @@ describe("sidebars", () => {
       // console.log(JSON.stringify(output, null, 2));
 
       // intro.md
-      const info = output.find((x) => x.docId === "introduction");
+      const info = output.find(
+        (x) => x.type === "link" && x.docId === "introduction"
+      ) as SidebarItemLink;
       expect(info?.type).toBe("link");
       expect(info?.label).toBe("Introduction");
       expect(info?.href).toBe("/yaml/introduction");
 
       // swagger rendering
-      const api = output.find((x) => x.docId === "hello-world");
-      expect(api?.type).toBe("link");
+      const api = output.find(
+        (x) => x.type === "link" && x.docId === "hello-world"
+      );
       expect(api?.label).toBe("Hello World");
     });
 
@@ -90,13 +98,17 @@ describe("sidebars", () => {
       // console.log(JSON.stringify(output, null, 2));
 
       // intro.md
-      const info = output.find((x) => x.docId === "introduction");
+      const info = output.find(
+        (x) => x.type === "link" && x.docId === "introduction"
+      ) as SidebarItemLink;
       expect(info?.type).toBe("link");
       expect(info?.label).toBe("Introduction");
       expect(info?.href).toBe("/yaml/introduction");
 
       // swagger rendering
-      const api = output.find((x) => x.type === "category");
+      const api = output.find(
+        (x) => x.type === "category"
+      ) as PropSidebarItemCategory;
       expect(api?.label).toBe("stuff");
       expect(api?.items).toBeInstanceOf(Array);
       expect(api?.items).toHaveLength(1);
@@ -135,7 +147,10 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = generateSidebars(input, getOpts());
+      const output = generateSidebars(
+        input,
+        getOpts()
+      ) as PropSidebarItemCategory[];
 
       // console.log(JSON.stringify(output, null, 2));
       expect(output).toHaveLength(2);
@@ -189,7 +204,10 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = generateSidebars(input, getOpts());
+      const output = generateSidebars(
+        input,
+        getOpts()
+      ) as PropSidebarItemCategory[];
 
       // console.log(JSON.stringify(output, null, 2));
       const [cats, dogs] = output;
@@ -275,13 +293,16 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = generateSidebars(input, getOpts());
+      const output = generateSidebars(
+        input,
+        getOpts()
+      ) as PropSidebarItemCategory[];
 
       // console.log(JSON.stringify(output, null, 2));
       const [cats, dogs] = output;
       expect(cats.type).toBe("category");
       expect(cats.items).toHaveLength(2);
-      const [tails, whiskers] = cats.items || [];
+      const [tails, whiskers] = (cats.items || []) as PropSidebarItemCategory[];
       expect(tails.type).toBe("category");
       expect(whiskers.type).toBe("category");
       expect(tails.items).toHaveLength(2);
@@ -294,7 +315,7 @@ describe("sidebars", () => {
       expect(dogs.type).toBe("category");
       expect(dogs.items).toHaveLength(2);
       expect(dogs.label).toBe("Dogs");
-      const [doggos, toys] = dogs.items || [];
+      const [doggos, toys] = (dogs.items || []) as PropSidebarItemCategory[];
       expect(doggos.type).toBe("category");
       expect(toys.type).toBe("category");
       expect(doggos.items).toHaveLength(2);
