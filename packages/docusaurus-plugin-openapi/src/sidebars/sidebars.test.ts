@@ -335,5 +335,47 @@ describe("sidebars", () => {
       expect(doggos.items).toHaveLength(2);
       expect(toys.items).toHaveLength(1);
     });
+
+    it("megaz", () => {
+      const output = generateSidebars(
+        require("./__test__/mega.json"),
+        getOpts()
+      );
+      // console.log(JSON.stringify(output, null, 2));
+      // console.log(output);
+    });
+    it.only("child folders", () => {
+      const input = [
+        {
+          type: "api" as const,
+          id: "cats",
+          title: "Cats",
+          api: {
+            info: { title: "Cats" },
+            tags: ["Cats"],
+          },
+          source: "@site/examples/animals/pets/cats.yaml",
+          sourceDirName: "animals/pets",
+          permalink: "/yaml/cats",
+        },
+        {
+          type: "api" as const,
+          id: "burgers",
+          title: "Burgers",
+          api: {
+            info: { title: "Burgers" },
+            tags: ["Burgers"],
+          },
+          source: "@site/examples/foods/fast/burgers.yaml",
+          sourceDirName: "foods/fast",
+          permalink: "/yaml/burgers",
+        },
+      ];
+
+      const output = generateSidebars(input, getOpts());
+      expect(output).toBeTruthy();
+      // console.log(JSON.stringify(output, null, 2));
+      // console.log(output);
+    });
   });
 });

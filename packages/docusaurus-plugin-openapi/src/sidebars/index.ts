@@ -7,7 +7,12 @@
 
 import path from "path";
 
+// import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/src/sidebars/validation";
+import { posixPath } from "@docusaurus/utils";
+import chalk from "chalk";
 import clsx from "clsx";
+import fs from "fs-extra";
+import Yaml from "js-yaml";
 import _ from "lodash";
 
 import type { PropSidebar } from "../types";
@@ -23,6 +28,7 @@ export type BaseItem = {
   permalink: string;
   id: string;
   source: string;
+  sourceDirName: string;
 };
 
 export type InfoItem = BaseItem & {
@@ -50,6 +56,7 @@ function isInfoItem(item: Item): item is InfoItem {
 }
 
 export function generateSidebars(items: Item[], options: Options): PropSidebar {
+  // const foo = readCategoryMetadataFile();
   const sections = _(items)
     .groupBy((item) => item.source)
     .mapValues((items, source) => {
@@ -59,6 +66,8 @@ export function generateSidebars(items: Item[], options: Options): PropSidebar {
       const info = prototype?.api?.info;
       const fileName = path.basename(source).split(".")[0];
       return {
+        sourceDirName: prototype?.sourceDirName ?? ".",
+
         collapsible: options.sidebarCollapsible,
         collapsed: options.sidebarCollapsed,
         type: "category" as const,
@@ -73,7 +82,52 @@ export function generateSidebars(items: Item[], options: Options): PropSidebar {
     return sections[0].items;
   }
 
-  return sections;
+  // group into folders and build recursive category tree
+  const paths = sections.map((section) => {
+    return section.sourceDirName;
+  });
+
+  const rootSections = sections.filter((x) => x.sourceDirName === ".");
+  const childSections = sections.filter((x) => x.sourceDirName !== ".");
+  console.log(childSections);
+
+  const subCategories = [] as any;
+
+  // [ '.', '.', '.', '.', '.', 'yogurtstore' ]
+  childSections.forEach((childSection) => {
+    console.log({ childSection });
+    const dirs = childSection.sourceDirName.split("/");
+    console.log({ dirs });
+    let root = subCategories;
+    while (dirs.length) {
+      const currentDir = dirs.shift();
+      const existing = root.find((x: any) => x.label === currentDir);
+      if (!existing) {
+        console.log("creating child category", currentDir);
+        const child = {
+          collapsible: options.sidebarCollapsible,
+          collapsed: options.sidebarCollapsed,
+          type: "category" as const,
+          label: currentDir,
+          items: [],
+        };
+        root.push(child);
+        // subCategories.push(child);
+        root = child.items;
+      } else {
+        root = existing.items;
+      }
+    }
+    root.push(childSection);
+  });
+
+  // console.log(JSON.stringify(subCategories, null, 2));
+
+  // for each section, place the section into a category
+
+  console.log(paths);
+
+  return [...rootSections, ...subCategories];
 }
 
 function groupByTags(
@@ -168,4 +222,36 @@ function groupByTags(
   ];
 
   return [...intros, ...tagged, ...untagged];
+}
+
+export const CategoryMetadataFilenameBase = "_category_";
+
+async function readCategoryMetadataFile(
+  categoryDirPath: string
+): Promise<any | null> {
+  async function tryReadFile(filePath: string): Promise<any> {
+    const contentString = await fs.readFile(filePath, { encoding: "utf8" });
+    const unsafeContent = Yaml.load(contentString);
+    try {
+      // return validateCategoryMetadataFile(unsafeContent);
+    } catch (e) {
+      console.error(
+        chalk.red(
+          `The docs sidebar category metadata file looks invalid!\nPath: ${filePath}`
+        )
+      );
+      throw e;
+    }
+  }
+  // eslint-disable-next-line no-restricted-syntax
+  for (const ext of [".json", ".yml", ".yaml"]) {
+    // Simpler to use only posix paths for mocking file metadata in tests
+    const filePath = posixPath(
+      path.join(categoryDirPath, `${CategoryMetadataFilenameBase}${ext}`)
+    );
+    if (await fs.pathExists(filePath)) {
+      return tryReadFile(filePath);
+    }
+  }
+  return null;
 }

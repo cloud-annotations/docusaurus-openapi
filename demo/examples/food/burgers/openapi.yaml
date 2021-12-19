@@ -6,7 +6,7 @@ info:
 paths:
   /flavors:
     get:
-      summary: List All Burgers
+      summary: List All
       description: Burgers
       responses:
         200:
