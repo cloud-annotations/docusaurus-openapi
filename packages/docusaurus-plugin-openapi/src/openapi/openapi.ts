@@ -225,7 +225,7 @@ export async function readOpenapiFiles(
         const data = yaml.load(openapiString) as OpenApiObjectWithRef;
         return {
           source: fullPath, // This will be aliased in process.
-          sourceDirName: ".",
+          sourceDirName: path.dirname(source),
           data,
         };
       })
