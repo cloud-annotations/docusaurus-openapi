@@ -18,11 +18,6 @@ describe("openapi", () => {
         path.join(__dirname, "__test__/examples"),
         {}
       );
-      const categoryMeta = results.find((x) =>
-        x.source.endsWith("_category_.json")
-      );
-      expect(categoryMeta).toBeFalsy();
-      // console.log(results);
       const yaml = results.find((x) => x.source.endsWith("openapi.yaml"));
       expect(yaml).toBeTruthy();
       expect(yaml?.sourceDirName).toBe(".");
