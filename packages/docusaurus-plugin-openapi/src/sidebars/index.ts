@@ -164,23 +164,22 @@ function groupByTags(
         collapsible: sidebarCollapsible,
         collapsed: sidebarCollapsed,
         items: items
-          .filter((item) => {
+          .filter((item): item is ApiPageMetadata => {
             if (isInfoItem(item)) {
               return false;
             }
-            return item.api.tags?.includes(tag);
+            return !!item.api.tags?.includes(tag);
           })
           .map((item) => {
-            const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
             return {
               type: "link" as const,
-              label: apiPage.title,
-              href: apiPage.permalink,
-              docId: apiPage.id,
+              label: item.title,
+              href: item.permalink,
+              docId: item.id,
               className: clsx({
-                "menu__list-item--deprecated": apiPage.api.deprecated,
-                "api-method": !!apiPage.api.method,
-                [apiPage.api.method]: !!apiPage.api.method,
+                "menu__list-item--deprecated": item.api.deprecated,
+                "api-method": !!item.api.method,
+                [item.api.method]: !!item.api.method,
               }),
             };
           }),
@@ -195,7 +194,7 @@ function groupByTags(
       collapsible: sidebarCollapsible,
       collapsed: sidebarCollapsed,
       items: items
-        .filter((item) => {
+        .filter((item): item is ApiPageMetadata => {
           // Filter out info pages and pages with tags
           if (isInfoItem(item)) {
             return false;
@@ -207,16 +206,15 @@ function groupByTags(
           return false;
         })
         .map((item) => {
-          const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
           return {
             type: "link" as const,
-            label: apiPage.title,
-            href: apiPage.permalink,
-            docId: apiPage.id,
+            label: item.title,
+            href: item.permalink,
+            docId: item.id,
             className: clsx({
-              "menu__list-item--deprecated": apiPage.api.deprecated,
-              "api-method": !!apiPage.api.method,
-              [apiPage.api.method]: !!apiPage.api.method,
+              "menu__list-item--deprecated": item.api.deprecated,
+              "api-method": !!item.api.method,
+              [item.api.method]: !!item.api.method,
             }),
           };
         }),
