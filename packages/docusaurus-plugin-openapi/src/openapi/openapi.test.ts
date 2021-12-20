@@ -15,7 +15,7 @@ describe("openapi", () => {
   describe("readOpenapiFiles", () => {
     it("readOpenapiFiles", async () => {
       const results = await readOpenapiFiles(
-        path.join(__dirname, "__test__/examples"),
+        path.join(__dirname, "__fixtures__/examples"),
         {}
       );
       const categoryMeta = results.find((x) =>
