@@ -66,7 +66,7 @@ export async function generateSidebars(
         return item.api?.info != null;
       });
       const info = prototype?.api?.info;
-      const fileName = path.basename(source).split(".")[0];
+      const fileName = path.basename(source, path.extname(source));
       return {
         source: prototype?.source,
         sourceDirName: prototype?.sourceDirName ?? ".",
