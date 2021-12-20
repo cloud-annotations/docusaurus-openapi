@@ -174,12 +174,14 @@ function groupByTags(
             const apiPage = item as ApiPageMetadata; // TODO: we should have filtered out all info pages, but I don't like this
             return {
               type: "link" as const,
-              label: item.title,
-              href: item.permalink,
-              docId: item.id,
-              className: (item as ApiPageMetadata).api.deprecated // TODO: we should have filtered out all info pages, but I don't like this
-                ? "menu__list-item--deprecated"
-                : undefined,
+              label: apiPage.title,
+              href: apiPage.permalink,
+              docId: apiPage.id,
+              className: clsx({
+                "menu__list-item--deprecated": apiPage.api.deprecated,
+                "api-method": !!apiPage.api.method,
+                [apiPage.api.method]: !!apiPage.api.method,
+              }),
             };
           }),
       };
