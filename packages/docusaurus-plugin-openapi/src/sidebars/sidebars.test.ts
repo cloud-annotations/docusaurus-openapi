@@ -409,7 +409,6 @@ describe("sidebars", () => {
       ];
       const output = await generateSidebars(input, getOpts());
       expect(output).toBeTruthy();
-      // console.log(JSON.stringify(output, null, 2));
       expect(output[0].type).toBe("category");
     });
   });
