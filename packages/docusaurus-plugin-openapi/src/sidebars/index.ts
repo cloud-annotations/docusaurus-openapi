@@ -7,7 +7,7 @@
 
 import path from "path";
 
-// import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/src/sidebars/validation";
+import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/validation";
 import { posixPath } from "@docusaurus/utils";
 import chalk from "chalk";
 import clsx from "clsx";
@@ -55,8 +55,10 @@ function isInfoItem(item: Item): item is InfoItem {
   return item.type === "info";
 }
 
-export function generateSidebars(items: Item[], options: Options): PropSidebar {
-  // const foo = readCategoryMetadataFile();
+export async function generateSidebars(
+  items: Item[],
+  options: Options
+): Promise<PropSidebar> {
   const sections = _(items)
     .groupBy((item) => item.source)
     .mapValues((items, source) => {
@@ -66,6 +68,7 @@ export function generateSidebars(items: Item[], options: Options): PropSidebar {
       const info = prototype?.api?.info;
       const fileName = path.basename(source).split(".")[0];
       return {
+        source: prototype?.source,
         sourceDirName: prototype?.sourceDirName ?? ".",
 
         collapsible: options.sidebarCollapsible,
@@ -83,49 +86,46 @@ export function generateSidebars(items: Item[], options: Options): PropSidebar {
   }
 
   // group into folders and build recursive category tree
-  const paths = sections.map((section) => {
-    return section.sourceDirName;
-  });
-
   const rootSections = sections.filter((x) => x.sourceDirName === ".");
   const childSections = sections.filter((x) => x.sourceDirName !== ".");
-  console.log(childSections);
 
   const subCategories = [] as any;
 
-  // [ '.', '.', '.', '.', '.', 'yogurtstore' ]
-  childSections.forEach((childSection) => {
-    console.log({ childSection });
+  for (const childSection of childSections) {
+    const basePathRegex = new RegExp(`${childSection.sourceDirName}.*$`);
+    const basePath =
+      childSection.source?.replace(basePathRegex, "").replace("@site", ".") ??
+      ".";
+
     const dirs = childSection.sourceDirName.split("/");
-    console.log({ dirs });
+
     let root = subCategories;
+    const parents: string[] = [];
     while (dirs.length) {
-      const currentDir = dirs.shift();
-      const existing = root.find((x: any) => x.label === currentDir);
+      const currentDir = dirs.shift() as string;
+      // todo: optimize?
+      const folderPath = path.join(basePath, ...parents, currentDir);
+      const meta = await readCategoryMetadataFile(folderPath);
+      const label = meta?.label ?? currentDir;
+      const existing = root.find((x: any) => x.label === label);
+
       if (!existing) {
-        console.log("creating child category", currentDir);
         const child = {
           collapsible: options.sidebarCollapsible,
           collapsed: options.sidebarCollapsed,
           type: "category" as const,
-          label: currentDir,
+          label,
           items: [],
         };
         root.push(child);
-        // subCategories.push(child);
         root = child.items;
       } else {
         root = existing.items;
       }
+      parents.push(currentDir);
     }
     root.push(childSection);
-  });
-
-  // console.log(JSON.stringify(subCategories, null, 2));
-
-  // for each section, place the section into a category
-
-  console.log(paths);
+  }
 
   return [...rootSections, ...subCategories];
 }
@@ -233,7 +233,7 @@ async function readCategoryMetadataFile(
     const contentString = await fs.readFile(filePath, { encoding: "utf8" });
     const unsafeContent = Yaml.load(contentString);
     try {
-      // return validateCategoryMetadataFile(unsafeContent);
+      return validateCategoryMetadataFile(unsafeContent);
     } catch (e) {
       console.error(
         chalk.red(
