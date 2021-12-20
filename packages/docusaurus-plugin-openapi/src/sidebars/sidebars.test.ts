@@ -396,5 +396,21 @@ describe("sidebars", () => {
         });
       });
     });
+    it("child folders with no paths", async () => {
+      const input = [
+        getIntro({
+          source: "@site/examples/foods/foods.yaml",
+          sourceDirName: "foods",
+        }),
+        getIntro({
+          source: "@site/examples/animals/animals.yaml",
+          sourceDirName: "animals",
+        }),
+      ];
+      const output = await generateSidebars(input, getOpts());
+      expect(output).toBeTruthy();
+      console.log(JSON.stringify(output, null, 2));
+      expect(output[0].type).toBe("category");
+    });
   });
 });
