@@ -27,6 +27,14 @@ describe("test", () => {
     checkTab(/yaml/i, [/api/i, /hello world/i], /hello world/i);
   });
 
+  it("loads mega tab", () => {
+    checkTab(
+      /mega/i,
+      [/foods/i, /burger store/i, /burger example/i],
+      /list all burgers/i
+    );
+  });
+
   it("loads petstore tab", () => {
     checkTab(
       /petstore/i,
