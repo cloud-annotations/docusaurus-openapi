@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { generateSidebars } from ".";
+import { generateSidebar } from ".";
 import type {
   PropSidebarItemCategory,
   SidebarItemLink,
@@ -68,7 +68,7 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = await generateSidebars(input, getOpts());
+      const output = await generateSidebar(input, getOpts());
       // console.log(JSON.stringify(output, null, 2));
 
       // intro.md
@@ -103,7 +103,7 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = await generateSidebars(input, getOpts());
+      const output = await generateSidebar(input, getOpts());
       // console.log(JSON.stringify(output, null, 2));
 
       // intro.md
@@ -156,7 +156,7 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = (await generateSidebars(
+      const output = (await generateSidebar(
         input,
         getOpts()
       )) as PropSidebarItemCategory[];
@@ -216,7 +216,7 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = (await generateSidebars(
+      const output = (await generateSidebar(
         input,
         getOpts()
       )) as PropSidebarItemCategory[];
@@ -308,7 +308,7 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = (await generateSidebars(
+      const output = (await generateSidebar(
         input,
         getOpts()
       )) as PropSidebarItemCategory[];
@@ -365,7 +365,7 @@ describe("sidebars", () => {
         },
       ];
 
-      const output = await generateSidebars(input, getOpts());
+      const output = await generateSidebar(input, getOpts());
       expect(output).toBeTruthy();
       // console.log(JSON.stringify(output, null, 2));
       // console.log(output);
@@ -408,7 +408,7 @@ describe("sidebars", () => {
           sourceDirName: "animals",
         }),
       ];
-      const output = await generateSidebars(input, getOpts());
+      const output = await generateSidebar(input, getOpts());
       expect(output).toBeTruthy();
       expect(output[0].type).toBe("category");
     });

@@ -70,14 +70,14 @@ function getBreadcrumbs(dir: string) {
   return [...dir.split(BreadcrumbSeparator).filter(Boolean), Terminator];
 }
 
-export async function generateSidebars(
+export async function generateSidebar(
   items: Item[],
   options: Options
 ): Promise<PropSidebar> {
   const sourceGroups = groupBy(items, (item) => item.source);
 
-  let res: PropSidebar = [];
-  let current = res;
+  let sidebar: PropSidebar = [];
+  let visiting = sidebar;
   for (const items of Object.values(sourceGroups)) {
     if (items.length === 0) {
       // Since the groups are created based on the items, there should never be a length of zero.
@@ -89,52 +89,61 @@ export async function generateSidebars(
 
     const breadcrumbs = getBreadcrumbs(sourceDirName);
 
-    let crumbs = [];
+    let currentPath = [];
     for (const crumb of breadcrumbs) {
-      crumbs.push(crumb);
+      // We hit a spec file, create the groups for it.
       if (crumb === Terminator) {
         const title = items.filter(isApiItem)[0]?.api.info?.title;
         const fileName = path.basename(source, path.extname(source));
         // Title could be an empty string so `??` won't work here.
         const label = !title ? fileName : title;
-        current.push({
+        visiting.push({
           type: "category" as const,
           label,
           collapsible: options.sidebarCollapsible,
           collapsed: options.sidebarCollapsed,
           items: groupByTags(items, options),
         });
-        current = res;
+        visiting = sidebar; // reset
         break;
       }
 
-      const categoryPath = path.join(options.contentPath, ...crumbs);
+      // Read category file to generate a label for the current path.
+      currentPath.push(crumb);
+      const categoryPath = path.join(options.contentPath, ...currentPath);
       const meta = await readCategoryMetadataFile(categoryPath);
       const label = meta?.label ?? crumb;
 
-      let tmp = current
+      // Check for existing categories for the current label.
+      const existingCategory = visiting
         .filter((c): c is PropSidebarItemCategory => c.type === "category")
         .find((c) => c.label === label);
-      if (!tmp) {
-        tmp = {
-          type: "category" as const,
-          label,
-          collapsible: options.sidebarCollapsible,
-          collapsed: options.sidebarCollapsed,
-          items: [],
-        };
-        current.push(tmp);
+
+      // If exists, skip creating a new one.
+      if (existingCategory) {
+        visiting = existingCategory.items;
+        continue;
       }
-      current = tmp.items;
+
+      // Otherwise, create a new one.
+      const newCategory = {
+        type: "category" as const,
+        label,
+        collapsible: options.sidebarCollapsible,
+        collapsed: options.sidebarCollapsed,
+        items: [],
+      };
+      visiting.push(newCategory);
+      visiting = newCategory.items;
     }
   }
 
   // The first group should always be a category, but check for type narrowing
-  if (res.length === 1 && res[0].type === "category") {
-    return res[0].items;
+  if (sidebar.length === 1 && sidebar[0].type === "category") {
+    return sidebar[0].items;
   }
 
-  return res;
+  return sidebar;
 }
 
 /**
