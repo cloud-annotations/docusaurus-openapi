@@ -17,9 +17,14 @@ import chalk from "chalk";
 import clsx from "clsx";
 import fs from "fs-extra";
 import Yaml from "js-yaml";
-import { groupBy } from "lodash";
+import { groupBy, uniq } from "lodash";
+import type { DeepPartial } from "utility-types";
 
-import type { PropSidebar, PropSidebarItemCategory } from "../types";
+import type {
+  InfoPageMetadata,
+  PropSidebar,
+  PropSidebarItemCategory,
+} from "../types";
 import { ApiPageMetadata } from "../types";
 
 interface Options {
@@ -28,26 +33,11 @@ interface Options {
   sidebarCollapsed: boolean;
 }
 
-export type BaseItem = {
-  title: string;
-  permalink: string;
-  id: string;
-  source: string;
-  sourceDirName: string;
-};
+type keys = "type" | "title" | "permalink" | "id" | "source" | "sourceDirName";
 
-export type InfoItem = BaseItem & {
-  type: "info";
-};
-
-export type ApiItem = BaseItem & {
-  type: "api";
-  api: {
-    info?: {
-      title?: string;
-    };
-    tags?: string[] | undefined;
-  };
+type InfoItem = Pick<InfoPageMetadata, keys>;
+type ApiItem = Pick<ApiPageMetadata, keys> & {
+  api: DeepPartial<ApiPageMetadata["api"]>;
 };
 
 type Item = InfoItem | ApiItem;
@@ -149,10 +139,7 @@ export async function generateSidebar(
 /**
  * Takes a flat list of pages and groups them into categories based on there tags.
  */
-function groupByTags(
-  items: Item[],
-  { sidebarCollapsible, sidebarCollapsed }: Options
-): PropSidebar {
+function groupByTags(items: Item[], options: Options): PropSidebar {
   const intros = items.filter(isInfoItem).map((item) => {
     return {
       type: "link" as const,
@@ -162,81 +149,53 @@ function groupByTags(
     };
   });
 
-  const tags = [
-    ...new Set(
-      items
-        .flatMap((item) => {
-          if (isInfoItem(item)) {
-            return undefined;
-          }
-          return item.api.tags;
-        })
-        .filter(Boolean) as string[]
-    ),
-  ];
+  const apiItems = items.filter(isApiItem);
+
+  const tags = uniq(
+    apiItems
+      .flatMap((item) => item.api.tags)
+      .filter((item): item is string => !!item)
+  );
+
+  function createLink(item: ApiItem) {
+    return {
+      type: "link" as const,
+      label: item.title,
+      href: item.permalink,
+      docId: item.id,
+      className: clsx(
+        {
+          "menu__list-item--deprecated": item.api.deprecated,
+          "api-method": !!item.api.method,
+        },
+        item.api.method
+      ),
+    };
+  }
 
   const tagged = tags
     .map((tag) => {
       return {
         type: "category" as const,
         label: tag,
-        collapsible: sidebarCollapsible,
-        collapsed: sidebarCollapsed,
-        items: items
-          .filter((item): item is ApiPageMetadata => {
-            if (isInfoItem(item)) {
-              return false;
-            }
-            return !!item.api.tags?.includes(tag);
-          })
-          .map((item) => {
-            return {
-              type: "link" as const,
-              label: item.title,
-              href: item.permalink,
-              docId: item.id,
-              className: clsx({
-                "menu__list-item--deprecated": item.api.deprecated,
-                "api-method": !!item.api.method,
-                [item.api.method]: !!item.api.method,
-              }),
-            };
-          }),
+        collapsible: options.sidebarCollapsible,
+        collapsed: options.sidebarCollapsed,
+        items: apiItems
+          .filter((item) => !!item.api.tags?.includes(tag))
+          .map(createLink),
       };
     })
-    .filter((item) => item.items.length > 0);
+    .filter((item) => item.items.length > 0); // Filter out any categories with no items.
 
   const untagged = [
     {
       type: "category" as const,
       label: "API",
-      collapsible: sidebarCollapsible,
-      collapsed: sidebarCollapsed,
-      items: items
-        .filter((item): item is ApiPageMetadata => {
-          // Filter out info pages and pages with tags
-          if (isInfoItem(item)) {
-            return false;
-          }
-          if (item.api.tags === undefined || item.api.tags.length === 0) {
-            // no tags
-            return true;
-          }
-          return false;
-        })
-        .map((item) => {
-          return {
-            type: "link" as const,
-            label: item.title,
-            href: item.permalink,
-            docId: item.id,
-            className: clsx({
-              "menu__list-item--deprecated": item.api.deprecated,
-              "api-method": !!item.api.method,
-              [item.api.method]: !!item.api.method,
-            }),
-          };
-        }),
+      collapsible: options.sidebarCollapsible,
+      collapsed: options.sidebarCollapsed,
+      items: apiItems
+        .filter(({ api }) => api.tags === undefined || api.tags.length === 0)
+        .map(createLink),
     },
   ];
 
