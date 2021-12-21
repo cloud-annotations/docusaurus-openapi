@@ -32,14 +32,14 @@ const safeMkdir = createDryRun(fs.mkdirSync);
 
 function getGitUserName() {
   if (process.env.CI) {
-    return "github-actions[bot]";
+    return `"github-actions[bot]"`;
   }
   return getOutput("git config user.name");
 }
 
 function getGitUserEmail() {
   if (process.env.CI) {
-    return "github-actions[bot]@users.noreply.github.com";
+    return `"github-actions[bot]@users.noreply.github.com"`;
   }
   return getOutput("git config user.email");
 }
@@ -62,6 +62,11 @@ function checkoutCode() {
   });
 
   REPO_ROOT = path.join(BUILD_PATH, REPO);
+
+  safeExec(`yarn install`, {
+    cwd: REPO_ROOT,
+    stdio: "ignore",
+  });
 }
 
 function configureGit() {
@@ -77,11 +82,6 @@ function configureGit() {
 
 function buildAndPublish() {
   printBanner("Building Packages");
-
-  safeExec(`yarn install`, {
-    cwd: REPO_ROOT,
-    stdio: "ignore",
-  });
 
   safeExec(`yarn lerna run build --no-private`, {
     cwd: REPO_ROOT,
