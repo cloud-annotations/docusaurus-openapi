@@ -7,18 +7,23 @@
 
 import path from "path";
 
+import {
+  CategoryMetadataFile,
+  CategoryMetadataFilenameBase,
+} from "@docusaurus/plugin-content-docs/lib/sidebars/generator";
 import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/validation";
 import { posixPath } from "@docusaurus/utils";
 import chalk from "chalk";
 import clsx from "clsx";
 import fs from "fs-extra";
 import Yaml from "js-yaml";
-import _ from "lodash";
+import { groupBy } from "lodash";
 
-import type { PropSidebar } from "../types";
+import type { PropSidebar, PropSidebarItemCategory } from "../types";
 import { ApiPageMetadata } from "../types";
 
 interface Options {
+  contentPath: string;
   sidebarCollapsible: boolean;
   sidebarCollapsed: boolean;
 }
@@ -55,81 +60,86 @@ function isInfoItem(item: Item): item is InfoItem {
   return item.type === "info";
 }
 
+const Terminator = "."; // a file or folder can never be "."
+const BreadcrumbSeparator = "/";
+function getBreadcrumbs(dir: string) {
+  if (dir === Terminator) {
+    // this isn't actually needed, but removing would result in an array: [".", "."]
+    return [Terminator];
+  }
+  return [...dir.split(BreadcrumbSeparator).filter(Boolean), Terminator];
+}
+
 export async function generateSidebars(
   items: Item[],
   options: Options
 ): Promise<PropSidebar> {
-  const sections = _(items)
-    .groupBy((item) => item.source)
-    .mapValues((items, source) => {
-      const prototype = items.filter(isApiItem).find((item) => {
-        return item.api?.info != null;
-      });
-      const info = prototype?.api?.info;
-      const fileName = path.basename(source, path.extname(source));
-      return {
-        source: prototype?.source,
-        sourceDirName: prototype?.sourceDirName ?? ".",
+  const sourceGroups = groupBy(items, (item) => item.source);
 
-        collapsible: options.sidebarCollapsible,
-        collapsed: options.sidebarCollapsed,
-        type: "category" as const,
-        label: info?.title || fileName,
-        items: groupByTags(items, options),
-      };
-    })
-    .values()
-    .value();
+  let res: PropSidebar = [];
+  let current = res;
+  for (const items of Object.values(sourceGroups)) {
+    if (items.length === 0) {
+      // Since the groups are created based on the items, there should never be a length of zero.
+      console.warn(chalk.yellow(`Unnexpected empty group!`));
+      continue;
+    }
 
-  if (sections.length === 1) {
-    return sections[0].items;
-  }
+    const { sourceDirName, source } = items[0];
 
-  // group into folders and build recursive category tree
-  const rootSections = sections.filter((x) => x.sourceDirName === ".");
-  const childSections = sections.filter((x) => x.sourceDirName !== ".");
+    const breadcrumbs = getBreadcrumbs(sourceDirName);
 
-  const subCategories = [] as any;
-
-  for (const childSection of childSections) {
-    const basePathRegex = new RegExp(`${childSection.sourceDirName}.*$`);
-    const basePath =
-      childSection.source?.replace(basePathRegex, "").replace("@site", ".") ??
-      ".";
-
-    const dirs = childSection.sourceDirName.split("/");
-
-    let root = subCategories;
-    const parents: string[] = [];
-    while (dirs.length) {
-      const currentDir = dirs.shift() as string;
-      // todo: optimize?
-      const folderPath = path.join(basePath, ...parents, currentDir);
-      const meta = await readCategoryMetadataFile(folderPath);
-      const label = meta?.label ?? currentDir;
-      const existing = root.find((x: any) => x.label === label);
-
-      if (!existing) {
-        const child = {
-          collapsible: options.sidebarCollapsible,
-          collapsed: options.sidebarCollapsed,
+    let crumbs = [];
+    for (const crumb of breadcrumbs) {
+      crumbs.push(crumb);
+      if (crumb === Terminator) {
+        const title = items.filter(isApiItem)[0]?.api.info?.title;
+        const fileName = path.basename(source, path.extname(source));
+        // Title could be an empty string so `??` won't work here.
+        const label = !title ? fileName : title;
+        current.push({
           type: "category" as const,
           label,
+          collapsible: options.sidebarCollapsible,
+          collapsed: options.sidebarCollapsed,
+          items: groupByTags(items, options),
+        });
+        current = res;
+        break;
+      }
+
+      const categoryPath = path.join(options.contentPath, ...crumbs);
+      const meta = await readCategoryMetadataFile(categoryPath);
+      const label = meta?.label ?? crumb;
+
+      let tmp = current
+        .filter((c): c is PropSidebarItemCategory => c.type === "category")
+        .find((c) => c.label === label);
+      if (!tmp) {
+        tmp = {
+          type: "category" as const,
+          label,
+          collapsible: options.sidebarCollapsible,
+          collapsed: options.sidebarCollapsed,
           items: [],
         };
-        root.push(child);
-        root = child.items;
-      } else {
-        root = existing.items;
+        current.push(tmp);
       }
-      parents.push(currentDir);
+      current = tmp.items;
     }
-    root.push(childSection);
   }
 
-  return [...rootSections, ...subCategories];
+  // The first group should always be a category, but check for type narrowing
+  if (res.length === 1 && res[0].type === "category") {
+    return res[0].items;
+  }
+
+  return res;
 }
 
+/**
+ * Takes a flat list of pages and groups them into categories based on there tags.
+ */
 function groupByTags(
   items: Item[],
   { sidebarCollapsible, sidebarCollapsed }: Options
@@ -224,12 +234,13 @@ function groupByTags(
   return [...intros, ...tagged, ...untagged];
 }
 
-export const CategoryMetadataFilenameBase = "_category_";
-
+/**
+ * Taken from: https://github.com/facebook/docusaurus/blob/main/packages/docusaurus-plugin-content-docs/src/sidebars/generator.ts
+ */
 async function readCategoryMetadataFile(
   categoryDirPath: string
-): Promise<any | null> {
-  async function tryReadFile(filePath: string): Promise<any> {
+): Promise<CategoryMetadataFile | null> {
+  async function tryReadFile(filePath: string): Promise<CategoryMetadataFile> {
     const contentString = await fs.readFile(filePath, { encoding: "utf8" });
     const unsafeContent = Yaml.load(contentString);
     try {
@@ -237,7 +248,7 @@ async function readCategoryMetadataFile(
     } catch (e) {
       console.error(
         chalk.red(
-          `The docs sidebar category metadata file looks invalid!\nPath: ${filePath}`
+          `The docs sidebar category metadata file path=${filePath} looks invalid!`
         )
       );
       throw e;

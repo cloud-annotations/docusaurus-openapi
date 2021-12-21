@@ -23,6 +23,7 @@ function isLink(item: PropSidebarItem): item is SidebarItemLink {
 
 describe("sidebars", () => {
   const getOpts = () => ({
+    contentPath: "",
     sidebarCollapsible: true,
     sidebarCollapsed: true,
   });
