@@ -15,4 +15,4 @@ jobs:
         with:
           node-version: "*"
       - name: Publish
-        run: yarn elease:publish --dry-run
+        run: yarn release:publish --dry-run
