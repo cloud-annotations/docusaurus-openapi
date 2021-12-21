@@ -10,6 +10,8 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
+import { yellow } from "chalk";
+
 import { version } from "../lerna.json";
 import { createDryRun } from "./utils/dry-run";
 import { getOutput } from "./utils/get-output";
@@ -105,7 +107,15 @@ function tag() {
   });
 }
 
+function versions() {
+  return getOutput(`git tag --list 'v*'`).split("\n");
+}
+
 function main() {
+  if (versions().includes(`v${version}`)) {
+    console.log(yellow(`SKIPPING: Version ${version} already exists.`));
+    return;
+  }
   if (!process.env.CI) {
     checkoutCode();
   }
