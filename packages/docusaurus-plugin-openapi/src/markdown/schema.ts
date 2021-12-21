@@ -40,25 +40,21 @@ export function getSchemaName(
   return prettyName(schema, circular) ?? "";
 }
 
-export function getQualifierMessage(schema: SchemaObject) {
+export function getQualifierMessage(schema?: SchemaObject): string | undefined {
   // TODO:
-  // - maxLength
-  // - minLength
-  // - maximum
-  // - minumum
-  // - exclusiveMaximum
-  // - exclusiveMinimum
   // - maxItems
   // - minItems
   // - uniqueItems
   // - maxProperties
   // - minProperties
   // - multipleOf
-  // - pattern
-  // - enum
-  //
-  // Message:
-  // Possible values: 1 ≤ length ≤ 40, Value must match regular expression ^[a-zA-Z0-9_-]*$
+  if (!schema) {
+    return undefined;
+  }
+
+  if (schema.items) {
+    return getQualifierMessage(schema.items);
+  }
 
   let message = "**Possible values:** ";
 
@@ -74,6 +70,41 @@ export function getQualifierMessage(schema: SchemaObject) {
       lengthQualifier += ` ≤ ${schema.maxLength}`;
     }
     qualifierGroups.push(lengthQualifier);
+  }
+
+  if (
+    schema.minimum ||
+    schema.maximum ||
+    typeof schema.exclusiveMinimum === "number" ||
+    typeof schema.exclusiveMaximum === "number"
+  ) {
+    let minmaxQualifier = "";
+    if (typeof schema.exclusiveMinimum === "number") {
+      minmaxQualifier += `${schema.exclusiveMinimum} < `;
+    } else if (schema.minimum && !schema.exclusiveMinimum) {
+      minmaxQualifier += `${schema.minimum} ≤ `;
+    } else if (schema.minimum && schema.exclusiveMinimum === true) {
+      minmaxQualifier += `${schema.minimum} < `;
+    }
+    minmaxQualifier += "value";
+    if (typeof schema.exclusiveMaximum === "number") {
+      minmaxQualifier += ` < ${schema.exclusiveMaximum}`;
+    } else if (schema.maximum && !schema.exclusiveMaximum) {
+      minmaxQualifier += ` ≤ ${schema.maximum}`;
+    } else if (schema.maximum && schema.exclusiveMaximum === true) {
+      minmaxQualifier += ` < ${schema.maximum}`;
+    }
+    qualifierGroups.push(minmaxQualifier);
+  }
+
+  if (schema.pattern) {
+    qualifierGroups.push(
+      `Value must match regular expression \`${schema.pattern}\``
+    );
+  }
+
+  if (schema.enum) {
+    qualifierGroups.push(`[${schema.enum.map((e) => `\`${e}\``).join(", ")}]`);
   }
 
   if (qualifierGroups.length === 0) {
