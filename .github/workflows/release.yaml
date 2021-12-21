@@ -14,5 +14,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "*"
+      - name: Install
+        run: yarn install --frozen-lockfile
       - name: Publish
         run: yarn release:publish --dry-run
