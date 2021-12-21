@@ -10,15 +10,14 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
-import pkg from "../lerna.json";
+import { version } from "../lerna.json";
 import { createDryRun } from "./utils/dry-run";
 import { getOutput } from "./utils/get-output";
 import { printBanner } from "./utils/print-utils";
 
 const ORG = "cloud-annotations";
 const REPO = "docusaurus-plugin-openapi";
-const BUILD_PATH = "build";
-const REPO_ROOT = path.join(BUILD_PATH, REPO); // TODO: Somehow get this from action
+let REPO_ROOT = undefined;
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -32,11 +31,17 @@ const safeRmdir = createDryRun(fs.rmSync);
 const safeMkdir = createDryRun(fs.mkdirSync);
 
 function getGitUserName() {
-  return getOutput("git config user.name"); // TODO: Somehow get this from action
+  if (process.env.CI) {
+    return "github-actions[bot]";
+  }
+  return getOutput("git config user.name");
 }
 
 function getGitUserEmail() {
-  return getOutput("git config user.email"); // TODO: Somehow get this from action
+  if (process.env.CI) {
+    return "github-actions[bot]@users.noreply.github.com";
+  }
+  return getOutput("git config user.email");
 }
 
 function ensureCleanDir(path: string) {
@@ -49,14 +54,19 @@ function ensureCleanDir(path: string) {
 function checkoutCode() {
   printBanner("Retrieving source code");
 
+  const BUILD_PATH = "build";
   ensureCleanDir(BUILD_PATH);
-
-  const gitUserName = getGitUserName();
-  const gitUserEmail = getGitUserEmail();
 
   safeExec(`git clone git@github.com:${ORG}/${REPO}.git ${REPO}`, {
     cwd: BUILD_PATH,
   });
+
+  REPO_ROOT = path.join(BUILD_PATH, REPO);
+}
+
+function configureGit() {
+  const gitUserName = getGitUserName();
+  const gitUserEmail = getGitUserEmail();
   safeExec(`git config user.name ${gitUserName}`, {
     cwd: REPO_ROOT,
   });
@@ -79,17 +89,14 @@ function buildAndPublish() {
 
   printBanner("Publishing Packages");
 
-  safeExec(
-    `lerna publish --yes from-package --no-git-tag-version --no-verify-access --no-push`,
-    {
-      cwd: REPO_ROOT,
-    }
-  );
+  safeExec(`lerna publish --yes from-package`, {
+    cwd: REPO_ROOT,
+  });
 }
 
 function tag() {
-  const tag = `v${pkg.version}`;
-  const message = `Version ${pkg.version}`;
+  const tag = `v${version}`;
+  const message = `Version ${version}`;
   safeExec(`git tag -a ${tag} -m "${message}"`, {
     cwd: REPO_ROOT,
   });
@@ -99,9 +106,12 @@ function tag() {
 }
 
 function main() {
-  checkoutCode();
+  if (!process.env.CI) {
+    checkoutCode();
+  }
+  configureGit();
   buildAndPublish();
-  tag(); // TODO: Let lerna tag
+  tag();
 }
 
 main();
