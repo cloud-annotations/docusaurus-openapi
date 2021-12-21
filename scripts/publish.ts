@@ -18,7 +18,7 @@ import { printBanner } from "./utils/print-utils";
 const ORG = "cloud-annotations";
 const REPO = "docusaurus-plugin-openapi";
 const BUILD_PATH = "build";
-const REPO_ROOT = path.join(BUILD_PATH, REPO);
+const REPO_ROOT = path.join(BUILD_PATH, REPO); // TODO: Somehow get this from action
 
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
@@ -32,11 +32,11 @@ const safeRmdir = createDryRun(fs.rmdirSync);
 const safeMkdir = createDryRun(fs.mkdirSync);
 
 function getGitUserName() {
-  return getOutput("git config user.name");
+  return getOutput("git config user.name"); // TODO: Somehow get this from action
 }
 
 function getGitUserEmail() {
-  return getOutput("git config user.email");
+  return getOutput("git config user.email"); // TODO: Somehow get this from action
 }
 
 function ensureCleanDir(path: string) {
@@ -99,7 +99,7 @@ function tag() {
 function main() {
   checkoutCode();
   buildAndPublish();
-  tag();
+  tag(); // TODO: Let lerna tag
 }
 
 main();
