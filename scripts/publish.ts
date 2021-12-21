@@ -28,7 +28,7 @@ process.on("unhandledRejection", (err) => {
 });
 
 const safeExec = createDryRun(execSync);
-const safeRmdir = createDryRun(fs.rmdirSync);
+const safeRmdir = createDryRun(fs.rmSync);
 const safeMkdir = createDryRun(fs.mkdirSync);
 
 function getGitUserName() {
@@ -40,8 +40,10 @@ function getGitUserEmail() {
 }
 
 function ensureCleanDir(path: string) {
-  safeRmdir(path, { recursive: true });
-  safeMkdir(path);
+  if (fs.existsSync(path)) {
+    safeRmdir(path, { recursive: true });
+  }
+  safeMkdir(path, { recursive: true });
 }
 
 function checkoutCode() {
