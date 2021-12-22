@@ -14,14 +14,10 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Test
-        run: |
-          if [[ "$PR_TITLE" =~ ^"Prepare release v" ]]; then
-          echo "PR title starts with 'octocat'"
-          exit 0
-          else
-          echo "PR title did not start with 'octocat'"
-          exit 1
-          fi
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Check
+        run: yarn check-pr-title "$PR_TITLE"
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
