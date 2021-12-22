@@ -4,8 +4,17 @@ on:
   pull_request_target:
     types:
       - opened
-      - edited
       - synchronize
+      - reopened
+      - edited
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
 
 jobs:
   check:
