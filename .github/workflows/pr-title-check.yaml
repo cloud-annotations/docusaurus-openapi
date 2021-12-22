@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Test
         run: |
-          if [[ "$PR_TITLE" =~ ^Prepare release v ]]; then
+          if [[ "$PR_TITLE" =~ ^"Prepare release v" ]]; then
           echo "PR title starts with 'octocat'"
           exit 0
           else
