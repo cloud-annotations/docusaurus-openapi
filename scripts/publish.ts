@@ -106,7 +106,6 @@ function versions() {
 }
 
 function main() {
-  console.log(versions());
   if (versions().includes(`v${version}`)) {
     console.log(yellow(`SKIPPING: Version ${version} already exists.`));
     return;
