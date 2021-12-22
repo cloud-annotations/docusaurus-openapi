@@ -1,4 +1,5 @@
-name: "Release PR Title Check"
+name: Release PR Title Check
+
 on:
   pull_request_target:
     types:
@@ -10,6 +11,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      run: echo "$PR_TITLE"
-      env:
-        PR_TITLE: ${{ github.event.pull_request.title }}
+      - name: Test
+        run: echo "$PR_TITLE"
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
