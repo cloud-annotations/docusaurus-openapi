@@ -20,7 +20,6 @@
     "@types/postman-collection": "^3.5.3"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.13",
     "@docusaurus/mdx-loader": "^2.0.0-beta.13",
     "@docusaurus/plugin-content-docs": "^2.0.0-beta.13",
     "@docusaurus/types": "^2.0.0-beta.13",

@@ -28,7 +28,6 @@
     "cpx": "^1.5.0"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.13",
     "@docusaurus/theme-classic": "^2.0.0-beta.13",
     "@docusaurus/theme-common": "^2.0.0-beta.13",
     "@docusaurus/utils": "^2.0.0-beta.13",
