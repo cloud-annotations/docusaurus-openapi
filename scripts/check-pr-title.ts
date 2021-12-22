@@ -26,7 +26,7 @@ function main() {
 
   if (!versions().includes(`v${version}`)) {
     if (actualTitle !== expectedTitle) {
-      console.log(`\x1b[31mPR title should be: ${expectedTitle}\x1b[0m`);
+      console.log(`\x1b[31mPR title should be: "${expectedTitle}"\x1b[0m`);
       process.exit(1);
     }
   }
