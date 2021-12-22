@@ -33,16 +33,10 @@ const safeRmdir = createDryRun(fs.rmSync);
 const safeMkdir = createDryRun(fs.mkdirSync);
 
 function getGitUserName() {
-  if (process.env.CI) {
-    return `"github-actions[bot]"`;
-  }
   return getOutput("git config user.name");
 }
 
 function getGitUserEmail() {
-  if (process.env.CI) {
-    return `"github-actions[bot]@users.noreply.github.com"`;
-  }
   return getOutput("git config user.email");
 }
 
