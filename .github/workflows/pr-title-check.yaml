@@ -18,6 +18,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check
-        run: node scripts/check-pr-title.ts "$PR_TITLE"
+        run: node scripts/check-pr-title.js "$PR_TITLE"
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
