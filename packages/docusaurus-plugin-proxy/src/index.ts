@@ -17,7 +17,7 @@ export default function pluginOpenAPI(
     name: "docusaurus-plugin-proxy",
 
     configureWebpack() {
-      const { proxy } = options;
+      const proxy = options;
 
       return {
         devServer: {
