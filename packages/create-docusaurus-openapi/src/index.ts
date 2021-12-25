@@ -6,6 +6,7 @@
  * ========================================================================== */
 
 import { execSync } from "child_process";
+import os from "os";
 import path from "path";
 
 import logger from "@docusaurus/logger";
@@ -39,7 +40,7 @@ async function updatePkg(pkgPath: string, obj: Record<string, unknown>) {
 }
 
 function getTemplateInstallPackage(template: string) {
-  let templateToInstall = "cra-template";
+  let templateToInstall = "docusaurus-template";
   if (template) {
     // Add prefix 'cra-template-' to non-prefixed templates, leaving any
     // @scope/ and @version intact.
@@ -130,9 +131,57 @@ export default async function init(
       throw err;
     }
   } else {
-    logger.info(getTemplateInstallPackage(template));
-    logger.error("Invalid template.");
-    process.exit(1);
+    const appName = path.basename(dest);
+    fs.ensureDirSync(name);
+    const packageJson = {
+      name: appName,
+      version: "0.1.0",
+      private: true,
+    };
+    fs.writeFileSync(
+      path.join(dest, "package.json"),
+      JSON.stringify(packageJson, null, 2) + os.EOL
+    );
+
+    const templatePackageName = getTemplateInstallPackage(template);
+
+    shell.exec(
+      `cd "${name}" && ${
+        useYarn ? "yarn add" : "npm install --color always"
+      } ${templatePackageName}`,
+      {
+        env: {
+          ...process.env,
+          // Force coloring the output, since the command is invoked by shelljs, which is not the interactive shell
+          ...(supportsColor.stdout ? { FORCE_COLOR: "1" } : {}),
+        },
+      }
+    );
+
+    const templatePath = path.dirname(
+      require.resolve(`${templatePackageName}/package.json`, { paths: [name] })
+    );
+
+    const templateDir = path.join(templatePath, "template");
+    if (fs.existsSync(templateDir)) {
+      fs.copySync(templateDir, name);
+    } else {
+      logger.error("Could not locate supplied template.");
+      process.exit(1);
+    }
+
+    shell.exec(
+      `cd "${name}" && ${
+        useYarn ? "yarn remove" : "npm uninstall --color always"
+      } ${templatePackageName}`,
+      {
+        env: {
+          ...process.env,
+          // Force coloring the output, since the command is invoked by shelljs, which is not the interactive shell
+          ...(supportsColor.stdout ? { FORCE_COLOR: "1" } : {}),
+        },
+      }
+    );
   }
 
   // Update package.json info.
