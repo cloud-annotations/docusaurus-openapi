@@ -18,8 +18,8 @@ const config = {
 
   presets: [
     [
-      "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
+      "docusaurus-preset-openapi",
+      /** @type {import('docusaurus-preset-openapi').Options} */
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
@@ -41,7 +41,7 @@ const config = {
   ],
 
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    /** @type {import('docusaurus-preset-openapi').ThemeConfig} */
     ({
       navbar: {
         title: "My Site",
@@ -56,6 +56,7 @@ const config = {
             position: "left",
             label: "Tutorial",
           },
+          { to: "/api", label: "API", position: "left" },
           { to: "/blog", label: "Blog", position: "left" },
           {
             href: "https://github.com/facebook/docusaurus",

@@ -39,38 +39,142 @@ async function updatePkg(pkgPath: string, obj: Record<string, unknown>) {
   await fs.outputFile(pkgPath, `${JSON.stringify(newPkg, null, 2)}\n`);
 }
 
-function getTemplateInstallPackage(template: string) {
+function getTemplateInstallPackage(
+  template: string,
+  originalDirectory: string
+) {
   let templateToInstall = "docusaurus-template";
   if (template) {
-    // Add prefix 'cra-template-' to non-prefixed templates, leaving any
-    // @scope/ and @version intact.
-    const packageMatch = template.match(/^(@[^/]+\/)?([^@]+)?(@.+)?$/);
-    const scope = packageMatch?.[1] || "";
-    const templateName = packageMatch?.[2] || "";
-    const version = packageMatch?.[3] || "";
-
-    if (
-      templateName === templateToInstall ||
-      templateName.startsWith(`${templateToInstall}-`)
+    const match = template.match(/^file:(.*)?$/);
+    if (match) {
+      templateToInstall = `file:${path.resolve(originalDirectory, match[1])}`;
+    } else if (
+      template.includes("://") ||
+      template.match(/^.+\.(tgz|tar\.gz)$/)
     ) {
-      // Covers:
-      // - cra-template
-      // - @SCOPE/cra-template
-      // - cra-template-NAME
-      // - @SCOPE/cra-template-NAME
-      templateToInstall = `${scope}${templateName}${version}`;
-    } else if (version && !scope && !templateName) {
-      // Covers using @SCOPE only
-      templateToInstall = `${version}/${templateToInstall}`;
+      // for tar.gz or alternative paths
+      templateToInstall = template;
     } else {
-      // Covers templates without the `cra-template` prefix:
-      // - NAME
-      // - @SCOPE/NAME
-      templateToInstall = `${scope}${templateToInstall}-${templateName}${version}`;
+      // Add prefix 'cra-template-' to non-prefixed templates, leaving any
+      // @scope/ and @version intact.
+      const packageMatch = template.match(/^(@[^/]+\/)?([^@]+)?(@.+)?$/);
+      const scope = packageMatch?.[1] || "";
+      const templateName = packageMatch?.[2] || "";
+      const version = packageMatch?.[3] || "";
+
+      if (
+        templateName === templateToInstall ||
+        templateName.startsWith(`${templateToInstall}-`)
+      ) {
+        // Covers:
+        // - cra-template
+        // - @SCOPE/cra-template
+        // - cra-template-NAME
+        // - @SCOPE/cra-template-NAME
+        templateToInstall = `${scope}${templateName}${version}`;
+      } else if (version && !scope && !templateName) {
+        // Covers using @SCOPE only
+        templateToInstall = `${version}/${templateToInstall}`;
+      } else {
+        // Covers templates without the `cra-template` prefix:
+        // - NAME
+        // - @SCOPE/NAME
+        templateToInstall = `${scope}${templateToInstall}-${templateName}${version}`;
+      }
     }
   }
 
   return templateToInstall;
+}
+
+// Extract package name from tarball url or path.
+function getPackageInfo(installPackage: string) {
+  const match = installPackage.match(/^file:(.*)?$/);
+  if (match) {
+    const installPackagePath = match[1];
+    const { name, version } = require(path.join(
+      installPackagePath,
+      "package.json"
+    ));
+    return { name, version };
+  }
+  return { name: installPackage };
+}
+
+function createPackageJson(appPath: string, templateName: string) {
+  const appPackage = require(path.join(appPath, "package.json"));
+
+  const templatePath = path.dirname(
+    require.resolve(`${templateName}/package.json`, { paths: [appPath] })
+  );
+
+  const templateJsonPath = path.join(templatePath, "template.json");
+
+  let templateJson: any = {};
+  if (fs.existsSync(templateJsonPath)) {
+    templateJson = require(templateJsonPath);
+  }
+
+  const templatePackage = templateJson.package || {};
+
+  // Keys to ignore in templatePackage
+  const templatePackageIgnorelist = [
+    "name",
+    "version",
+    "description",
+    "keywords",
+    "bugs",
+    "license",
+    "author",
+    "contributors",
+    "files",
+    "browser",
+    "bin",
+    "man",
+    "directories",
+    "repository",
+    "peerDependencies",
+    "bundledDependencies",
+    "optionalDependencies",
+    "engineStrict",
+    "os",
+    "cpu",
+    "preferGlobal",
+    "private",
+    "publishConfig",
+  ];
+
+  // Keys from templatePackage that will be merged with appPackage
+  const templatePackageToMerge = ["dependencies"]; // "dependencies", "scripts"
+
+  // Keys from templatePackage that will be added to appPackage,
+  // replacing any existing entries.
+  const templatePackageToReplace = Object.keys(templatePackage).filter(
+    (key) => {
+      return (
+        !templatePackageIgnorelist.includes(key) &&
+        !templatePackageToMerge.includes(key)
+      );
+    }
+  );
+
+  // Copy over some of the devDependencies
+  appPackage.dependencies = appPackage.dependencies || {};
+  const templateDependencies = templatePackage.dependencies || {};
+  appPackage.dependencies = {
+    ...appPackage.dependencies,
+    ...templateDependencies,
+  };
+
+  // Add templatePackage keys/values to appPackage, replacing existing entries
+  templatePackageToReplace.forEach((key) => {
+    appPackage[key] = templatePackage[key];
+  });
+
+  fs.writeFileSync(
+    path.join(appPath, "package.json"),
+    JSON.stringify(appPackage, null, 2) + os.EOL
+  );
 }
 
 export default async function init(
@@ -143,7 +247,13 @@ export default async function init(
       JSON.stringify(packageJson, null, 2) + os.EOL
     );
 
-    const templatePackageName = getTemplateInstallPackage(template);
+    const originalDirectory = process.cwd();
+    const templatePackageName = getTemplateInstallPackage(
+      template,
+      originalDirectory
+    );
+    const templateInfo = getPackageInfo(templatePackageName);
+    const templateName = templateInfo.name;
 
     shell.exec(
       `cd "${name}" && ${
@@ -159,12 +269,14 @@ export default async function init(
     );
 
     const templatePath = path.dirname(
-      require.resolve(`${templatePackageName}/package.json`, { paths: [name] })
+      require.resolve(`${templateName}/package.json`, { paths: [dest] })
     );
+
+    createPackageJson(dest, templateName);
 
     const templateDir = path.join(templatePath, "template");
     if (fs.existsSync(templateDir)) {
-      fs.copySync(templateDir, name);
+      fs.copySync(templateDir, dest);
     } else {
       logger.error("Could not locate supplied template.");
       process.exit(1);
@@ -173,7 +285,7 @@ export default async function init(
     shell.exec(
       `cd "${name}" && ${
         useYarn ? "yarn remove" : "npm uninstall --color always"
-      } ${templatePackageName}`,
+      } ${templateName}`,
       {
         env: {
           ...process.env,
