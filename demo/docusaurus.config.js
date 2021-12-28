@@ -90,7 +90,7 @@ const config = {
             ],
           },
           {
-            href: "https://github.com/facebook/docusaurus",
+            href: "https://github.com/cloud-annotations/docusaurus-openapi",
             position: "right",
             className: "header-github-link",
             "aria-label": "GitHub repository",
