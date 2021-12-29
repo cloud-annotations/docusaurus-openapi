@@ -15,7 +15,7 @@ import clsx from "clsx";
 
 import styles from "./styles.module.css";
 
-let ApiDemoPanel = (_: { item: any }) => <div />;
+let ApiDemoPanel = (_: { item: any }) => <div style={{ marginTop: "3.5em" }} />;
 if (ExecutionEnvironment.canUseDOM) {
   ApiDemoPanel = require("@theme/ApiDemoPanel").default;
 }
@@ -30,8 +30,13 @@ function ApiItem(props: Props): JSX.Element {
     <>
       <Seo {...{ title, description, keywords, image }} />
 
-      <div className="row">
-        <div className="col">
+      <div
+        className="row"
+        style={{
+          width: "calc(100% + var(--ifm-spacing-horizontal)) * 2",
+        }}
+      >
+        <div className="col" style={{ width: "100%" }}>
           <div className={styles.apiItemContainer}>
             <article>
               <div className={clsx("theme-api-markdown", "markdown")}>
@@ -42,7 +47,10 @@ function ApiItem(props: Props): JSX.Element {
             <DocPaginator previous={previous} next={next} />
           </div>
         </div>
-        <div className={clsx("col", api ? "col--5" : "col--3")}>
+        <div
+          className={clsx("col", api ? "col--5" : "col--3")}
+          style={{ width: "100%" }}
+        >
           {api && <ApiDemoPanel item={api} />}
         </div>
       </div>
