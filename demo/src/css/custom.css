@@ -4,60 +4,36 @@
  * work well for content-centric websites.
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: rgb(33, 175, 144);
-  --ifm-color-primary-darker: rgb(31, 165, 136);
-  --ifm-color-primary-darkest: rgb(26, 136, 112);
-  --ifm-color-primary-light: rgb(70, 203, 174);
-  --ifm-color-primary-lighter: rgb(102, 212, 189);
-  --ifm-color-primary-lightest: rgb(146, 224, 208);
   --ifm-code-font-size: 95%;
 }
-
-/* START NEW */
 
 html[data-theme="dark"] {
   --ifm-color-primary: #58a6ff;
   --ifm-background-color: #0d1117;
   --ifm-navbar-background-color: #0d1117;
-  /* --ifm-toc-border-color: #30363d; */
   --ifm-color-emphasis-300: #30363d;
-
   --ifm-card-background-color: #161b22;
   --ifm-code-background: rgba(110, 118, 129, 0.4);
-
-  /* border: 30363d */
-  /* rgba(110,118,129,0.4) */
   --ifm-table-stripe-background: var(--ifm-table-background);
-
   --openapi-input-background: rgba(110, 118, 129, 0.4) !important;
   --openapi-monaco-border-color: #21262d !important;
   --openapi-monaco-background-color: #0d1117 !important;
-
   --ifm-dropdown-background-color: #161b22;
 }
 
 .navbar__link:hover {
   color: rgb(245, 246, 247, 0.7);
-  text-decoration: none;
 }
 
 .navbar__link--active {
-  /* color: var(--ifm-navbar-link-hover-color); */
   color: unset;
-  text-decoration: none;
 }
 
 .navbar__brand:hover {
   color: rgb(245, 246, 247, 0.7);
-  text-decoration: none;
 }
 
-/* f0f6fc -> rgb(240, 246, 252)*/
-/* f5f6f7 -> rgb(245, 246, 247) */
-/* rgba(240,246,252,0.7) */
 .navbar {
   padding-right: 28px;
 }
@@ -129,14 +105,6 @@ html[data-theme="dark"] {
   --ifm-button-background-color: #21262d;
   --ifm-button-border-color: rgba(240, 246, 252, 0.1);
   --ifm-button-color: #c9d1d9;
-
-  /* hover */
-  /* 30363d */
-  /* 8b949e */
-
-  /* active */
-  /* 282e33 */
-  /* 6e7681 */
 }
 
 .button--outline:hover {
@@ -160,17 +128,13 @@ html[data-theme="dark"] {
 
 .footer--dark {
   border-top: 1px solid var(--ifm-color-emphasis-300);
-  /* --ifm-footer-background-color: #161b22; */
   --ifm-footer-background-color: var(--ifm-background-color);
 }
 
 .hero--primary {
-  /* --ifm-hero-background-color: var(--ifm-background-color); */
   --ifm-hero-background-color: #161b22;
   --ifm-hero-text-color: var(--ifm-heading-color);
 }
-
-/* END NEW */
 
 .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.1);
