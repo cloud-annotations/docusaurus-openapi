@@ -122,6 +122,30 @@ html[data-theme="dark"] {
   border-color: #6e7681;
 }
 
+.api-code-tab {
+  padding: var(--ifm-spacing-vertical) var(--ifm-spacing-horizontal) !important;
+  margin: 0 !important;
+  border-radius: var(--openapi-card-border-radius) !important;
+  font-size: calc(0.875rem * var(--ifm-button-size-multiplier)) !important;
+  border-bottom: 3px solid transparent !important;
+}
+
+.api-code-tab--active {
+  background-color: transparent !important;
+  border-bottom: 3px solid var(--ifm-color-primary) !important;
+  border-bottom-color: var(--ifm-tabs-color-active-border) !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.api-code-tab--active:hover {
+  background-color: var(--ifm-hover-overlay) !important;
+}
+
+.alert {
+  border-width: 1px;
+}
+
 .navbar {
   border-bottom: 1px solid var(--ifm-color-emphasis-300);
 }
