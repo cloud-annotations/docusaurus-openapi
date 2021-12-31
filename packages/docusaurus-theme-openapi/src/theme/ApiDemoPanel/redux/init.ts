@@ -12,28 +12,14 @@ function init(
   {
     parameters = [],
     requestBody = {},
-    // responses = {},
     "x-code-samples": codeSamples = [],
     postman,
     jsonRequestBodyExample,
-    // servers,
     security,
     securitySchemes,
   }: any,
   options: ThemeConfig["api"] = {}
 ) {
-  // const { content = {} } = requestBody;
-
-  // const contentTypeArray = Object.keys(content);
-
-  // const acceptArray = Array.from(
-  //   new Set(
-  //     Object.values(responses)
-  //       .map((response: any) => Object.keys(response.content ?? {}))
-  //       .flat()
-  //   )
-  // );
-
   let params: any = {
     path: [],
     query: [],
@@ -89,11 +75,7 @@ function init(
     requestBodyMetadata: requestBody, // TODO: no...
     params,
     codeSamples,
-    body: undefined,
-    response: undefined,
     postman,
-    // servers,
-    // endpoint: servers[0],
     auth,
     selectedAuthID,
     authOptionIDs,

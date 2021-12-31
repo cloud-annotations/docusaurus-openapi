@@ -9,8 +9,6 @@ import { useDispatch } from "react-redux";
 
 export const types = {
   updateParam: "UPDATE_PARAM",
-  setBody: "SET_BODY",
-  setForm: "SET_FORM",
   setAuth: "SET_AUTH",
   setSelectedAuthID: "SET_SELECTED_AUTH_ID",
 };
@@ -20,14 +18,6 @@ export function useActions() {
 
   function updateParam(param: any) {
     dispatch({ type: types.updateParam, param });
-  }
-
-  function setBody(body: any) {
-    dispatch({ type: types.setBody, body });
-  }
-
-  function setForm(body: any) {
-    dispatch({ type: types.setForm, body });
   }
 
   function setAuth(auth: any) {
@@ -40,8 +30,6 @@ export function useActions() {
 
   return {
     updateParam,
-    setBody,
-    setForm,
     setAuth,
     setSelectedAuthID,
   };

@@ -33,7 +33,7 @@ function Execute() {
   const cookieParams = useOldSelector((state: any) => state.params.cookie);
   const headerParams = useOldSelector((state: any) => state.params.header);
   const contentType = useTypedSelector((state) => state.contentType.value);
-  const body = useOldSelector((state: any) => state.body);
+  const body = useTypedSelector((state) => state.body);
   const accept = useTypedSelector((state) => state.accept.value);
   const server = useTypedSelector((state) => state.server.value);
   const auth = useOldSelector((state: any) => state.auth);

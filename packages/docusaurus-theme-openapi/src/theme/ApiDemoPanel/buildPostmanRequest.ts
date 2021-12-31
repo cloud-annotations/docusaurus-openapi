@@ -12,6 +12,8 @@ import {
 import cloneDeep from "lodash/cloneDeep";
 import sdk from "postman-collection";
 
+import { Body, Content } from "./Body/slice";
+
 type Param = {
   value?: string | string[];
 } & ParameterObject;
@@ -134,70 +136,69 @@ function setHeaders(
 }
 
 // TODO: this is all a bit hacky
-function setBody(clonedPostman: sdk.Request, body: unknown) {
+function setBody(clonedPostman: sdk.Request, body: Body) {
   if (clonedPostman.body === undefined) {
     return;
   }
 
-  if ((body as any)?.type === "file") {
+  if (body.type === "empty") {
+    clonedPostman.body = undefined;
+    return;
+  }
+
+  if (body.type === "raw" && body.content?.type === "file") {
     // treat it like file.
     clonedPostman.body.mode = "file";
-    clonedPostman.body.file = { src: (body as any).src };
+    clonedPostman.body.file = { src: body.content.value.src };
     return;
   }
 
   switch (clonedPostman.body.mode) {
     case "raw": {
-      // TODO: not really sure of the logic behind this...
-      if (body === "") {
+      // check file even though it should already be set from above
+      if (body.type !== "raw" || body.content?.type === "file") {
         clonedPostman.body = undefined;
         return;
       }
-      if (body !== undefined && typeof body !== "string") {
-        clonedPostman.body = undefined;
-        return;
-      }
-      clonedPostman.body.raw = body ?? "";
+      clonedPostman.body.raw = body.content?.value ?? "";
       return;
     }
     case "formdata": {
       clonedPostman.body.formdata?.clear();
-      if (body == null) {
-        return;
-      }
-      if (typeof body !== "object") {
+      if (body.type !== "form") {
         // treat it like raw.
         clonedPostman.body.mode = "raw";
-        clonedPostman.body.raw = `${body}`;
+        clonedPostman.body.raw = `${body.content?.value}`;
         return;
       }
-      const params = Object.entries(body as any)
-        .filter(([_, val]) => val)
-        .map(([key, val]) => {
-          if ((val as any).type === "file") {
-            return new sdk.FormParam({ key: key, ...(val as any) });
+      const params = Object.entries(body.content)
+        .filter((entry): entry is [string, NonNullable<Content>] => !!entry[1])
+        .map(([key, content]) => {
+          if (content.type === "file") {
+            return new sdk.FormParam({ key: key, ...content });
           }
-          return new sdk.FormParam({ key: key, value: val });
+          return new sdk.FormParam({ key: key, value: content.value });
         });
       clonedPostman.body.formdata?.assimilate(params, false);
       return;
     }
     case "urlencoded": {
       clonedPostman.body.urlencoded?.clear();
-      if (body == null) {
-        return;
-      }
-      if (typeof body !== "object") {
+      if (body.type !== "form") {
         // treat it like raw.
         clonedPostman.body.mode = "raw";
-        clonedPostman.body.raw = `${body}`;
+        clonedPostman.body.raw = `${body.content?.value}`;
         return;
       }
-      const params = Object.entries(body as any)
-        .filter(([_, val]) => val)
-        .map(
-          ([key, val]) => new sdk.QueryParam({ key: key, value: val as any })
-        );
+      const params = Object.entries(body.content)
+        .filter((entry): entry is [string, NonNullable<Content>] => !!entry[1])
+        .map(([key, content]) => {
+          if (content.type !== "file" && content.value) {
+            return new sdk.QueryParam({ key: key, value: content.value });
+          }
+          return undefined;
+        })
+        .filter((item): item is sdk.QueryParam => item !== undefined);
       clonedPostman.body.urlencoded?.assimilate(params, false);
       return;
     }
@@ -215,7 +216,7 @@ interface Options {
   headerParams: Param[];
   contentType: string;
   accept: string;
-  body: unknown;
+  body: Body;
   auth: Auth[][];
   selectedAuthID?: string;
   authOptionIDs: string[];

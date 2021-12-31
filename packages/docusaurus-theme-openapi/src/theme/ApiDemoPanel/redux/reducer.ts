@@ -20,17 +20,6 @@ const reducer = produce((draft, action) => {
       ] = action.param;
       break;
     }
-    case types.setBody: {
-      draft.body = action.body;
-      break;
-    }
-    case types.setForm: {
-      if (draft.body === undefined) {
-        draft.body = {};
-      }
-      draft.body[action.body.key] = action.body.value;
-      break;
-    }
     case types.setAuth: {
       //  TODO: This is a side effect and shouldn't be done here.
       persistAuth({

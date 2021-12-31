@@ -7,6 +7,8 @@
 
 import sdk from "postman-collection";
 
+import { Body } from "../Body/slice";
+
 async function loadImage(content: Blob): Promise<string | ArrayBuffer | null> {
   return new Promise((accept, reject) => {
     const reader = new FileReader();
@@ -30,7 +32,7 @@ async function loadImage(content: Blob): Promise<string | ArrayBuffer | null> {
   });
 }
 
-async function makeRequest(request: sdk.Request, proxy: string, _body: any) {
+async function makeRequest(request: sdk.Request, proxy: string, _body: Body) {
   const headers = request.toJSON().header;
 
   let myHeaders = new Headers();
@@ -145,7 +147,9 @@ async function makeRequest(request: sdk.Request, proxy: string, _body: any) {
         break;
       }
       case "file": {
-        myBody = await loadImage(_body.content);
+        if (_body.type === "raw" && _body.content?.type === "file") {
+          myBody = await loadImage(_body.content.value.content);
+        }
         break;
       }
       default:

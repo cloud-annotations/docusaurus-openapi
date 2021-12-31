@@ -54,6 +54,7 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
     contentType: { value: contentTypeArray[0], options: contentTypeArray },
     server: { value: servers[0], options: servers },
     response: { value: undefined },
+    body: { type: "empty" },
     old: init(item, options as any),
   });
 
