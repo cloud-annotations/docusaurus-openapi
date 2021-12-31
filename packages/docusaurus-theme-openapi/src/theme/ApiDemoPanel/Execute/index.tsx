@@ -12,7 +12,9 @@ import { setResponse } from "../Response/slice";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import makeRequest from "./makeRequest";
 
-function isRequestComplete(params) {
+function validateRequest(params: {
+  [key: string]: { required?: boolean; value: unknown }[];
+}) {
   for (let paramList of Object.values(params)) {
     for (let param of paramList) {
       if (param.required && !param.value) {
@@ -24,23 +26,23 @@ function isRequestComplete(params) {
 }
 
 function Execute() {
-  const postman = useOldSelector((state) => state.postman);
+  const postman = useOldSelector((state: any) => state.postman);
 
-  const pathParams = useOldSelector((state) => state.params.path);
-  const queryParams = useOldSelector((state) => state.params.query);
-  const cookieParams = useOldSelector((state) => state.params.cookie);
-  const headerParams = useOldSelector((state) => state.params.header);
+  const pathParams = useOldSelector((state: any) => state.params.path);
+  const queryParams = useOldSelector((state: any) => state.params.query);
+  const cookieParams = useOldSelector((state: any) => state.params.cookie);
+  const headerParams = useOldSelector((state: any) => state.params.header);
   const contentType = useTypedSelector((state) => state.contentType.value);
-  const body = useOldSelector((state) => state.body);
+  const body = useOldSelector((state: any) => state.body);
   const accept = useTypedSelector((state) => state.accept.value);
   const server = useTypedSelector((state) => state.server.value);
-  const auth = useOldSelector((state) => state.auth);
-  const selectedAuthID = useOldSelector((state) => state.selectedAuthID);
-  const authOptionIDs = useOldSelector((state) => state.authOptionIDs);
-  const proxy = useOldSelector((state) => state.options.proxy);
+  const auth = useOldSelector((state: any) => state.auth);
+  const selectedAuthID = useOldSelector((state: any) => state.selectedAuthID);
+  const authOptionIDs = useOldSelector((state: any) => state.authOptionIDs);
+  const proxy = useOldSelector((state: any) => state.options.proxy);
 
-  const params = useOldSelector((state) => state.params);
-  const finishedRequest = isRequestComplete(params);
+  const params = useOldSelector((state: any) => state.params);
+  const isValidRequest = validateRequest(params);
 
   const dispatch = useTypedDispatch();
 
@@ -62,13 +64,13 @@ function Execute() {
     <button
       className="button button--block button--primary"
       style={{ height: "48px", marginBottom: "var(--ifm-spacing-vertical)" }}
-      disabled={!finishedRequest}
+      disabled={!isValidRequest}
       onClick={async () => {
         dispatch(setResponse("loading..."));
         try {
           const res = await makeRequest(postmanRequest, proxy, body);
           dispatch(setResponse(res));
-        } catch (e) {
+        } catch (e: any) {
           dispatch(setResponse(e.message ?? "Error fetching."));
         }
       }}

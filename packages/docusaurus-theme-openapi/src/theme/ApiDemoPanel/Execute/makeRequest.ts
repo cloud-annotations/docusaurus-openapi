@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-async function loadImage(content) {
+import sdk from "postman-collection";
+
+async function loadImage(content: Blob): Promise<string | ArrayBuffer | null> {
   return new Promise((accept, reject) => {
     const reader = new FileReader();
 
@@ -28,13 +30,15 @@ async function loadImage(content) {
   });
 }
 
-async function makeRequest(request, proxy, _body) {
+async function makeRequest(request: sdk.Request, proxy: string, _body: any) {
   const headers = request.toJSON().header;
 
   let myHeaders = new Headers();
   if (headers) {
     headers.forEach((header) => {
-      myHeaders.append(header.key, header.value);
+      if (header.key && header.value) {
+        myHeaders.append(header.key, header.value);
+      }
     });
   }
 
@@ -109,34 +113,35 @@ async function makeRequest(request, proxy, _body) {
   //   });
   // }
 
-  const body = request.body && request.body.toJSON();
+  const body = request.body?.toJSON();
 
-  let myBody;
+  let myBody: RequestInit["body"] = undefined;
   if (body !== undefined && Object.keys(body).length > 0) {
     switch (body.mode) {
       case "urlencoded": {
         myBody = new URLSearchParams();
-        body.urlencoded.forEach((data) => {
-          myBody.append(data.key, data.value);
-        });
+        if (Array.isArray(body.urlencoded)) {
+          for (const data of body.urlencoded) {
+            if (data.key && data.value) {
+              myBody.append(data.key, data.value);
+            }
+          }
+        }
         break;
       }
       case "raw": {
-        myBody = body.raw.toString();
+        myBody = (body.raw ?? "").toString();
         break;
       }
       case "formdata": {
         myBody = new FormData();
-
-        body.formdata.forEach((data) => {
-          if (data.type === "file") {
-            // TODO: implement.
-            // const fileContent = await loadImage(_body.content)
-            // myBody.append(data.key, );
-          } else {
-            myBody.append(data.key, data.value);
+        if (Array.isArray(body.formdata)) {
+          for (const data of body.formdata) {
+            if (data.key && data.value) {
+              myBody.append(data.key, data.value);
+            }
           }
-        });
+        }
         break;
       }
       case "file": {
@@ -148,7 +153,7 @@ async function makeRequest(request, proxy, _body) {
     }
   }
 
-  const requestOptions = {
+  const requestOptions: RequestInit = {
     method: request.method,
     headers: myHeaders,
     body: myBody,
