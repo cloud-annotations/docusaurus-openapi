@@ -7,9 +7,9 @@
 
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
-import oldReducer from "../redux/reducer";
-import accept from "./accept";
-import contentType from "./contentType";
+import accept from "./Accept/slice";
+import contentType from "./ContentType/slice";
+import oldReducer from "./redux/reducer";
 
 function old(state = {}, action: any) {
   return oldReducer(state, action);

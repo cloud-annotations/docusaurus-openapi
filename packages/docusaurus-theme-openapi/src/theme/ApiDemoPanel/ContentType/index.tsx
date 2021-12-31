@@ -7,10 +7,10 @@
 
 import React from "react";
 
-import { setContentType } from "../redux2/contentType";
 import { useTypedDispatch, useTypedSelector } from "../redux2/hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
+import { setContentType } from "./slice";
 
 function ContentType() {
   const value = useTypedSelector((state) => state.contentType.value);

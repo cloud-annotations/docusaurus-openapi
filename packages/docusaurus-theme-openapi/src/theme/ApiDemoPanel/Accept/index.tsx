@@ -7,10 +7,10 @@
 
 import React from "react";
 
-import { setAccept } from "../redux2/accept";
 import { useTypedDispatch, useTypedSelector } from "../redux2/hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
+import { setAccept } from "./slice";
 
 function Accept() {
   const value = useTypedSelector((state) => state.accept.value);
