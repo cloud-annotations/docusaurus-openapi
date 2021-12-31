@@ -133,6 +133,7 @@ function setHeaders(
   }
 }
 
+// TODO: this is all a bit hacky
 function setBody(clonedPostman: sdk.Request, body: unknown) {
   if (clonedPostman.body === undefined) {
     return;
@@ -170,11 +171,11 @@ function setBody(clonedPostman: sdk.Request, body: unknown) {
         clonedPostman.body.raw = `${body}`;
         return;
       }
-      const params = Object.entries(body)
+      const params = Object.entries(body as any)
         .filter(([_, val]) => val)
         .map(([key, val]) => {
-          if (val.type === "file") {
-            return new sdk.FormParam({ key: key, ...val });
+          if ((val as any).type === "file") {
+            return new sdk.FormParam({ key: key, ...(val as any) });
           }
           return new sdk.FormParam({ key: key, value: val });
         });
@@ -192,9 +193,11 @@ function setBody(clonedPostman: sdk.Request, body: unknown) {
         clonedPostman.body.raw = `${body}`;
         return;
       }
-      const params = Object.entries(body)
+      const params = Object.entries(body as any)
         .filter(([_, val]) => val)
-        .map(([key, val]) => new sdk.QueryParam({ key: key, value: val }));
+        .map(
+          ([key, val]) => new sdk.QueryParam({ key: key, value: val as any })
+        );
       clonedPostman.body.urlencoded?.assimilate(params, false);
       return;
     }
