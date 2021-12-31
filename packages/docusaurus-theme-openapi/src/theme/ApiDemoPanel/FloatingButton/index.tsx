@@ -9,7 +9,13 @@ import React from "react";
 
 import styles from "./styles.module.css";
 
-function FloatingButton({ children, onClick, label }) {
+interface Props {
+  label?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  children?: React.ReactNode;
+}
+
+function FloatingButton({ label, onClick, children }: Props) {
   return (
     <div className={styles.floatingButton}>
       {label && <button onClick={onClick}>{label}</button>}
