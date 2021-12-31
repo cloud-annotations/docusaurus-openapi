@@ -8,7 +8,7 @@
 import React, { useState } from "react";
 
 import FloatingButton from "../FloatingButton";
-import { useOldSelector } from "../redux2/hooks";
+import { useOldSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
 import FormTextInput from "./../FormTextInput";

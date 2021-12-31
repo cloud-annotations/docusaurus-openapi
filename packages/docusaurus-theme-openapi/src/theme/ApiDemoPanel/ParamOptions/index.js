@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { useOldSelector } from "../redux2/hooks";
+import { useOldSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormMultiSelect from "./../FormMultiSelect";
 import FormSelect from "./../FormSelect";

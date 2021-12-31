@@ -16,8 +16,8 @@ import FormItem from "../FormItem";
 import FormSelect from "../FormSelect";
 // @ts-ignore
 import FormTextInput from "../FormTextInput";
+import { useOldSelector } from "../hooks";
 import { useActions } from "../redux/actions";
-import { useOldSelector } from "../redux2/hooks";
 import styles from "../styles.module.css";
 
 type Props = {

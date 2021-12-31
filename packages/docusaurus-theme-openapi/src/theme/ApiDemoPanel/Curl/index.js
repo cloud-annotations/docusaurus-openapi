@@ -12,7 +12,7 @@ import clsx from "clsx";
 import codegen from "postman-code-generators";
 import Highlight, { defaultProps } from "prism-react-renderer";
 
-import { useOldSelector, useTypedSelector } from "../redux2/hooks";
+import { useOldSelector, useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";

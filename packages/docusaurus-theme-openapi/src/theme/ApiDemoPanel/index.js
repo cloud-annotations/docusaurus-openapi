@@ -20,8 +20,8 @@ import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
 import ParamOptions from "./ParamOptions";
 import init from "./redux/init";
-import { createStoreWithState } from "./redux2/store";
 import Response from "./Response";
+import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
 
 function ApiDemoPanel({ item }) {

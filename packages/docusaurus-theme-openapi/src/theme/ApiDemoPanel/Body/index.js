@@ -9,7 +9,7 @@ import React, { useState } from "react";
 
 import ContentType from "../ContentType";
 import FormSelect from "../FormSelect";
-import { useOldSelector, useTypedSelector } from "../redux2/hooks";
+import { useOldSelector, useTypedSelector } from "../hooks";
 import FormFileUpload from "./../FormFileUpload";
 import FormItem from "./../FormItem";
 import FormTextInput from "./../FormTextInput";

@@ -7,7 +7,7 @@
 
 import React from "react";
 
-import { useOldSelector } from "../redux2/hooks";
+import { useOldSelector } from "../hooks";
 import FloatingButton from "./../FloatingButton";
 import { useActions } from "./../redux/actions";
 

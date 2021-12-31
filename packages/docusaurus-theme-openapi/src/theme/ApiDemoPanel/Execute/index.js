@@ -7,7 +7,7 @@
 
 import React from "react";
 
-import { useOldSelector, useTypedSelector } from "../redux2/hooks";
+import { useOldSelector, useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import { useActions } from "./../redux/actions";
 import makeRequest from "./makeRequest";
