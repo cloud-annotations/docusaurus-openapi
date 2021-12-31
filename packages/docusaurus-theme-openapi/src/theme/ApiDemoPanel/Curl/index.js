@@ -11,8 +11,8 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import clsx from "clsx";
 import codegen from "postman-code-generators";
 import Highlight, { defaultProps } from "prism-react-renderer";
-import { useSelector } from "react-redux";
 
+import { useOldSelector, useTypedSelector } from "../redux2/hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
@@ -119,19 +119,19 @@ function Curl() {
 
   const [copyText, setCopyText] = useState("Copy");
 
-  const pathParams = useSelector((state) => state.params.path);
-  const queryParams = useSelector((state) => state.params.query);
-  const cookieParams = useSelector((state) => state.params.cookie);
-  const headerParams = useSelector((state) => state.params.header);
-  const contentType = useSelector((state) => state.contentType);
-  const codeSamples = useSelector((state) => state.codeSamples);
-  const body = useSelector((state) => state.body);
-  const accept = useSelector((state) => state.accept);
-  const endpoint = useSelector((state) => state.endpoint);
-  const postman = useSelector((state) => state.postman);
-  const auth = useSelector((state) => state.auth);
-  const selectedAuthID = useSelector((state) => state.selectedAuthID);
-  const authOptionIDs = useSelector((state) => state.authOptionIDs);
+  const pathParams = useOldSelector((state) => state.params.path);
+  const queryParams = useOldSelector((state) => state.params.query);
+  const cookieParams = useOldSelector((state) => state.params.cookie);
+  const headerParams = useOldSelector((state) => state.params.header);
+  const contentType = useTypedSelector((state) => state.contentType.value);
+  const codeSamples = useOldSelector((state) => state.codeSamples);
+  const body = useOldSelector((state) => state.body);
+  const accept = useTypedSelector((state) => state.accept.value);
+  const endpoint = useOldSelector((state) => state.endpoint);
+  const postman = useOldSelector((state) => state.postman);
+  const auth = useOldSelector((state) => state.auth);
+  const selectedAuthID = useOldSelector((state) => state.selectedAuthID);
+  const authOptionIDs = useOldSelector((state) => state.authOptionIDs);
 
   const langs = [
     ...(siteConfig?.themeConfig?.languageTabs ?? languageSet),

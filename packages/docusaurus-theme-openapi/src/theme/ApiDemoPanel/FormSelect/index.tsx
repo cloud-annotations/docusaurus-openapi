@@ -9,7 +9,13 @@ import React from "react";
 
 import styles from "./styles.module.css";
 
-function FormSelect({ options, value, onChange }) {
+interface Props {
+  value: string;
+  options: string[];
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+}
+
+function FormSelect({ options, value, onChange }: Props) {
   if (options.length === 0) {
     return null;
   }

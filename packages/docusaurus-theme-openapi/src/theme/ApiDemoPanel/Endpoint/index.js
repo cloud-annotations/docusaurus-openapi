@@ -7,9 +7,8 @@
 
 import React, { useState } from "react";
 
-import { useSelector } from "react-redux";
-
 import FloatingButton from "../FloatingButton";
+import { useOldSelector } from "../redux2/hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
 import FormTextInput from "./../FormTextInput";
@@ -18,8 +17,8 @@ import styles from "./styles.module.css";
 
 function Endpoint() {
   const [edit, setEdit] = useState(false);
-  const servers = useSelector((state) => state.servers);
-  const endpoint = useSelector((state) => state.endpoint);
+  const servers = useOldSelector((state) => state.servers);
+  const endpoint = useOldSelector((state) => state.endpoint);
   const { setEndpoint, setEndpointValue } = useActions();
 
   if (servers.length <= 0) {

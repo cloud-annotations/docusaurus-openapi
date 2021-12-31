@@ -9,7 +9,6 @@ import React, { useState } from "react";
 
 import clsx from "clsx";
 import produce from "immer";
-import { useSelector } from "react-redux";
 
 // @ts-ignore
 import FormItem from "../FormItem";
@@ -18,6 +17,7 @@ import FormSelect from "../FormSelect";
 // @ts-ignore
 import FormTextInput from "../FormTextInput";
 import { useActions } from "../redux/actions";
+import { useOldSelector } from "../redux2/hooks";
 import styles from "../styles.module.css";
 
 type Props = {
@@ -63,9 +63,9 @@ function LockButton({ mode, children, style, ...rest }: Props) {
 
 function Authorization() {
   const { setAuth, setSelectedAuthID } = useActions();
-  const auth = useSelector((state: any) => state.auth);
-  const selectedAuthID = useSelector((state: any) => state.selectedAuthID);
-  const authOptionIDs = useSelector((state: any) => state.authOptionIDs);
+  const auth = useOldSelector((state: any) => state.auth);
+  const selectedAuthID = useOldSelector((state: any) => state.selectedAuthID);
+  const authOptionIDs = useOldSelector((state: any) => state.authOptionIDs);
   const [editing, setEditing] = useState(false);
 
   const noAuthorization = selectedAuthID === undefined;

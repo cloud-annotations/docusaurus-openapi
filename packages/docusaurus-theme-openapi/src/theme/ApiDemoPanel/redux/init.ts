@@ -14,7 +14,7 @@ function init(
     method,
     parameters = [],
     requestBody = {},
-    responses = {},
+    // responses = {},
     "x-code-samples": codeSamples = [],
     postman,
     jsonRequestBodyExample,
@@ -24,17 +24,17 @@ function init(
   }: any,
   options: ThemeConfig["api"] = {}
 ) {
-  const { content = {} } = requestBody;
+  // const { content = {} } = requestBody;
 
-  const contentTypeArray = Object.keys(content);
+  // const contentTypeArray = Object.keys(content);
 
-  const acceptArray = Array.from(
-    new Set(
-      Object.values(responses)
-        .map((response: any) => Object.keys(response.content ?? {}))
-        .flat()
-    )
-  );
+  // const acceptArray = Array.from(
+  //   new Set(
+  //     Object.values(responses)
+  //       .map((response: any) => Object.keys(response.content ?? {}))
+  //       .flat()
+  //   )
+  // );
 
   let params: any = {
     path: [],
@@ -89,14 +89,14 @@ function init(
   return {
     jsonRequestBodyExample,
     requestBodyMetadata: requestBody, // TODO: no...
-    acceptOptions: acceptArray,
-    contentTypeOptions: contentTypeArray,
+    // acceptOptions: acceptArray,
+    // contentTypeOptions: contentTypeArray,
     path,
     method,
     params,
-    contentType: contentTypeArray[0],
+    // contentType: contentTypeArray[0],
     codeSamples,
-    accept: acceptArray[0],
+    // accept: acceptArray[0],
     body: undefined,
     response: undefined,
     postman,

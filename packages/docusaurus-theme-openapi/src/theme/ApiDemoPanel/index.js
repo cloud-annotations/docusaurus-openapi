@@ -10,8 +10,6 @@ import React from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import sdk from "postman-collection";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
 
 import Accept from "./Accept";
 import Authorization from "./Authorization";
@@ -22,7 +20,7 @@ import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
 import ParamOptions from "./ParamOptions";
 import init from "./redux/init";
-import reducer from "./redux/reducer";
+import { createStoreWithState } from "./redux2/store";
 import Response from "./Response";
 import styles from "./styles.module.css";
 
@@ -31,14 +29,29 @@ function ApiDemoPanel({ item }) {
   const { api: options } = siteConfig.themeConfig;
 
   item.postman = new sdk.Request(item.postman);
-  const store = createStore(
-    reducer,
-    init(item, options),
-    composeWithDevTools({ name: `${item.method} ${item.path}` })()
+
+  const acceptArray = Array.from(
+    new Set(
+      Object.values(item.responses)
+        .map((response) => Object.keys(response.content ?? {}))
+        .flat()
+    )
   );
 
+  const content = item.requestBody?.content ?? {};
+
+  const contentTypeArray = Object.keys(content);
+
+  const store2 = createStoreWithState({
+    accept: { value: acceptArray[0], options: acceptArray },
+    contentType: { value: contentTypeArray[0], options: contentTypeArray },
+    old: init(item, options),
+  });
+
+  console.log(store2.getState());
+
   return (
-    <Provider store={store}>
+    <Provider store={store2}>
       <div style={{ marginTop: "3.5em" }}>
         <Authorization />
 

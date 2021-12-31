@@ -7,8 +7,7 @@
 
 import React from "react";
 
-import { useSelector } from "react-redux";
-
+import { useOldSelector } from "../redux2/hooks";
 import FloatingButton from "./../FloatingButton";
 import { useActions } from "./../redux/actions";
 
@@ -32,7 +31,7 @@ function formatXml(xml) {
 }
 
 function Response() {
-  const response = useSelector((state) => state.response);
+  const response = useOldSelector((state) => state.response);
   const { clearResponse } = useActions();
 
   if (response === undefined) {

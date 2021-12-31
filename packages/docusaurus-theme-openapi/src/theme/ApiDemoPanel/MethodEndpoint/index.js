@@ -7,7 +7,7 @@
 
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useOldSelector } from "../redux2/hooks";
 
 function colorForMethod(method) {
   switch (method.toLowerCase()) {
@@ -25,8 +25,8 @@ function colorForMethod(method) {
 }
 
 function MethodEndpoint() {
-  const method = useSelector((state) => state.method);
-  const path = useSelector((state) => state.path);
+  const method = useOldSelector((state) => state.method);
+  const path = useOldSelector((state) => state.path);
 
   return (
     <pre

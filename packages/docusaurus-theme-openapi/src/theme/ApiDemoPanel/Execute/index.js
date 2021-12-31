@@ -7,8 +7,7 @@
 
 import React from "react";
 
-import { useSelector } from "react-redux";
-
+import { useOldSelector, useTypedSelector } from "../redux2/hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import { useActions } from "./../redux/actions";
 import makeRequest from "./makeRequest";
@@ -25,22 +24,22 @@ function isRequestComplete(params) {
 }
 
 function Execute() {
-  const postman = useSelector((state) => state.postman);
+  const postman = useOldSelector((state) => state.postman);
 
-  const pathParams = useSelector((state) => state.params.path);
-  const queryParams = useSelector((state) => state.params.query);
-  const cookieParams = useSelector((state) => state.params.cookie);
-  const headerParams = useSelector((state) => state.params.header);
-  const contentType = useSelector((state) => state.contentType);
-  const body = useSelector((state) => state.body);
-  const accept = useSelector((state) => state.accept);
-  const endpoint = useSelector((state) => state.endpoint);
-  const auth = useSelector((state) => state.auth);
-  const selectedAuthID = useSelector((state) => state.selectedAuthID);
-  const authOptionIDs = useSelector((state) => state.authOptionIDs);
-  const proxy = useSelector((state) => state.options.proxy);
+  const pathParams = useOldSelector((state) => state.params.path);
+  const queryParams = useOldSelector((state) => state.params.query);
+  const cookieParams = useOldSelector((state) => state.params.cookie);
+  const headerParams = useOldSelector((state) => state.params.header);
+  const contentType = useTypedSelector((state) => state.contentType.value);
+  const body = useOldSelector((state) => state.body);
+  const accept = useTypedSelector((state) => state.accept.value);
+  const endpoint = useOldSelector((state) => state.endpoint);
+  const auth = useOldSelector((state) => state.auth);
+  const selectedAuthID = useOldSelector((state) => state.selectedAuthID);
+  const authOptionIDs = useOldSelector((state) => state.authOptionIDs);
+  const proxy = useOldSelector((state) => state.options.proxy);
 
-  const params = useSelector((state) => state.params);
+  const params = useOldSelector((state) => state.params);
   const finishedRequest = isRequestComplete(params);
 
   const { setResponse } = useActions();

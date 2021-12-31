@@ -1,0 +1,32 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+
+import oldReducer from "../redux/reducer";
+import accept from "./accept";
+import contentType from "./contentType";
+
+function old(state = {}, action: any) {
+  return oldReducer(state, action);
+}
+
+const rootReducer = combineReducers({
+  accept,
+  contentType,
+  old,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+export const createStoreWithState = (preloadedState: RootState) =>
+  configureStore({
+    reducer: rootReducer,
+    preloadedState,
+  });
+
+export type AppDispatch = ReturnType<typeof createStoreWithState>["dispatch"];

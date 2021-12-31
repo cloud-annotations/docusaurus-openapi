@@ -7,8 +7,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { useSelector } from "react-redux";
-
+import { useOldSelector } from "../redux2/hooks";
 import FormItem from "./../FormItem";
 import FormMultiSelect from "./../FormMultiSelect";
 import FormSelect from "./../FormSelect";
@@ -52,10 +51,10 @@ function ParamOptionWrapper({ param }) {
 function ParamOptions() {
   const [showOptional, setShowOptional] = useState(false);
 
-  const pathParams = useSelector((state) => state.params.path);
-  const queryParams = useSelector((state) => state.params.query);
-  const cookieParams = useSelector((state) => state.params.cookie);
-  const headerParams = useSelector((state) => state.params.header);
+  const pathParams = useOldSelector((state) => state.params.path);
+  const queryParams = useOldSelector((state) => state.params.query);
+  const cookieParams = useOldSelector((state) => state.params.cookie);
+  const headerParams = useOldSelector((state) => state.params.header);
 
   const allParams = [
     ...pathParams,

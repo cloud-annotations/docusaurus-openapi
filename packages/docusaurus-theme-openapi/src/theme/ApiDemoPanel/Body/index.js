@@ -7,10 +7,9 @@
 
 import React, { useState } from "react";
 
-import { useSelector } from "react-redux";
-
 import ContentType from "../ContentType";
 import FormSelect from "../FormSelect";
+import { useOldSelector, useTypedSelector } from "../redux2/hooks";
 import FormFileUpload from "./../FormFileUpload";
 import FormItem from "./../FormItem";
 import FormTextInput from "./../FormTextInput";
@@ -20,8 +19,10 @@ import styles from "./styles.module.css";
 
 function BodyWrap() {
   const [showOptional, setShowOptional] = useState(false);
-  const contentType = useSelector((state) => state.contentType);
-  const required = useSelector((state) => state.requestBodyMetadata.required);
+  const contentType = useTypedSelector((state) => state.contentType.value);
+  const required = useOldSelector(
+    (state) => state.requestBodyMetadata.required
+  );
 
   // No body
   if (contentType === undefined) {
@@ -84,9 +85,11 @@ function BodyWrap() {
 }
 
 function Body() {
-  const contentType = useSelector((state) => state.contentType);
-  const requestBodyMetadata = useSelector((state) => state.requestBodyMetadata);
-  const jsonRequestBodyExample = useSelector(
+  const contentType = useTypedSelector((state) => state.contentType.value);
+  const requestBodyMetadata = useOldSelector(
+    (state) => state.requestBodyMetadata
+  );
+  const jsonRequestBodyExample = useOldSelector(
     (state) => state.jsonRequestBodyExample
   );
   const { setBody, setForm } = useActions();

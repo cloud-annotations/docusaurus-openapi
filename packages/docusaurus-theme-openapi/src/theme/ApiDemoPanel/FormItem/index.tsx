@@ -9,7 +9,13 @@ import React from "react";
 
 import styles from "./styles.module.css";
 
-function FormItem({ label, type, children }) {
+interface Props {
+  label: string;
+  type?: string;
+  children?: React.ReactNode;
+}
+
+function FormItem({ label, type, children }: Props) {
   return (
     <div className={styles.formItem}>
       <code>{label}</code>
