@@ -9,6 +9,7 @@ import React, { useRef, useState, useEffect } from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import clsx from "clsx";
+// @ts-ignore
 import codegen from "postman-code-generators";
 import Highlight, { defaultProps } from "prism-react-renderer";
 
@@ -17,7 +18,15 @@ import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
 
-const languageSet = [
+interface Language {
+  tabName: string;
+  highlight: string;
+  language: string;
+  variant: string;
+  options: { [key: string]: boolean };
+}
+
+const languageSet: Language[] = [
   {
     tabName: "cURL",
     highlight: "bash",
@@ -119,22 +128,25 @@ function Curl() {
 
   const [copyText, setCopyText] = useState("Copy");
 
-  const pathParams = useOldSelector((state) => state.params.path);
-  const queryParams = useOldSelector((state) => state.params.query);
-  const cookieParams = useOldSelector((state) => state.params.cookie);
-  const headerParams = useOldSelector((state) => state.params.header);
   const contentType = useTypedSelector((state) => state.contentType.value);
-  const codeSamples = useOldSelector((state) => state.codeSamples);
-  const body = useOldSelector((state) => state.body);
   const accept = useTypedSelector((state) => state.accept.value);
   const server = useTypedSelector((state) => state.server.value);
-  const postman = useOldSelector((state) => state.postman);
-  const auth = useOldSelector((state) => state.auth);
-  const selectedAuthID = useOldSelector((state) => state.selectedAuthID);
-  const authOptionIDs = useOldSelector((state) => state.authOptionIDs);
 
+  const pathParams = useOldSelector((state: any) => state.params.path);
+  const queryParams = useOldSelector((state: any) => state.params.query);
+  const cookieParams = useOldSelector((state: any) => state.params.cookie);
+  const headerParams = useOldSelector((state: any) => state.params.header);
+  const codeSamples = useOldSelector((state: any) => state.codeSamples);
+  const body = useOldSelector((state: any) => state.body);
+  const postman = useOldSelector((state: any) => state.postman);
+  const auth = useOldSelector((state: any) => state.auth);
+  const selectedAuthID = useOldSelector((state: any) => state.selectedAuthID);
+  const authOptionIDs = useOldSelector((state: any) => state.authOptionIDs);
+
+  // TODO
   const langs = [
-    ...(siteConfig?.themeConfig?.languageTabs ?? languageSet),
+    ...((siteConfig?.themeConfig?.languageTabs as Language[] | undefined) ??
+      languageSet),
     ...codeSamples,
   ];
 
@@ -163,7 +175,7 @@ function Curl() {
         language.variant,
         postmanRequest,
         language.options,
-        (error, snippet) => {
+        (error: any, snippet: string) => {
           if (error) {
             return;
           }
@@ -191,14 +203,16 @@ function Curl() {
     authOptionIDs,
   ]);
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleCurlCopy = () => {
     setCopyText("Copied");
     setTimeout(() => {
       setCopyText("Copy");
     }, 2000);
-    navigator.clipboard.writeText(ref.current.innerText);
+    if (ref.current?.innerText) {
+      navigator.clipboard.writeText(ref.current.innerText);
+    }
   };
 
   if (language === undefined) {

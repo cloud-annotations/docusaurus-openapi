@@ -208,7 +208,7 @@ function setBody(clonedPostman: sdk.Request, body: unknown) {
 
 // TODO: finish these types
 interface Options {
-  server: ServerObject;
+  server?: ServerObject;
   queryParams: Param[];
   pathParams: Param[];
   cookieParams: Param[];
