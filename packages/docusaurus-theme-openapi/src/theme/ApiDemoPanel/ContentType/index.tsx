@@ -17,11 +17,6 @@ function ContentType() {
   const options = useTypedSelector((state) => state.contentType.options);
   const dispatch = useTypedDispatch();
 
-  console.log("ContentType");
-
-  console.log(value);
-  console.log(options);
-
   if (options.length <= 1) {
     return null;
   }

@@ -16,7 +16,7 @@ function init(
     "x-code-samples": codeSamples = [],
     postman,
     jsonRequestBodyExample,
-    servers,
+    // servers,
     security,
     securitySchemes,
   }: any,
@@ -53,9 +53,9 @@ function init(
     });
   });
 
-  if (!servers) {
-    servers = [];
-  }
+  // if (!servers) {
+  //   servers = [];
+  // }
 
   const auth = loadAuth({
     securitySchemes,
@@ -92,8 +92,8 @@ function init(
     body: undefined,
     response: undefined,
     postman,
-    servers,
-    endpoint: servers[0],
+    // servers,
+    // endpoint: servers[0],
     auth,
     selectedAuthID,
     authOptionIDs,

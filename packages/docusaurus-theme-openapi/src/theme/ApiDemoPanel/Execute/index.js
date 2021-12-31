@@ -33,7 +33,7 @@ function Execute() {
   const contentType = useTypedSelector((state) => state.contentType.value);
   const body = useOldSelector((state) => state.body);
   const accept = useTypedSelector((state) => state.accept.value);
-  const endpoint = useOldSelector((state) => state.endpoint);
+  const server = useTypedSelector((state) => state.server.value);
   const auth = useOldSelector((state) => state.auth);
   const selectedAuthID = useOldSelector((state) => state.selectedAuthID);
   const authOptionIDs = useOldSelector((state) => state.authOptionIDs);
@@ -52,7 +52,7 @@ function Execute() {
     accept,
     headerParams,
     body,
-    endpoint,
+    server,
     auth,
     selectedAuthID,
     authOptionIDs,

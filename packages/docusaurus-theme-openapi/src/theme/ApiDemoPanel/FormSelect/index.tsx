@@ -10,13 +10,13 @@ import React from "react";
 import styles from "./styles.module.css";
 
 interface Props {
-  value: string;
-  options: string[];
+  value?: string;
+  options?: string[];
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
 function FormSelect({ value, options, onChange }: Props) {
-  if (options.length === 0) {
+  if (!Array.isArray(options) || options.length === 0) {
     return null;
   }
 

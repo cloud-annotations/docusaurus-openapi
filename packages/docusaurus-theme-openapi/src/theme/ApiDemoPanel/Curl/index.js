@@ -127,7 +127,7 @@ function Curl() {
   const codeSamples = useOldSelector((state) => state.codeSamples);
   const body = useOldSelector((state) => state.body);
   const accept = useTypedSelector((state) => state.accept.value);
-  const endpoint = useOldSelector((state) => state.endpoint);
+  const server = useTypedSelector((state) => state.server.value);
   const postman = useOldSelector((state) => state.postman);
   const auth = useOldSelector((state) => state.auth);
   const selectedAuthID = useOldSelector((state) => state.selectedAuthID);
@@ -152,7 +152,7 @@ function Curl() {
         accept,
         headerParams,
         body,
-        endpoint,
+        server,
         auth,
         selectedAuthID,
         authOptionIDs,
@@ -185,7 +185,7 @@ function Curl() {
     pathParams,
     postman,
     queryParams,
-    endpoint,
+    server,
     auth,
     selectedAuthID,
     authOptionIDs,

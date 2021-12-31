@@ -10,7 +10,7 @@ import React from "react";
 import styles from "./styles.module.css";
 
 interface Props {
-  value: string;
+  value?: string;
   placeholder?: string;
   password?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;

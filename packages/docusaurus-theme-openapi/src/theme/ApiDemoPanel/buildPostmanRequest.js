@@ -163,7 +163,7 @@ function buildPostmanRequest(
     accept,
     headerParams,
     body,
-    endpoint,
+    server,
     auth,
     selectedAuthID,
     authOptionIDs,
@@ -173,14 +173,11 @@ function buildPostmanRequest(
 
   clonedPostman.url.protocol = undefined;
 
-  if (endpoint) {
-    let url = endpoint.url.replace(/\/$/, "");
-    if (endpoint.variables) {
-      Object.keys(endpoint.variables).forEach((variable) => {
-        url = url.replace(
-          `{${variable}}`,
-          endpoint.variables[variable].default
-        );
+  if (server) {
+    let url = server.url.replace(/\/$/, "");
+    if (server.variables) {
+      Object.keys(server.variables).forEach((variable) => {
+        url = url.replace(`{${variable}}`, server.variables[variable].default);
       });
     }
     clonedPostman.url.host = [url];

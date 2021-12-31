@@ -11,8 +11,6 @@ export const types = {
   updateParam: "UPDATE_PARAM",
   setBody: "SET_BODY",
   setForm: "SET_FORM",
-  setEndpoint: "SET_ENDPOINT",
-  setEndpointValue: "SET_ENDPOINT_VALUE",
   setAuth: "SET_AUTH",
   setSelectedAuthID: "SET_SELECTED_AUTH_ID",
 };
@@ -32,14 +30,6 @@ export function useActions() {
     dispatch({ type: types.setForm, body });
   }
 
-  function setEndpoint(endpoint: any) {
-    dispatch({ type: types.setEndpoint, endpoint });
-  }
-
-  function setEndpointValue(key: any, value: any) {
-    dispatch({ type: types.setEndpointValue, key, value });
-  }
-
   function setAuth(auth: any) {
     dispatch({ type: types.setAuth, auth });
   }
@@ -49,8 +39,6 @@ export function useActions() {
   }
 
   return {
-    setEndpoint,
-    setEndpointValue,
     updateParam,
     setBody,
     setForm,

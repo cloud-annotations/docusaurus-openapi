@@ -31,16 +31,6 @@ const reducer = produce((draft, action) => {
       draft.body[action.body.key] = action.body.value;
       break;
     }
-    case types.setEndpoint: {
-      draft.endpoint = draft.servers.find(
-        (s: any) => s.url === action.endpoint
-      );
-      break;
-    }
-    case types.setEndpointValue: {
-      draft.endpoint.variables[action.key].default = action.value;
-      break;
-    }
     case types.setAuth: {
       //  TODO: This is a side effect and shouldn't be done here.
       persistAuth({

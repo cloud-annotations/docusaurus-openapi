@@ -15,12 +15,12 @@ import Accept from "./Accept";
 import Authorization from "./Authorization";
 import Body from "./Body";
 import Curl from "./Curl";
-import Endpoint from "./Endpoint";
 import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
 import ParamOptions from "./ParamOptions";
 import init from "./redux/init";
 import Response from "./Response";
+import Server from "./Server";
 import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
 
@@ -42,9 +42,12 @@ function ApiDemoPanel({ item }) {
 
   const contentTypeArray = Object.keys(content);
 
+  const servers = item.servers ?? [];
+
   const store2 = createStoreWithState({
     accept: { value: acceptArray[0], options: acceptArray },
     contentType: { value: contentTypeArray[0], options: contentTypeArray },
+    server: { value: servers[0], options: servers },
     response: { value: undefined },
     old: init(item, options),
   });
@@ -72,7 +75,7 @@ function ApiDemoPanel({ item }) {
           <Accept />
         </div>
 
-        <Endpoint />
+        <Server />
 
         <Curl />
 
