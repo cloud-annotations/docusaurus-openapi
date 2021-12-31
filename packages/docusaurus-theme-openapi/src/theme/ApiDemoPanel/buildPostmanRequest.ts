@@ -5,15 +5,45 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
+import {
+  ParameterObject,
+  ServerObject,
+} from "docusaurus-plugin-openapi/src/openapi/types";
 import cloneDeep from "lodash/cloneDeep";
 import sdk from "postman-collection";
 
-function setQueryParams(postman, queryParams) {
+type Param = {
+  value?: string | string[];
+} & ParameterObject;
+
+interface BearerAuth {
+  type: "http";
+  scheme: "bearer";
+  data: {
+    token?: string;
+  };
+}
+
+interface BasicAuth {
+  type: "http";
+  scheme: "basic";
+  data: {
+    username?: string;
+    password?: string;
+  };
+}
+
+type Auth = BasicAuth | BearerAuth;
+
+function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
   postman.url.query.clear();
 
   const qp = queryParams
-    .filter((param) => param.value)
     .map((param) => {
+      if (!param.value) {
+        return undefined;
+      }
+
       if (Array.isArray(param.value)) {
         return new sdk.QueryParam({
           key: param.name,
@@ -26,7 +56,7 @@ function setQueryParams(postman, queryParams) {
         if (param.value === "true") {
           return new sdk.QueryParam({
             key: param.name,
-            value: undefined,
+            value: null,
           });
         }
         return undefined;
@@ -36,36 +66,51 @@ function setQueryParams(postman, queryParams) {
         key: param.name,
         value: param.value,
       });
-    });
+    })
+    .filter((item): item is sdk.QueryParam => item !== undefined);
 
   if (qp.length > 0) {
     postman.addQueryParams(qp);
   }
 }
 
-function setPathParams(postman, queryParams) {
-  const source = queryParams.map((x) => ({
-    key: x.name,
-    value: x.value || `:${x.name}`,
-  }));
-  postman.url.variables.assimilate(source);
+function setPathParams(postman: sdk.Request, queryParams: Param[]) {
+  const source = queryParams.map((param) => {
+    return new sdk.Variable({
+      key: param.name,
+      value: param.value || `:${param.name}`,
+    });
+  });
+  postman.url.variables.assimilate(source, false);
 }
 
-function buildCookie(cookieParams) {
-  const cookies = cookieParams.map((param) => {
-    if (param.value) {
-      return new sdk.Cookie({
-        name: param.name,
-        value: param.value,
-      });
-    }
-    return undefined;
-  });
+function buildCookie(cookieParams: Param[]) {
+  const cookies = cookieParams
+    .map((param) => {
+      if (param.value && !Array.isArray(param.value)) {
+        return new sdk.Cookie({
+          // TODO: Is this right?
+          path: "",
+          domain: "",
+          key: param.name,
+          value: param.value,
+        });
+      }
+      return undefined;
+    })
+    .filter((item): item is sdk.Cookie => item !== undefined);
   const list = new sdk.CookieList(null, cookies);
   return list.toString();
 }
 
-function setHeaders(postman, contentType, accept, cookie, headerParams, other) {
+function setHeaders(
+  postman: sdk.Request,
+  contentType: string,
+  accept: string,
+  cookie: string,
+  headerParams: Param[],
+  other: { key: string; value: string }[]
+) {
   postman.headers.clear();
   if (contentType) {
     postman.addHeader({ key: "Content-Type", value: contentType });
@@ -74,7 +119,7 @@ function setHeaders(postman, contentType, accept, cookie, headerParams, other) {
     postman.addHeader({ key: "Accept", value: accept });
   }
   headerParams.forEach((param) => {
-    if (param.value) {
+    if (param.value && !Array.isArray(param.value)) {
       postman.addHeader({ key: param.name, value: param.value });
     }
   });
@@ -88,36 +133,41 @@ function setHeaders(postman, contentType, accept, cookie, headerParams, other) {
   }
 }
 
-function setBody(clonedPostman, body) {
+function setBody(clonedPostman: sdk.Request, body: unknown) {
   if (clonedPostman.body === undefined) {
     return;
   }
 
-  if (body && body.type === "file") {
+  if ((body as any)?.type === "file") {
     // treat it like file.
     clonedPostman.body.mode = "file";
-    clonedPostman.body.file = { src: body.src };
+    clonedPostman.body.file = { src: (body as any).src };
     return;
   }
 
   switch (clonedPostman.body.mode) {
     case "raw": {
+      // TODO: not really sure of the logic behind this...
       if (body === "") {
         clonedPostman.body = undefined;
         return;
       }
-      clonedPostman.body.raw = body || "";
+      if (body !== undefined && typeof body !== "string") {
+        clonedPostman.body = undefined;
+        return;
+      }
+      clonedPostman.body.raw = body ?? "";
       return;
     }
     case "formdata": {
-      clonedPostman.body.formdata.clear();
-      if (body === undefined) {
+      clonedPostman.body.formdata?.clear();
+      if (body == null) {
         return;
       }
       if (typeof body !== "object") {
         // treat it like raw.
         clonedPostman.body.mode = "raw";
-        clonedPostman.body.raw = body;
+        clonedPostman.body.raw = `${body}`;
         return;
       }
       const params = Object.entries(body)
@@ -128,24 +178,24 @@ function setBody(clonedPostman, body) {
           }
           return new sdk.FormParam({ key: key, value: val });
         });
-      clonedPostman.body.formdata.assimilate(params);
+      clonedPostman.body.formdata?.assimilate(params, false);
       return;
     }
     case "urlencoded": {
-      clonedPostman.body.urlencoded.clear();
-      if (body === undefined) {
+      clonedPostman.body.urlencoded?.clear();
+      if (body == null) {
         return;
       }
       if (typeof body !== "object") {
         // treat it like raw.
         clonedPostman.body.mode = "raw";
-        clonedPostman.body.raw = body;
+        clonedPostman.body.raw = `${body}`;
         return;
       }
       const params = Object.entries(body)
         .filter(([_, val]) => val)
         .map(([key, val]) => new sdk.QueryParam({ key: key, value: val }));
-      clonedPostman.body.urlencoded.assimilate(params);
+      clonedPostman.body.urlencoded?.assimilate(params, false);
       return;
     }
     default:
@@ -153,8 +203,23 @@ function setBody(clonedPostman, body) {
   }
 }
 
+// TODO: finish these types
+interface Options {
+  server: ServerObject;
+  queryParams: Param[];
+  pathParams: Param[];
+  cookieParams: Param[];
+  headerParams: Param[];
+  contentType: string;
+  accept: string;
+  body: unknown;
+  auth: Auth[][];
+  selectedAuthID?: string;
+  authOptionIDs: string[];
+}
+
 function buildPostmanRequest(
-  postman,
+  postman: sdk.Request,
   {
     queryParams,
     pathParams,
@@ -167,22 +232,22 @@ function buildPostmanRequest(
     auth,
     selectedAuthID,
     authOptionIDs,
-  }
+  }: Options
 ) {
   const clonedPostman = cloneDeep(postman);
 
   clonedPostman.url.protocol = undefined;
+  clonedPostman.url.host = [window.location.origin];
 
   if (server) {
     let url = server.url.replace(/\/$/, "");
-    if (server.variables) {
-      Object.keys(server.variables).forEach((variable) => {
-        url = url.replace(`{${variable}}`, server.variables[variable].default);
+    const variables = server.variables;
+    if (variables) {
+      Object.keys(variables).forEach((variable) => {
+        url = url.replace(`{${variable}}`, variables[variable].default);
       });
     }
     clonedPostman.url.host = [url];
-  } else {
-    clonedPostman.url.host = [window.location.origin];
   }
 
   setQueryParams(clonedPostman, queryParams);
@@ -191,7 +256,7 @@ function buildPostmanRequest(
   const cookie = buildCookie(cookieParams);
   let otherHeaders = [];
 
-  let selectedAuth = [];
+  let selectedAuth: Auth[] = [];
   if (selectedAuthID !== undefined) {
     const selectedAuthIndex = authOptionIDs.indexOf(selectedAuthID);
     selectedAuth = auth[selectedAuthIndex];
