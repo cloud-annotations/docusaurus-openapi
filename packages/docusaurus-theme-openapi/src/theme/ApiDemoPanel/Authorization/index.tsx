@@ -10,11 +10,8 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import produce from "immer";
 
-// @ts-ignore
 import FormItem from "../FormItem";
-// @ts-ignore
 import FormSelect from "../FormSelect";
-// @ts-ignore
 import FormTextInput from "../FormTextInput";
 import { useOldSelector } from "../hooks";
 import { useActions } from "../redux/actions";

@@ -15,7 +15,7 @@ interface Props {
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
 }
 
-function FormSelect({ options, value, onChange }: Props) {
+function FormSelect({ value, options, onChange }: Props) {
   if (options.length === 0) {
     return null;
   }

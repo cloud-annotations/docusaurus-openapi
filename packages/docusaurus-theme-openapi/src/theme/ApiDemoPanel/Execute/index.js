@@ -7,9 +7,9 @@
 
 import React from "react";
 
-import { useOldSelector, useTypedSelector } from "../hooks";
+import { useOldSelector, useTypedDispatch, useTypedSelector } from "../hooks";
+import { setResponse } from "../Response/slice";
 import buildPostmanRequest from "./../buildPostmanRequest";
-import { useActions } from "./../redux/actions";
 import makeRequest from "./makeRequest";
 
 function isRequestComplete(params) {
@@ -42,7 +42,7 @@ function Execute() {
   const params = useOldSelector((state) => state.params);
   const finishedRequest = isRequestComplete(params);
 
-  const { setResponse } = useActions();
+  const dispatch = useTypedDispatch();
 
   const postmanRequest = buildPostmanRequest(postman, {
     queryParams,
@@ -64,12 +64,12 @@ function Execute() {
       style={{ height: "48px", marginBottom: "var(--ifm-spacing-vertical)" }}
       disabled={!finishedRequest}
       onClick={async () => {
-        setResponse("loading...");
+        dispatch(setResponse("loading..."));
         try {
           const res = await makeRequest(postmanRequest, proxy, body);
-          setResponse(res);
+          dispatch(setResponse(res));
         } catch (e) {
-          setResponse(e.message ?? "Error fetching.");
+          dispatch(setResponse(e.message ?? "Error fetching."));
         }
       }}
     >

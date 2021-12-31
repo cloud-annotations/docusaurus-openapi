@@ -20,10 +20,6 @@ const reducer = produce((draft, action) => {
       ] = action.param;
       break;
     }
-    case types.setResponse: {
-      draft.response = action.response;
-      break;
-    }
     case types.setBody: {
       draft.body = action.body;
       break;
@@ -35,10 +31,6 @@ const reducer = produce((draft, action) => {
       draft.body[action.body.key] = action.body.value;
       break;
     }
-    case types.setAccept: {
-      draft.accept = action.accept;
-      break;
-    }
     case types.setEndpoint: {
       draft.endpoint = draft.servers.find(
         (s: any) => s.url === action.endpoint
@@ -47,10 +39,6 @@ const reducer = produce((draft, action) => {
     }
     case types.setEndpointValue: {
       draft.endpoint.variables[action.key].default = action.value;
-      break;
-    }
-    case types.setContentType: {
-      draft.contentType = action.contentType;
       break;
     }
     case types.setAuth: {

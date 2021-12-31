@@ -10,8 +10,6 @@ import { loadAuth, loadSelectedAuth } from "./persistance";
 
 function init(
   {
-    path,
-    method,
     parameters = [],
     requestBody = {},
     // responses = {},
@@ -89,14 +87,8 @@ function init(
   return {
     jsonRequestBodyExample,
     requestBodyMetadata: requestBody, // TODO: no...
-    // acceptOptions: acceptArray,
-    // contentTypeOptions: contentTypeArray,
-    path,
-    method,
     params,
-    // contentType: contentTypeArray[0],
     codeSamples,
-    // accept: acceptArray[0],
     body: undefined,
     response: undefined,
     postman,

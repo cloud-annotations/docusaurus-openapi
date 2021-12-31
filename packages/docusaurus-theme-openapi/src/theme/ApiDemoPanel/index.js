@@ -45,10 +45,11 @@ function ApiDemoPanel({ item }) {
   const store2 = createStoreWithState({
     accept: { value: acceptArray[0], options: acceptArray },
     contentType: { value: contentTypeArray[0], options: contentTypeArray },
+    response: { value: undefined },
     old: init(item, options),
   });
 
-  console.log(store2.getState());
+  const { path, method } = item;
 
   return (
     <Provider store={store2}>
@@ -63,7 +64,7 @@ function ApiDemoPanel({ item }) {
           </div>
         )}
 
-        <MethodEndpoint />
+        <MethodEndpoint method={method} path={path} />
 
         <div className={styles.optionsPanel}>
           <ParamOptions />

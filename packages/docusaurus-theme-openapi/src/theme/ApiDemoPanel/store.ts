@@ -10,6 +10,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import accept from "./Accept/slice";
 import contentType from "./ContentType/slice";
 import oldReducer from "./redux/reducer";
+import response from "./Response/slice";
 
 function old(state = {}, action: any) {
   return oldReducer(state, action);
@@ -18,6 +19,7 @@ function old(state = {}, action: any) {
 const rootReducer = combineReducers({
   accept,
   contentType,
+  response,
   old,
 });
 
