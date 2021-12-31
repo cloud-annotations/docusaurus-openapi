@@ -13,14 +13,10 @@ import MagicDropzone from "react-magic-dropzone";
 import FloatingButton from "../FloatingButton";
 import styles from "./styles.module.css";
 
-interface File {
-  type: string;
-  preview: string;
-  name: string;
-}
+type PreviewFile = { preview: string } & File;
 
 interface RenderPreviewProps {
-  file: File;
+  file: PreviewFile;
 }
 
 function RenderPreview({ file }: RenderPreviewProps) {
@@ -73,14 +69,14 @@ interface Props {
 
 function FormFileUpload({ placeholder, onChange }: Props) {
   const [hover, setHover] = useState(false);
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<PreviewFile>();
 
-  function setAndNotifyFile(file?: File) {
+  function setAndNotifyFile(file?: PreviewFile) {
     setFile(file);
     onChange?.(file);
   }
 
-  function handleDrop(accepted: File[]) {
+  function handleDrop(accepted: PreviewFile[]) {
     const [file] = accepted;
     setAndNotifyFile(file);
     setHover(false);
