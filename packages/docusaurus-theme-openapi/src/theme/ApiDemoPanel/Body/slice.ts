@@ -7,14 +7,12 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface File {
-  src: string;
-  content: Blob;
-}
-
 export interface FileContent {
   type: "file";
-  value: File;
+  value: {
+    src: string;
+    content: Blob;
+  };
 }
 
 export interface StringContent {
@@ -64,7 +62,7 @@ export const slice = createSlice({
         },
       };
     },
-    setFileRawBody: (_state, action: PayloadAction<File>) => {
+    setFileRawBody: (_state, action: PayloadAction<FileContent["value"]>) => {
       return {
         type: "raw",
         content: {
@@ -101,7 +99,7 @@ export const slice = createSlice({
     },
     setFileFormBody: (
       state,
-      action: PayloadAction<{ key: string; value: File }>
+      action: PayloadAction<{ key: string; value: FileContent["value"] }>
     ) => {
       if (state?.type !== "form") {
         return {
