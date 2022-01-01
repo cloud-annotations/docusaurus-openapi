@@ -133,10 +133,10 @@ function Curl() {
   const server = useTypedSelector((state) => state.server.value);
   const body = useTypedSelector((state) => state.body);
 
-  const pathParams = useOldSelector((state: any) => state.params.path);
-  const queryParams = useOldSelector((state: any) => state.params.query);
-  const cookieParams = useOldSelector((state: any) => state.params.cookie);
-  const headerParams = useOldSelector((state: any) => state.params.header);
+  const pathParams = useTypedSelector((state) => state.params.path);
+  const queryParams = useTypedSelector((state) => state.params.query);
+  const cookieParams = useTypedSelector((state) => state.params.cookie);
+  const headerParams = useTypedSelector((state) => state.params.header);
   const codeSamples = useOldSelector((state: any) => state.codeSamples);
   const postman = useOldSelector((state: any) => state.postman);
   const auth = useOldSelector((state: any) => state.auth);

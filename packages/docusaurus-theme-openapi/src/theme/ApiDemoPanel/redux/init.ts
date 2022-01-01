@@ -10,7 +10,6 @@ import { loadAuth, loadSelectedAuth } from "./persistance";
 
 function init(
   {
-    parameters = [],
     requestBody = {},
     "x-code-samples": codeSamples = [],
     postman,
@@ -20,29 +19,6 @@ function init(
   }: any,
   options: ThemeConfig["api"] = {}
 ) {
-  let params: any = {
-    path: [],
-    query: [],
-    header: [],
-    cookie: [],
-  };
-
-  parameters.forEach((param: any) => {
-    params[param.in].push({
-      ...param,
-      name: param.name,
-      value: undefined,
-      description: param.description,
-      type: param.in,
-      required: param.required,
-      schema: param.schema,
-    });
-  });
-
-  // if (!servers) {
-  //   servers = [];
-  // }
-
   const auth = loadAuth({
     securitySchemes,
     security: security ?? [],
@@ -73,7 +49,6 @@ function init(
   return {
     jsonRequestBodyExample,
     requestBodyMetadata: requestBody, // TODO: no...
-    params,
     codeSamples,
     postman,
     auth,

@@ -10,6 +10,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import accept from "./Accept/slice";
 import body from "./Body/slice";
 import contentType from "./ContentType/slice";
+import params from "./ParamOptions/slice";
 import oldReducer from "./redux/reducer";
 import response from "./Response/slice";
 import server from "./Server/slice";
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   response,
   server,
   body,
+  params,
   old,
 });
 

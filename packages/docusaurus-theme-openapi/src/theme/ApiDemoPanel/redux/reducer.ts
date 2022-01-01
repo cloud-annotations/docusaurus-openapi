@@ -12,14 +12,6 @@ import { persistAuth, persistSelectedAuth } from "./persistance";
 
 const reducer = produce((draft, action) => {
   switch (action.type) {
-    case types.updateParam: {
-      draft.params[action.param.type][
-        draft.params[action.param.type].findIndex(
-          (param: any) => param.name === action.param.name
-        )
-      ] = action.param;
-      break;
-    }
     case types.setAuth: {
       //  TODO: This is a side effect and shouldn't be done here.
       persistAuth({

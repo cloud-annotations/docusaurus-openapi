@@ -9,19 +9,16 @@ import React from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { Metadata } from "@theme/ApiItem";
+import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import sdk from "postman-collection";
 import { Provider } from "react-redux";
 
 import Accept from "./Accept";
 import Authorization from "./Authorization";
-// @ts-ignore
 import Body from "./Body";
-// @ts-ignore
 import Curl from "./Curl";
-// @ts-ignore
 import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
-// @ts-ignore
 import ParamOptions from "./ParamOptions";
 import init from "./redux/init";
 import Response from "./Response";
@@ -49,12 +46,24 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
 
   const servers = item.servers ?? [];
 
+  const params = {
+    path: [] as ParameterObject[],
+    query: [] as ParameterObject[],
+    header: [] as ParameterObject[],
+    cookie: [] as ParameterObject[],
+  };
+
+  item.parameters?.forEach((param) => {
+    params[param.in].push(param);
+  });
+
   const store2 = createStoreWithState({
     accept: { value: acceptArray[0], options: acceptArray },
     contentType: { value: contentTypeArray[0], options: contentTypeArray },
     server: { value: servers[0], options: servers },
     response: { value: undefined },
     body: { type: "empty" },
+    params,
     old: init(item, options as any),
   });
 
