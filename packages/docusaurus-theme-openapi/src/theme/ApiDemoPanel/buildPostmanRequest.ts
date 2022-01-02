@@ -12,30 +12,12 @@ import {
 import cloneDeep from "lodash/cloneDeep";
 import sdk from "postman-collection";
 
+import { AuthState, Scheme } from "./Authorization/slice";
 import { Body, Content } from "./Body/slice";
 
 type Param = {
   value?: string | string[];
 } & ParameterObject;
-
-interface BearerAuth {
-  type: "http";
-  scheme: "bearer";
-  data: {
-    token?: string;
-  };
-}
-
-interface BasicAuth {
-  type: "http";
-  scheme: "basic";
-  data: {
-    username?: string;
-    password?: string;
-  };
-}
-
-type Auth = BasicAuth | BearerAuth;
 
 function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
   postman.url.query.clear();
@@ -217,9 +199,7 @@ interface Options {
   contentType: string;
   accept: string;
   body: Body;
-  auth: Auth[][];
-  selectedAuthID?: string;
-  authOptionIDs: string[];
+  auth: AuthState;
 }
 
 function buildPostmanRequest(
@@ -234,8 +214,6 @@ function buildPostmanRequest(
     body,
     server,
     auth,
-    selectedAuthID,
-    authOptionIDs,
   }: Options
 ) {
   const clonedPostman = cloneDeep(postman);
@@ -260,16 +238,15 @@ function buildPostmanRequest(
   const cookie = buildCookie(cookieParams);
   let otherHeaders = [];
 
-  let selectedAuth: Auth[] = [];
-  if (selectedAuthID !== undefined) {
-    const selectedAuthIndex = authOptionIDs.indexOf(selectedAuthID);
-    selectedAuth = auth[selectedAuthIndex];
+  let selectedAuth: Scheme[] = [];
+  if (auth.selected !== undefined) {
+    selectedAuth = auth.options[auth.selected];
   }
 
   for (const a of selectedAuth) {
     // Bearer Auth
     if (a.type === "http" && a.scheme === "bearer") {
-      const { token } = a.data;
+      const { token } = auth.data[a.key];
       if (token === undefined) {
         continue;
       }
@@ -282,7 +259,7 @@ function buildPostmanRequest(
 
     // Basic Auth
     if (a.type === "http" && a.scheme === "basic") {
-      const { username, password } = a.data;
+      const { username, password } = auth.data[a.key];
       if (username === undefined || password === undefined) {
         continue;
       }

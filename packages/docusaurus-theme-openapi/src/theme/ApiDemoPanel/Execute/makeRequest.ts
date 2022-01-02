@@ -32,7 +32,11 @@ async function loadImage(content: Blob): Promise<string | ArrayBuffer | null> {
   });
 }
 
-async function makeRequest(request: sdk.Request, proxy: string, _body: Body) {
+async function makeRequest(
+  request: sdk.Request,
+  proxy: string | undefined,
+  _body: Body
+) {
   const headers = request.toJSON().header;
 
   let myHeaders = new Headers();

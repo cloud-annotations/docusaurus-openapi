@@ -11,9 +11,10 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
+import sdk from "postman-collection";
 import Highlight, { defaultProps } from "prism-react-renderer";
 
-import { useOldSelector, useTypedSelector } from "../hooks";
+import { useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
@@ -121,7 +122,12 @@ const languageTheme = {
   ],
 };
 
-function Curl() {
+interface Props {
+  postman: sdk.Request;
+  codeSamples: any; // TODO: Type this...
+}
+
+function Curl({ postman, codeSamples }: Props) {
   // TODO: match theme for vscode.
 
   const { siteConfig } = useDocusaurusContext();
@@ -137,11 +143,8 @@ function Curl() {
   const queryParams = useTypedSelector((state) => state.params.query);
   const cookieParams = useTypedSelector((state) => state.params.cookie);
   const headerParams = useTypedSelector((state) => state.params.header);
-  const codeSamples = useOldSelector((state: any) => state.codeSamples);
-  const postman = useOldSelector((state: any) => state.postman);
-  const auth = useOldSelector((state: any) => state.auth);
-  const selectedAuthID = useOldSelector((state: any) => state.selectedAuthID);
-  const authOptionIDs = useOldSelector((state: any) => state.authOptionIDs);
+
+  const auth = useTypedSelector((state) => state.auth);
 
   // TODO
   const langs = [
@@ -166,8 +169,6 @@ function Curl() {
         body,
         server,
         auth,
-        selectedAuthID,
-        authOptionIDs,
       });
 
       codegen.convert(
@@ -199,8 +200,6 @@ function Curl() {
     queryParams,
     server,
     auth,
-    selectedAuthID,
-    authOptionIDs,
   ]);
 
   const ref = useRef<HTMLDivElement>(null);

@@ -5,14 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-export interface Security {
-  key: string;
-  scopes: string[];
-  type: string;
-  [key: string]: any;
-}
-
-export function getAuthDataKeys(security: Security) {
+export function getAuthDataKeys(security: { [key: string]: any }) {
   // Bearer Auth
   if (security.type === "http" && security.scheme === "bearer") {
     return ["token"];

@@ -8,16 +8,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
 import accept from "./Accept/slice";
+import auth from "./Authorization/slice";
 import body from "./Body/slice";
 import contentType from "./ContentType/slice";
 import params from "./ParamOptions/slice";
-import oldReducer from "./redux/reducer";
 import response from "./Response/slice";
 import server from "./Server/slice";
-
-function old(state = {}, action: any) {
-  return oldReducer(state, action);
-}
 
 const rootReducer = combineReducers({
   accept,
@@ -26,15 +22,20 @@ const rootReducer = combineReducers({
   server,
   body,
   params,
-  old,
+  auth,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export const createStoreWithState = (preloadedState: RootState) =>
+export const createStoreWithState = (
+  preloadedState: RootState,
+  middlewares: any[]
+) =>
   configureStore({
     reducer: rootReducer,
     preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(...middlewares),
   });
 
 export type AppDispatch = ReturnType<typeof createStoreWithState>["dispatch"];

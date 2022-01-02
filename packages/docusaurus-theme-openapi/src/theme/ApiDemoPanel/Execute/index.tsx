@@ -7,7 +7,9 @@
 
 import React from "react";
 
-import { useOldSelector, useTypedDispatch, useTypedSelector } from "../hooks";
+import sdk from "postman-collection";
+
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 import { Param } from "../ParamOptions/slice";
 import { setResponse } from "../Response/slice";
 import buildPostmanRequest from "./../buildPostmanRequest";
@@ -29,9 +31,12 @@ function validateRequest(params: {
   return true;
 }
 
-function Execute() {
-  const postman = useOldSelector((state: any) => state.postman);
+interface Props {
+  postman: sdk.Request;
+  proxy?: string;
+}
 
+function Execute({ postman, proxy }: Props) {
   const pathParams = useTypedSelector((state) => state.params.path);
   const queryParams = useTypedSelector((state) => state.params.query);
   const cookieParams = useTypedSelector((state) => state.params.cookie);
@@ -40,12 +45,9 @@ function Execute() {
   const body = useTypedSelector((state) => state.body);
   const accept = useTypedSelector((state) => state.accept.value);
   const server = useTypedSelector((state) => state.server.value);
-  const auth = useOldSelector((state: any) => state.auth);
-  const selectedAuthID = useOldSelector((state: any) => state.selectedAuthID);
-  const authOptionIDs = useOldSelector((state: any) => state.authOptionIDs);
-  const proxy = useOldSelector((state: any) => state.options.proxy);
-
   const params = useTypedSelector((state) => state.params);
+  const auth = useTypedSelector((state) => state.auth);
+
   const isValidRequest = validateRequest(params);
 
   const dispatch = useTypedDispatch();
@@ -60,8 +62,6 @@ function Execute() {
     body,
     server,
     auth,
-    selectedAuthID,
-    authOptionIDs,
   });
 
   return (

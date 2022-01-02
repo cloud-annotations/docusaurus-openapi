@@ -7,9 +7,11 @@
 
 import React, { useState } from "react";
 
+import { RequestBodyObject } from "docusaurus-plugin-openapi/src/openapi/types";
+
 import ContentType from "../ContentType";
 import FormSelect from "../FormSelect";
-import { useOldSelector, useTypedDispatch, useTypedSelector } from "../hooks";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormFileUpload from "./../FormFileUpload";
 import FormItem from "./../FormItem";
 import FormTextInput from "./../FormTextInput";
@@ -24,12 +26,15 @@ import {
 } from "./slice";
 import styles from "./styles.module.css";
 
-function BodyWrap() {
+interface Props {
+  jsonRequestBodyExample: string;
+  requestBodyMetadata?: RequestBodyObject;
+}
+
+function BodyWrap({ requestBodyMetadata, jsonRequestBodyExample }: Props) {
   const [showOptional, setShowOptional] = useState(false);
   const contentType = useTypedSelector((state) => state.contentType.value);
-  const required = useOldSelector(
-    (state: any) => state.requestBodyMetadata.required
-  );
+  const required = requestBodyMetadata?.required;
 
   // No body
   if (contentType === undefined) {
@@ -40,7 +45,10 @@ function BodyWrap() {
     return (
       <>
         <ContentType />
-        <Body />
+        <Body
+          requestBodyMetadata={requestBodyMetadata}
+          jsonRequestBodyExample={jsonRequestBodyExample}
+        />
       </>
     );
   }
@@ -84,21 +92,18 @@ function BodyWrap() {
       <div className={showOptional ? styles.showOptions : styles.hideOptions}>
         <>
           <ContentType />
-          <Body />
+          <Body
+            requestBodyMetadata={requestBodyMetadata}
+            jsonRequestBodyExample={jsonRequestBodyExample}
+          />
         </>
       </div>
     </>
   );
 }
 
-function Body() {
+function Body({ requestBodyMetadata, jsonRequestBodyExample }: Props) {
   const contentType = useTypedSelector((state) => state.contentType.value);
-  const requestBodyMetadata = useOldSelector(
-    (state: any) => state.requestBodyMetadata
-  );
-  const jsonRequestBodyExample = useOldSelector(
-    (state: any) => state.jsonRequestBodyExample
-  );
 
   const dispatch = useTypedDispatch();
 
@@ -129,7 +134,8 @@ function Body() {
   }
 
   const schema = requestBodyMetadata?.content?.[contentType]?.schema;
-  if (schema.format === "binary") {
+
+  if (schema?.format === "binary") {
     return (
       <FormItem label="Body">
         <FormFileUpload
@@ -154,7 +160,7 @@ function Body() {
   if (
     (contentType === "multipart/form-data" ||
       contentType === "application/x-www-form-urlencoded") &&
-    requestBodyMetadata?.content?.[contentType]?.schema.type === "object"
+    schema?.type === "object"
   ) {
     return (
       <FormItem label="Body">
@@ -166,9 +172,7 @@ function Body() {
             border: "1px solid var(--openapi-monaco-border-color)",
           }}
         >
-          {Object.entries(
-            requestBodyMetadata?.content?.[contentType]?.schema.properties
-          ).map(([key, val]: any) => {
+          {Object.entries(schema.properties ?? {}).map(([key, val]: any) => {
             if (val.format === "binary") {
               return (
                 <FormItem key={key} label={key}>

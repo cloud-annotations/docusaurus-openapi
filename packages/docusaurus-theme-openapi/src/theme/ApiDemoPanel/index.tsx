@@ -13,14 +13,16 @@ import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import sdk from "postman-collection";
 import { Provider } from "react-redux";
 
+import { ThemeConfig } from "../../types";
 import Accept from "./Accept";
 import Authorization from "./Authorization";
+import { createAuth } from "./Authorization/slice";
 import Body from "./Body";
 import Curl from "./Curl";
 import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
 import ParamOptions from "./ParamOptions";
-import init from "./redux/init";
+import { createPersistanceMiddleware } from "./persistanceMiddleware";
 import Response from "./Response";
 import Server from "./Server";
 import { createStoreWithState } from "./store";
@@ -28,9 +30,10 @@ import styles from "./styles.module.css";
 
 function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
   const { siteConfig } = useDocusaurusContext();
-  const { api: options } = siteConfig.themeConfig;
+  const themeConfig = siteConfig.themeConfig as ThemeConfig;
+  const options = themeConfig.api;
 
-  item.postman = new sdk.Request(item.postman);
+  const postman = new sdk.Request(item.postman);
 
   const acceptArray = Array.from(
     new Set(
@@ -57,15 +60,25 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
     params[param.in].push(param);
   });
 
-  const store2 = createStoreWithState({
-    accept: { value: acceptArray[0], options: acceptArray },
-    contentType: { value: contentTypeArray[0], options: contentTypeArray },
-    server: { value: servers[0], options: servers },
-    response: { value: undefined },
-    body: { type: "empty" },
-    params,
-    old: init(item, options as any),
+  const auth = createAuth({
+    security: item.security,
+    securitySchemes: item.securitySchemes,
   });
+
+  const persistanceMiddleware = createPersistanceMiddleware(options);
+
+  const store2 = createStoreWithState(
+    {
+      accept: { value: acceptArray[0], options: acceptArray },
+      contentType: { value: contentTypeArray[0], options: contentTypeArray },
+      server: { value: servers[0], options: servers },
+      response: { value: undefined },
+      body: { type: "empty" },
+      params,
+      auth,
+    },
+    [persistanceMiddleware]
+  );
 
   const { path, method } = item;
 
@@ -86,15 +99,21 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
 
         <div className={styles.optionsPanel}>
           <ParamOptions />
-          <Body />
+          <Body
+            jsonRequestBodyExample={item.jsonRequestBodyExample}
+            requestBodyMetadata={item.requestBody}
+          />
           <Accept />
         </div>
 
         <Server />
 
-        <Curl />
+        <Curl
+          postman={postman}
+          codeSamples={(item as any)["x-code-samples"] ?? []}
+        />
 
-        <Execute />
+        <Execute postman={postman} proxy={options?.proxy} />
 
         <Response />
       </div>
