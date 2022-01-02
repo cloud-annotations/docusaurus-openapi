@@ -49,13 +49,13 @@ import { getAuthDataKeys } from "./auth-types";
 export function createAuth({
   security,
   securitySchemes,
-  opts,
+  options: opts,
 }: {
   security?: SecurityRequirementObject[];
   securitySchemes?: {
     [key: string]: SecuritySchemeObject;
   };
-  opts: ThemeConfig["api"];
+  options?: ThemeConfig["api"];
 }): AuthState {
   const storage = createStorage(opts?.authPersistance);
 
