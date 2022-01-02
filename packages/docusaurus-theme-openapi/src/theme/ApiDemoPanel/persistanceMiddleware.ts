@@ -9,20 +9,38 @@ import { Middleware } from "@reduxjs/toolkit";
 
 import { ThemeConfig } from "../../types";
 import { setAuthData, setSelectedAuth } from "./Authorization/slice";
+import { createStorage, hashArray } from "./storage-utils";
 import { AppDispatch, RootState } from "./store";
 
 export function createPersistanceMiddleware(options: ThemeConfig["api"]) {
   const persistanceMiddleware: Middleware<{}, RootState, AppDispatch> =
-    (_storeAPI) => (next) => (action) => {
+    (storeAPI) => (next) => (action) => {
+      const result = next(action);
+
+      const state = storeAPI.getState();
+
+      const storage = createStorage(options?.authPersistance);
+
       if (action.type === setAuthData.type) {
-        console.log("PERSIST AUTH DATA");
+        for (const [key, value] of Object.entries(state.auth.data)) {
+          if (Object.values(value).filter(Boolean).length > 0) {
+            storage.setItem(key, JSON.stringify(value));
+          } else {
+            storage.removeItem(key);
+          }
+        }
       }
 
       if (action.type === setSelectedAuth.type) {
-        console.log("PERSIST SELECTED AUTH");
+        if (state.auth.selected) {
+          storage.setItem(
+            hashArray(Object.keys(state.auth.options)),
+            state.auth.selected
+          );
+        }
       }
 
-      return next(action);
+      return result;
     };
   return persistanceMiddleware;
 }

@@ -11,6 +11,8 @@ import {
   SecuritySchemeObject,
 } from "docusaurus-plugin-openapi/src/openapi/types";
 
+import { ThemeConfig } from "../../../types";
+import { createStorage, hashArray } from "../storage-utils";
 import { getAuthDataKeys } from "./auth-types";
 
 // The global definitions
@@ -47,12 +49,16 @@ import { getAuthDataKeys } from "./auth-types";
 export function createAuth({
   security,
   securitySchemes,
+  opts,
 }: {
   security?: SecurityRequirementObject[];
   securitySchemes?: {
     [key: string]: SecuritySchemeObject;
   };
+  opts: ThemeConfig["api"];
 }): AuthState {
+  const storage = createStorage(opts?.authPersistance);
+
   let data: AuthState["data"] = {};
   let options: AuthState["options"] = {};
 
@@ -69,7 +75,13 @@ export function createAuth({
           if (data[schemeID] === undefined) {
             data[schemeID] = {};
           }
-          data[schemeID][key] = undefined;
+
+          let persisted = undefined;
+          try {
+            persisted = JSON.parse(storage.getItem(schemeID) ?? "")[key];
+          } catch {}
+
+          data[schemeID][key] = persisted;
         }
         options[id].push({
           ...scheme,
@@ -80,10 +92,15 @@ export function createAuth({
     }
   }
 
+  let persisted = undefined;
+  try {
+    persisted = storage.getItem(hashArray(Object.keys(options))) ?? undefined;
+  } catch {}
+
   return {
     data,
     options,
-    selected: Object.keys(options)[0],
+    selected: persisted ?? Object.keys(options)[0],
   };
 }
 

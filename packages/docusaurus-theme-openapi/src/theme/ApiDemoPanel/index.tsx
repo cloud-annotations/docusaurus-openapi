@@ -63,6 +63,7 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
   const auth = createAuth({
     security: item.security,
     securitySchemes: item.securitySchemes,
+    options,
   });
 
   const persistanceMiddleware = createPersistanceMiddleware(options);
