@@ -7,86 +7,10 @@
 
 import React, { useState } from "react";
 
-import Editor, { loader } from "@monaco-editor/react";
+import Editor, { Monaco } from "@monaco-editor/react";
 import useThemeContext from "@theme/hooks/useThemeContext";
 
 import styles from "./styles.module.css";
-
-const LIGHT_BRIGHT = "1c1e21";
-const LIGHT_DIM = "aaaaaa";
-const LIGHT_BLUE = "648bea";
-const LIGHT_GREEN = "39a351";
-const LIGHT_BACKGROUND = getComputedStyle(
-  document.documentElement
-).getPropertyValue("--openapi-monaco-background-color");
-const LIGHT_SELECT = "#ebedef";
-
-const DARK_BRIGHT = "f5f6f7";
-const DARK_DIM = "7f7f7f";
-const DARK_BLUE = "a4cdfe";
-const DARK_GREEN = "85d996";
-const DARK_BACKGROUND = getComputedStyle(
-  document.documentElement
-).getPropertyValue("--openapi-monaco-background-color");
-const DARK_SELECT = "#515151";
-
-loader
-  .init()
-  .then((monaco) => {
-    monaco.editor.defineTheme("OpenApiDark", {
-      base: "vs-dark",
-      inherit: false,
-      rules: [
-        { token: "", foreground: DARK_BRIGHT },
-        { token: "string.key.json", foreground: DARK_BRIGHT },
-        { token: "string.value.json", foreground: DARK_GREEN },
-        { token: "number", foreground: DARK_BLUE },
-        { token: "keyword.json", foreground: DARK_BLUE },
-        { token: "delimiter", foreground: DARK_DIM },
-        { token: "tag.xml", foreground: DARK_DIM },
-        { token: "metatag.xml", foreground: DARK_DIM },
-        { token: "attribute.name.xml", foreground: DARK_BRIGHT },
-        { token: "attribute.value.xml", foreground: DARK_GREEN },
-        { token: "metatag.xml", foreground: DARK_BLUE },
-        { token: "tag.xml", foreground: DARK_BLUE },
-      ],
-      colors: {
-        "editor.background": DARK_BACKGROUND,
-        "editor.lineHighlightBackground": DARK_BACKGROUND,
-        "editorBracketMatch.background": DARK_BACKGROUND,
-        "editorBracketMatch.border": DARK_BACKGROUND,
-        "editor.selectionBackground": DARK_SELECT,
-      },
-    });
-    monaco.editor.defineTheme("OpenApiLight", {
-      base: "vs",
-      inherit: false,
-      rules: [
-        { token: "", foreground: LIGHT_BRIGHT },
-        { token: "string.key.json", foreground: LIGHT_BRIGHT },
-        { token: "string.value.json", foreground: LIGHT_GREEN },
-        { token: "number", foreground: LIGHT_BLUE },
-        { token: "keyword.json", foreground: LIGHT_BLUE },
-        { token: "delimiter", foreground: LIGHT_DIM },
-        { token: "tag.xml", foreground: LIGHT_DIM },
-        { token: "metatag.xml", foreground: LIGHT_DIM },
-        { token: "attribute.name.xml", foreground: LIGHT_BRIGHT },
-        { token: "attribute.value.xml", foreground: LIGHT_GREEN },
-        { token: "metatag.xml", foreground: LIGHT_BLUE },
-        { token: "tag.xml", foreground: LIGHT_BLUE },
-      ],
-      colors: {
-        "editor.background": LIGHT_BACKGROUND,
-        "editor.lineHighlightBackground": LIGHT_BACKGROUND,
-        "editorBracketMatch.background": LIGHT_BACKGROUND,
-        "editorBracketMatch.border": LIGHT_BACKGROUND,
-        "editor.selectionBackground": LIGHT_SELECT,
-      },
-    });
-  })
-  .catch((error) =>
-    console.error("An error occurred during initialization of Monaco: ", error)
-  );
 
 interface Props {
   value?: string;
@@ -99,12 +23,83 @@ function VSCode({ value, language, onChange }: Props) {
 
   const { isDarkTheme } = useThemeContext();
 
+  function handleEditorWillMount(monaco: Monaco) {
+    const styles = getComputedStyle(document.documentElement);
+    function getColor(property: string) {
+      // Weird chrome bug, returns " #ffffff " instead of "#ffffff", see: https://github.com/cloud-annotations/docusaurus-openapi/issues/144
+      return styles.getPropertyValue(property).trim();
+    }
+
+    const LIGHT_BRIGHT = "#1c1e21";
+    const LIGHT_SELECT = "#ebedef";
+
+    const DARK_BRIGHT = "#f5f6f7";
+    const DARK_SELECT = "#515151";
+
+    const DIM = getColor("--openapi-code-dim");
+    const BLUE = getColor("--openapi-code-blue");
+    const GREEN = getColor("--openapi-code-green");
+    const BACKGROUND = getColor("--openapi-monaco-background-color");
+
+    monaco.editor.defineTheme("OpenApiDark", {
+      base: "vs-dark",
+      inherit: true,
+      rules: [
+        { token: "", foreground: DARK_BRIGHT },
+        { token: "string.key.json", foreground: DARK_BRIGHT },
+        { token: "string.value.json", foreground: GREEN },
+        { token: "number", foreground: BLUE },
+        { token: "keyword.json", foreground: BLUE },
+        { token: "delimiter", foreground: DIM },
+        { token: "tag.xml", foreground: DIM },
+        { token: "metatag.xml", foreground: DIM },
+        { token: "attribute.name.xml", foreground: DARK_BRIGHT },
+        { token: "attribute.value.xml", foreground: GREEN },
+        { token: "metatag.xml", foreground: BLUE },
+        { token: "tag.xml", foreground: BLUE },
+      ],
+      colors: {
+        "editor.background": BACKGROUND,
+        "editor.lineHighlightBackground": BACKGROUND,
+        "editorBracketMatch.background": BACKGROUND,
+        "editorBracketMatch.border": BACKGROUND,
+        "editor.selectionBackground": DARK_SELECT,
+      },
+    });
+    monaco.editor.defineTheme("OpenApiLight", {
+      base: "vs",
+      inherit: false,
+      rules: [
+        { token: "", foreground: LIGHT_BRIGHT },
+        { token: "string.key.json", foreground: LIGHT_BRIGHT },
+        { token: "string.value.json", foreground: GREEN },
+        { token: "number", foreground: BLUE },
+        { token: "keyword.json", foreground: BLUE },
+        { token: "delimiter", foreground: DIM },
+        { token: "tag.xml", foreground: DIM },
+        { token: "metatag.xml", foreground: DIM },
+        { token: "attribute.name.xml", foreground: LIGHT_BRIGHT },
+        { token: "attribute.value.xml", foreground: GREEN },
+        { token: "metatag.xml", foreground: BLUE },
+        { token: "tag.xml", foreground: BLUE },
+      ],
+      colors: {
+        "editor.background": BACKGROUND,
+        "editor.lineHighlightBackground": BACKGROUND,
+        "editorBracketMatch.background": BACKGROUND,
+        "editorBracketMatch.border": BACKGROUND,
+        "editor.selectionBackground": LIGHT_SELECT,
+      },
+    });
+  }
+
   return (
     <div className={focused ? styles.monacoFocus : styles.monaco}>
       <Editor
         value={value}
         language={language}
         theme={isDarkTheme ? "OpenApiDark" : "OpenApiLight"}
+        beforeMount={handleEditorWillMount}
         options={{
           lineNumbers: "off",
           scrollBeyondLastLine: false,
