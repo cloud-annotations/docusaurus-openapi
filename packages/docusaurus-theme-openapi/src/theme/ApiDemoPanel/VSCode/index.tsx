@@ -31,15 +31,20 @@ function VSCode({ value, language, onChange }: Props) {
     }
 
     const LIGHT_BRIGHT = "#1c1e21";
+    const LIGHT_DIM = getColor("--openapi-code-dim-light");
+    const LIGHT_BLUE = getColor("--openapi-code-blue-light");
+    const LIGHT_GREEN = getColor("--openapi-code-green-light");
+    const LIGHT_BACKGROUND = getColor(
+      "--openapi-monaco-background-color-light"
+    );
     const LIGHT_SELECT = "#ebedef";
 
     const DARK_BRIGHT = "#f5f6f7";
+    const DARK_DIM = getColor("--openapi-code-dim-dark");
+    const DARK_BLUE = getColor("--openapi-code-blue-dark");
+    const DARK_GREEN = getColor("--openapi-code-green-dark");
+    const DARK_BACKGROUND = getColor("--openapi-monaco-background-color-dark");
     const DARK_SELECT = "#515151";
-
-    const DIM = getColor("--openapi-code-dim");
-    const BLUE = getColor("--openapi-code-blue");
-    const GREEN = getColor("--openapi-code-green");
-    const BACKGROUND = getColor("--openapi-monaco-background-color");
 
     monaco.editor.defineTheme("OpenApiDark", {
       base: "vs-dark",
@@ -47,22 +52,22 @@ function VSCode({ value, language, onChange }: Props) {
       rules: [
         { token: "", foreground: DARK_BRIGHT },
         { token: "string.key.json", foreground: DARK_BRIGHT },
-        { token: "string.value.json", foreground: GREEN },
-        { token: "number", foreground: BLUE },
-        { token: "keyword.json", foreground: BLUE },
-        { token: "delimiter", foreground: DIM },
-        { token: "tag.xml", foreground: DIM },
-        { token: "metatag.xml", foreground: DIM },
+        { token: "string.value.json", foreground: DARK_GREEN },
+        { token: "number", foreground: DARK_BLUE },
+        { token: "keyword.json", foreground: DARK_BLUE },
+        { token: "delimiter", foreground: DARK_DIM },
+        { token: "tag.xml", foreground: DARK_DIM },
+        { token: "metatag.xml", foreground: DARK_DIM },
         { token: "attribute.name.xml", foreground: DARK_BRIGHT },
-        { token: "attribute.value.xml", foreground: GREEN },
-        { token: "metatag.xml", foreground: BLUE },
-        { token: "tag.xml", foreground: BLUE },
+        { token: "attribute.value.xml", foreground: DARK_GREEN },
+        { token: "metatag.xml", foreground: DARK_BLUE },
+        { token: "tag.xml", foreground: DARK_BLUE },
       ],
       colors: {
-        "editor.background": BACKGROUND,
-        "editor.lineHighlightBackground": BACKGROUND,
-        "editorBracketMatch.background": BACKGROUND,
-        "editorBracketMatch.border": BACKGROUND,
+        "editor.background": DARK_BACKGROUND,
+        "editor.lineHighlightBackground": DARK_BACKGROUND,
+        "editorBracketMatch.background": DARK_BACKGROUND,
+        "editorBracketMatch.border": DARK_BACKGROUND,
         "editor.selectionBackground": DARK_SELECT,
       },
     });
@@ -72,22 +77,22 @@ function VSCode({ value, language, onChange }: Props) {
       rules: [
         { token: "", foreground: LIGHT_BRIGHT },
         { token: "string.key.json", foreground: LIGHT_BRIGHT },
-        { token: "string.value.json", foreground: GREEN },
-        { token: "number", foreground: BLUE },
-        { token: "keyword.json", foreground: BLUE },
-        { token: "delimiter", foreground: DIM },
-        { token: "tag.xml", foreground: DIM },
-        { token: "metatag.xml", foreground: DIM },
+        { token: "string.value.json", foreground: LIGHT_GREEN },
+        { token: "number", foreground: LIGHT_BLUE },
+        { token: "keyword.json", foreground: LIGHT_BLUE },
+        { token: "delimiter", foreground: LIGHT_DIM },
+        { token: "tag.xml", foreground: LIGHT_DIM },
+        { token: "metatag.xml", foreground: LIGHT_DIM },
         { token: "attribute.name.xml", foreground: LIGHT_BRIGHT },
-        { token: "attribute.value.xml", foreground: GREEN },
-        { token: "metatag.xml", foreground: BLUE },
-        { token: "tag.xml", foreground: BLUE },
+        { token: "attribute.value.xml", foreground: LIGHT_GREEN },
+        { token: "metatag.xml", foreground: LIGHT_BLUE },
+        { token: "tag.xml", foreground: LIGHT_BLUE },
       ],
       colors: {
-        "editor.background": BACKGROUND,
-        "editor.lineHighlightBackground": BACKGROUND,
-        "editorBracketMatch.background": BACKGROUND,
-        "editorBracketMatch.border": BACKGROUND,
+        "editor.background": LIGHT_BACKGROUND,
+        "editor.lineHighlightBackground": LIGHT_BACKGROUND,
+        "editorBracketMatch.background": LIGHT_BACKGROUND,
+        "editorBracketMatch.border": LIGHT_BACKGROUND,
         "editor.selectionBackground": LIGHT_SELECT,
       },
     });
