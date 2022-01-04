@@ -68,7 +68,7 @@ function VSCode({ value, language, onChange }: Props) {
     });
     monaco.editor.defineTheme("OpenApiLight", {
       base: "vs",
-      inherit: false,
+      inherit: true,
       rules: [
         { token: "", foreground: LIGHT_BRIGHT },
         { token: "string.key.json", foreground: LIGHT_BRIGHT },
