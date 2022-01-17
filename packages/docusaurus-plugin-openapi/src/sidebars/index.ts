@@ -92,7 +92,7 @@ export async function generateSidebar(
           label,
           collapsible: options.sidebarCollapsible,
           collapsed: options.sidebarCollapsed,
-          items: await groupByTags(items, options),
+          items: groupByTags(items, options),
         });
         visiting = sidebar; // reset
         break;
@@ -139,10 +139,7 @@ export async function generateSidebar(
 /**
  * Takes a flat list of pages and groups them into categories based on there tags.
  */
-async function groupByTags(
-  items: Item[],
-  options: Options
-): Promise<PropSidebar> {
+function groupByTags(items: Item[], options: Options): PropSidebar {
   const intros = items.filter(isInfoItem).map((item) => {
     return {
       type: "link" as const,
@@ -190,11 +187,6 @@ async function groupByTags(
     })
     .filter((item) => item.items.length > 0); // Filter out any categories with no items.
 
-  // annotate the labels of existing tags
-  for await (const tag of tagged) {
-    tag.label = await getTaggedLabelFromFile(tag.label, options.contentPath);
-  }
-
   const untagged = [
     {
       type: "category" as const,
@@ -241,64 +233,4 @@ async function readCategoryMetadataFile(
     }
   }
   return null;
-}
-
-const tagLabels = new Map<string, string>();
-
-async function getTaggedLabelFromFile(
-  tagName: string,
-  filePath: string
-): Promise<string> {
-  const displayNameProperty = "x-displayName";
-  const tagKey = `${filePath}::${tagName}`;
-
-  if (!hasFileBeenRead(filePath)) {
-    try {
-      const contentString = await fs.readFile(filePath, { encoding: "utf8" });
-      const unsafeContent = Yaml.load(contentString);
-
-      ensureContentWithTags(unsafeContent);
-
-      unsafeContent.tags.forEach((tag) => {
-        if (
-          Object.prototype.hasOwnProperty.call(tag, displayNameProperty) &&
-          typeof tag[displayNameProperty] === "string"
-        ) {
-          tagLabels.set(`${filePath}::${tag.name}`, tag[displayNameProperty]!);
-        }
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  if (tagLabels.has(tagKey)) {
-    return tagLabels.get(tagKey)!;
-  }
-
-  return tagName;
-}
-
-function hasFileBeenRead(filePath: string): boolean {
-  return [...tagLabels.keys()].some((key) => key.split("::")[0] === filePath);
-}
-
-type Tags = {
-  readonly name: string;
-  readonly "x-displayName"?: string | undefined;
-};
-function ensureContentWithTags(
-  content: any
-): asserts content is Record<"tags", readonly Tags[]> {
-  if (
-    typeof content === "object" &&
-    "tags" in content &&
-    Array.isArray(content.tags) &&
-    content.tags.every(
-      (tag: any) => typeof tag === "object" && typeof tag.name === "string"
-    )
-  ) {
-    return;
-  }
-  throw new TypeError("");
 }

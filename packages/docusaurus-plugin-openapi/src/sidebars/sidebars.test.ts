@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { join } from "path";
-
 import { generateSidebar } from ".";
 import type {
   PropSidebarItemCategory,
@@ -127,32 +125,6 @@ describe("sidebars", () => {
       const [helloWorld] = api?.items ?? [];
       expect(helloWorld.type).toBe("link");
       expect(helloWorld.label).toBe("Hello World");
-    });
-
-    it("single spec tags case - should render root level categories per tag with its displayName", async () => {
-      const input = [
-        getIntro(),
-        {
-          type: "api" as const,
-          id: "hello-world",
-          title: "Hello World",
-          api: {
-            tags: ["stuff"],
-          },
-          source: "@site/examples/openapi.yaml",
-          sourceDirName: ".",
-          permalink: "/yaml/hello-world",
-        },
-      ];
-
-      const output = await generateSidebar(input, {
-        ...getOpts(),
-        contentPath: join(__dirname, "sidebars.test.yaml"),
-      });
-
-      const category = output.find((item) => item.type === "category")!;
-
-      expect(category.label).toBe("Changed Label from sidebars.test.yaml");
     });
   });
   describe("Multi Spec", () => {

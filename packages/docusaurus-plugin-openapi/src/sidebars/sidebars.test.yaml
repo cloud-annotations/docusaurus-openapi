@@ -1,8 +1,0 @@
-openapi: 3.0.3
-info:
-  title: YAML Example
-  version: 1.0.0
-  description: Sample description.
-tags:
-  - name: stuff
-    x-displayName: Changed Label from sidebars.test.yaml
