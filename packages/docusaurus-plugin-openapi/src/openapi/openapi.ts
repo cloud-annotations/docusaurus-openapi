@@ -24,6 +24,8 @@ import sdk, { Collection } from "postman-collection";
 import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
 import { sampleFromSchema } from "./createExample";
 import { OpenApiObject, OpenApiObjectWithRef, TagObject } from "./types";
+import { isURL } from "../util";
+import axios from 'axios';
 
 /**
  * Finds any reference objects in the OpenAPI definition and resolves them to a finalized value.
@@ -207,6 +209,17 @@ export async function readOpenapiFiles(
   openapiPath: string,
   _options: {}
 ): Promise<OpenApiFiles[]> {
+  if (isURL(openapiPath)) {
+    const { data } = await axios.get(openapiPath);
+    if (!data) {
+      throw Error(`Did not find an OpenAPI specification at URL ${openapiPath}`);
+    }
+    return [{
+      source: openapiPath,
+      sourceDirName: ".",
+      data
+    }];
+  }
   const stat = await fs.lstat(openapiPath);
   if (stat.isDirectory()) {
     console.warn(
