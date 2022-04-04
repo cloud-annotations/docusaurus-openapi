@@ -13,6 +13,7 @@ import {
   GlobExcludeDefault,
   normalizeUrl,
 } from "@docusaurus/utils";
+import axios from "axios";
 import chalk from "chalk";
 import fs from "fs-extra";
 import yaml from "js-yaml";
@@ -22,6 +23,7 @@ import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 
 import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
+import { isURL } from "../util";
 import { sampleFromSchema } from "./createExample";
 import { OpenApiObject, OpenApiObjectWithRef, TagObject } from "./types";
 
@@ -207,6 +209,21 @@ export async function readOpenapiFiles(
   openapiPath: string,
   _options: {}
 ): Promise<OpenApiFiles[]> {
+  if (isURL(openapiPath)) {
+    const { data } = await axios.get(openapiPath);
+    if (!data) {
+      throw Error(
+        `Did not find an OpenAPI specification at URL ${openapiPath}`
+      );
+    }
+    return [
+      {
+        source: openapiPath,
+        sourceDirName: ".",
+        data,
+      },
+    ];
+  }
   const stat = await fs.lstat(openapiPath);
   if (stat.isDirectory()) {
     console.warn(
