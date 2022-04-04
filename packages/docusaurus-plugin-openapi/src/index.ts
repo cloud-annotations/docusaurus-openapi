@@ -47,7 +47,9 @@ export default function pluginOpenAPI(
   const aliasedSource = (source: string) =>
     `~api/${posixPath(path.relative(pluginDataDirRoot, source))}`;
 
-  const contentPath = isURL(options.path) ? options.path : path.resolve(context.siteDir, options.path);
+  const contentPath = isURL(options.path)
+    ? options.path
+    : path.resolve(context.siteDir, options.path);
 
   return {
     name: "docusaurus-plugin-openapi",
