@@ -7,11 +7,9 @@
 
 import path from "path";
 
-import {
-  CategoryMetadataFile,
-  CategoryMetadataFilenameBase,
-} from "@docusaurus/plugin-content-docs/lib/sidebars/generator";
+import { CategoryMetadataFilenameBase } from "@docusaurus/plugin-content-docs/lib/sidebars/generator";
 import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/validation";
+import { CategoryMetadataFile } from "@docusaurus/plugin-content-docs/src/sidebars/types";
 import { posixPath } from "@docusaurus/utils";
 import chalk from "chalk";
 import clsx from "clsx";

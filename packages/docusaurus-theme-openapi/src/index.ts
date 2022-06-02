@@ -8,7 +8,7 @@
 import path from "path";
 
 import type { Plugin } from "@docusaurus/types";
-import { ProvidePlugin } from "webpack";
+import { Configuration, ProvidePlugin } from "webpack";
 
 export default function docusaurusThemeOpenAPI(): Plugin<void> {
   return {
@@ -36,7 +36,7 @@ export default function docusaurusThemeOpenAPI(): Plugin<void> {
             process: require.resolve("process/browser"),
           },
         },
-      };
+      } as Configuration;
     },
   };
 }
