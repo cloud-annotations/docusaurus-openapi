@@ -7,8 +7,8 @@
 
 import React, { useState } from "react";
 
-import Editor, { Monaco } from "@monaco-editor/react";
 import { useColorMode } from "@docusaurus/theme-common";
+import Editor, { Monaco } from "@monaco-editor/react";
 
 import styles from "./styles.module.css";
 
