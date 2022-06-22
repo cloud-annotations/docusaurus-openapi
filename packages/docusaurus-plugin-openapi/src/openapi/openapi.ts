@@ -18,6 +18,7 @@ import chalk from "chalk";
 import fs from "fs-extra";
 import yaml from "js-yaml";
 import JsonRefs from "json-refs";
+import resolveAllOf from "json-schema-resolve-allof";
 import { kebabCase } from "lodash";
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
@@ -32,7 +33,7 @@ import { OpenApiObject, OpenApiObjectWithRef, TagObject } from "./types";
  */
 async function resolveRefs(openapiData: OpenApiObjectWithRef) {
   const { resolved } = await JsonRefs.resolveRefs(openapiData);
-  return resolved as OpenApiObject;
+  return resolveAllOf(resolved) as OpenApiObject;
 }
 
 /**
