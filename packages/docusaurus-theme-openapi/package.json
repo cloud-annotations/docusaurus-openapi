@@ -36,6 +36,7 @@
     "concurrently": "^5.2.0"
   },
   "dependencies": {
+    "@docusaurus/theme-common": "^2.0.0-beta.21",
     "@mdx-js/react": "^1.6.21",
     "@monaco-editor/react": "^4.3.1",
     "@reduxjs/toolkit": "^1.7.1",
