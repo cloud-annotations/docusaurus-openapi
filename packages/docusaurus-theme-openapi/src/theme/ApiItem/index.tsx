@@ -8,9 +8,9 @@
 import React from "react";
 
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+import { PageMetadata } from "@docusaurus/theme-common";
 import type { Props } from "@theme/ApiItem";
 import DocPaginator from "@theme/DocPaginator";
-import { PageMetadata } from "@docusaurus/theme-common";
 import clsx from "clsx";
 
 import styles from "./styles.module.css";
