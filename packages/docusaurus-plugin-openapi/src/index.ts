@@ -173,7 +173,7 @@ export default function pluginOpenAPI(
     },
 
     configureWebpack(
-      _config: Configuration,
+      _config: any,
       isServer: boolean,
       { getJSLoader }: ConfigureWebpackUtils
     ) {

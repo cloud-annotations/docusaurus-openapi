@@ -8,7 +8,7 @@
 import React, { useState } from "react";
 
 import Editor, { Monaco } from "@monaco-editor/react";
-import useThemeContext from "@theme/hooks/useThemeContext";
+import { useColorMode } from "@docusaurus/theme-common";
 
 import styles from "./styles.module.css";
 
@@ -21,7 +21,8 @@ interface Props {
 function VSCode({ value, language, onChange }: Props) {
   const [focused, setFocused] = useState(false);
 
-  const { isDarkTheme } = useThemeContext();
+  const { colorMode, setColorMode } = useColorMode();
+  const isDarkTheme = colorMode === "dark";
 
   function handleEditorWillMount(monaco: Monaco) {
     const styles = getComputedStyle(document.documentElement);

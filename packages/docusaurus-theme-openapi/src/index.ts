@@ -28,7 +28,7 @@ export default function docusaurusThemeOpenAPI(): Plugin<void> {
           new ProvidePlugin({
             Buffer: [require.resolve("buffer/"), "Buffer"],
             process: require.resolve("process/browser"),
-          }),
+          }) as any,
         ],
         resolve: {
           fallback: {

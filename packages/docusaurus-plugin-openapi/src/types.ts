@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import type { RemarkAndRehypePluginOptions } from "@docusaurus/mdx-loader";
+import type { MDXOptions } from "@docusaurus/mdx-loader";
 import type { Request } from "postman-collection";
 
 import {
@@ -20,7 +20,7 @@ export type {
   PropSidebar,
   PropSidebarItem,
 } from "@docusaurus/plugin-content-docs-types";
-export interface PluginOptions extends RemarkAndRehypePluginOptions {
+export interface PluginOptions extends MDXOptions {
   id: string;
   path: string;
   routeBasePath: string;
