@@ -57,7 +57,7 @@ export const OptionsSchema = Joi.object({
 export function validateOptions({
   validate,
   options: userOptions,
-}: OptionValidationContext<PluginOptions, any>): PluginOptions {
+}: OptionValidationContext<PluginOptions, PluginOptions>): PluginOptions {
   let options = userOptions;
 
   if (options.sidebarCollapsible === false) {
