@@ -1,3 +1,17 @@
+## 0.6.0 (Jun 23, 2022)
+
+High level enhancements
+
+- Compatibility with Docusaurus 2.0.0-beta.21
+
+Other enhancements and bug fixes
+
+- Compatibility with Docusaurus 2.0.0-beta.21 ([#185](https://github.com/cloud-annotations/docusaurus-openapi/pull/185))
+- Resolve `allOf` references ([#184](https://github.com/cloud-annotations/docusaurus-openapi/pull/184))
+- Fetch openapi from a URL ([#173](https://github.com/cloud-annotations/docusaurus-openapi/pull/173))
+- Fix Cypress test ([#157](https://github.com/cloud-annotations/docusaurus-openapi/pull/157))
+- Add display name extension for tags ([#154](https://github.com/cloud-annotations/docusaurus-openapi/pull/154))
+
 ## 0.5.0 (Jan 9, 2022)
 
 High level enhancements
