@@ -5,10 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import type {
-  OptionValidationContext,
-  ValidationResult,
-} from "@docusaurus/types";
+import type { OptionValidationContext } from "@docusaurus/types";
 import {
   Joi,
   RemarkPluginsSchema,
@@ -60,7 +57,7 @@ export const OptionsSchema = Joi.object({
 export function validateOptions({
   validate,
   options: userOptions,
-}: OptionValidationContext<PluginOptions>): ValidationResult<PluginOptions> {
+}: OptionValidationContext<PluginOptions, PluginOptions>): PluginOptions {
   let options = userOptions;
 
   if (options.sidebarCollapsible === false) {

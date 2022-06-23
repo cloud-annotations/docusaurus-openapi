@@ -87,7 +87,7 @@ function ApiPageContent({
   }, [hiddenSidebar]);
 
   return (
-    <Layout wrapperClassName="api-wrapper" pageClassName="api-page">
+    <Layout wrapperClassName="api-wrapper">
       <div className={styles.apiPage}>
         <BackToTopButton />
 

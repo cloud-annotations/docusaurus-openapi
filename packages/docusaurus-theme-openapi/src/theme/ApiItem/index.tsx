@@ -8,9 +8,9 @@
 import React from "react";
 
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+import { PageMetadata } from "@docusaurus/theme-common";
 import type { Props } from "@theme/ApiItem";
 import DocPaginator from "@theme/DocPaginator";
-import Seo from "@theme/Seo";
 import clsx from "clsx";
 
 import styles from "./styles.module.css";
@@ -28,7 +28,7 @@ function ApiItem(props: Props): JSX.Element {
 
   return (
     <>
-      <Seo {...{ title, description, keywords, image }} />
+      <PageMetadata {...{ title, description, keywords, image }} />
 
       <div className="row">
         <div className="col">

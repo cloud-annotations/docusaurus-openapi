@@ -7,11 +7,7 @@
 
 import path from "path";
 
-import {
-  CategoryMetadataFile,
-  CategoryMetadataFilenameBase,
-} from "@docusaurus/plugin-content-docs/lib/sidebars/generator";
-import { validateCategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/validation";
+import { CategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/types";
 import { posixPath } from "@docusaurus/utils";
 import chalk from "chalk";
 import clsx from "clsx";
@@ -41,6 +37,8 @@ type ApiItem = Pick<ApiPageMetadata, keys> & {
 };
 
 type Item = InfoItem | ApiItem;
+
+const CategoryMetadataFilenameBase = "_category_";
 
 function isApiItem(item: Item): item is ApiItem {
   return item.type === "api";
@@ -212,7 +210,7 @@ async function readCategoryMetadataFile(
     const contentString = await fs.readFile(filePath, { encoding: "utf8" });
     const unsafeContent = Yaml.load(contentString);
     try {
-      return validateCategoryMetadataFile(unsafeContent);
+      return unsafeContent as CategoryMetadataFile; // validateCategoryMetadataFile(unsafeContent);
     } catch (e) {
       console.error(
         chalk.red(

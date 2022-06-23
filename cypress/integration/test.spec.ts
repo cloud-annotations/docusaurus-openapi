@@ -19,20 +19,6 @@ describe("test", () => {
     navTo([], /generating an iam token/i);
   });
 
-  it("loads Multi-spec page", () => {
-    cy.visit("/multi-spec");
-    navTo(
-      [
-        /foods/i,
-        /burger store/i,
-        /burger example/i,
-        /^api$/i,
-        /list all burgers/i,
-      ],
-      /list all burgers/i
-    );
-  });
-
   it("loads a page with authentication", () => {
     cy.visit("/cos/list-buckets");
     cy.findByRole("button", { name: /authorize/i }).should("exist");
