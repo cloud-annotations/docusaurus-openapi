@@ -116,9 +116,12 @@ export async function generateSidebar(
       // Otherwise, create a new one.
       const newCategory = {
         type: "category" as const,
+        className: meta?.className,
+        customProps: meta?.customProps,
+        position: meta?.position,
         label,
-        collapsible: options.sidebarCollapsible,
-        collapsed: options.sidebarCollapsed,
+        collapsible: meta?.collapsible ?? options.sidebarCollapsible,
+        collapsed: meta?.collapsed ?? options.sidebarCollapsed,
         items: [],
       };
       visiting.push(newCategory);
@@ -129,6 +132,19 @@ export async function generateSidebar(
   // The first group should always be a category, but check for type narrowing
   if (sidebar.length === 1 && sidebar[0].type === "category") {
     return sidebar[0].items;
+  }
+
+  // Squash categories that only contain a single API spec
+  if (sidebar.length > 0) {
+    for (const item of sidebar) {
+      if (
+        item.type === "category" &&
+        item.items.length === 1 &&
+        item.items[0].type === "category"
+      ) {
+        item.items = item.items[0].items;
+      }
+    }
   }
 
   return sidebar;
