@@ -201,7 +201,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
     })
     .filter((item) => item.items.length > 0); // Filter out any categories with no items.
 
-  const untagged = [
+  let untagged = [
     {
       type: "category" as const,
       label: "API",
@@ -212,6 +212,10 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         .map(createLink),
     },
   ];
+
+  if (untagged[0].items.length === 0) {
+    untagged = [];
+  }
 
   return [...intros, ...tagged, ...untagged];
 }
