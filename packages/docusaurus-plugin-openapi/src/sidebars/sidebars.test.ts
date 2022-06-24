@@ -167,9 +167,8 @@ describe("sidebars", () => {
       expect(cats.type).toBe("category");
       expect(cats.items).toHaveLength(1);
 
-      const [catApi] = (cats.items ?? []).filter(isCategory);
-      expect(catApi.type).toBe("category");
-      const [catLink] = catApi?.items;
+      // Check that the category has been squashed
+      const [catLink] = cats.items;
       expect(catLink.type).toBe("link");
       expect(dogs.type).toBe("category");
       expect(dogs.items).toHaveLength(1);
@@ -225,10 +224,9 @@ describe("sidebars", () => {
       const [cats, dogsSpec] = output;
       expect(cats.items).toHaveLength(1);
       expect(dogsSpec.type).toBe("category");
-      const [dogApi] = dogsSpec.items.filter(isCategory);
-      expect(dogApi?.items).toHaveLength(2);
-      expect(dogApi.label).toBe("API");
-      const [dogsItem] = dogApi.items;
+      expect(dogsSpec.items).toHaveLength(2);
+      expect(dogsSpec.label).toBe("dogs");
+      const [dogsItem] = dogsSpec.items;
       expect(dogsItem.label).toBe("List Dogs");
     });
 
@@ -316,7 +314,7 @@ describe("sidebars", () => {
       // console.log(JSON.stringify(output, null, 2));
       const [cats, dogs] = output;
       expect(cats.type).toBe("category");
-      expect(cats.items).toHaveLength(3); // extra api item category is included but gets filtered out later
+      expect(cats.items).toHaveLength(2);
       const [tails, whiskers] = (cats.items || []).filter(isCategory);
       expect(tails.type).toBe("category");
       expect(whiskers.type).toBe("category");
@@ -328,7 +326,7 @@ describe("sidebars", () => {
       expect(whiskers.items?.[0].label).toBe("List whiskers");
 
       expect(dogs.type).toBe("category");
-      expect(dogs.items).toHaveLength(3); // extra api item category is included but gets filtered out later
+      expect(dogs.items).toHaveLength(2);
       expect(dogs.label).toBe("Dogs");
       const [doggos, toys] = (dogs.items || []) as PropSidebarItemCategory[];
       expect(doggos.type).toBe("category");
@@ -375,12 +373,12 @@ describe("sidebars", () => {
 
       /*
         animals
-          pets
+          pets <-- should not exist
             Cat Store
               cats
         Foods
-          Buger Store
-            Burger Example
+          Buger Store <-- should not exist
+            Burger Example  <-- should be called "Burger Store"
               burgers
       */
       output.filter(isCategory).forEach((category) => {
@@ -389,10 +387,7 @@ describe("sidebars", () => {
         category.items.filter(isCategory).forEach((subCategory) => {
           expect(subCategory.items[0].type).toBe("category");
           subCategory.items.filter(isCategory).forEach((groupCategory) => {
-            expect(groupCategory.items[0].type).toBe("category");
-            groupCategory.items.forEach((linkItem) => {
-              expect(linkItem.type).toBe("category");
-            });
+            expect(groupCategory.items[0].type).toBe("link");
           });
         });
       });
