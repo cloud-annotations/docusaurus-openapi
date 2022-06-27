@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
+import { escape } from "lodash";
+
 import { MediaTypeObject, SchemaObject } from "../openapi/types";
 import { createDescription } from "./createDescription";
 import { createFullWidthTable } from "./createFullWidthTable";
 import { getQualifierMessage, getSchemaName } from "./schema";
-import { create, escapeHtml, guard } from "./utils";
+import { create, guard } from "./utils";
 
 function resolveAllOf(allOf: SchemaObject[]) {
   // TODO: naive implementation (only supports objects, no directly nested allOf)
@@ -42,7 +44,7 @@ function createRow({ name, schema, required }: RowProps) {
   return create("tr", {
     children: create("td", {
       children: [
-        create("code", { children: escapeHtml(name) }),
+        create("code", { children: escape(name) }),
         create("span", {
           style: { opacity: "0.6" },
           children: ` ${getSchemaName(schema, true)}`,

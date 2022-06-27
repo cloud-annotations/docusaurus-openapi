@@ -11,7 +11,7 @@ import { ApiItem } from "../types";
 import { createDescription } from "./createDescription";
 import { createFullWidthTable } from "./createFullWidthTable";
 import { getQualifierMessage, getSchemaName } from "./schema";
-import { create, escapeHtml, guard } from "./utils";
+import { create, guard } from "./utils";
 
 interface Props {
   parameters: ApiItem["parameters"];
@@ -44,7 +44,7 @@ export function createParamsTable({ parameters, type }: Props) {
           create("tr", {
             children: create("td", {
               children: [
-                create("code", { children: escapeHtml(param.name) }),
+                create("code", { children: escape(param.name) }),
                 guard(param.schema, (schema) =>
                   create("span", {
                     style: { opacity: "0.6" },
