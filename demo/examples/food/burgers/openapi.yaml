@@ -8,6 +8,12 @@ paths:
     get:
       summary: List All Burgers
       description: Burgers
+      parameters:
+        - in: query
+          name: Calories<
+          schema:
+            type: string
+            description: Calories less than the given amount.
       responses:
         200:
           description: OK

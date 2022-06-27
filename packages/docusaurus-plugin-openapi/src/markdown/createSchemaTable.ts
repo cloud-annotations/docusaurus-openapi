@@ -9,7 +9,7 @@ import { MediaTypeObject, SchemaObject } from "../openapi/types";
 import { createDescription } from "./createDescription";
 import { createFullWidthTable } from "./createFullWidthTable";
 import { getQualifierMessage, getSchemaName } from "./schema";
-import { create, guard } from "./utils";
+import { create, escapeHtml, guard } from "./utils";
 
 function resolveAllOf(allOf: SchemaObject[]) {
   // TODO: naive implementation (only supports objects, no directly nested allOf)
@@ -42,7 +42,7 @@ function createRow({ name, schema, required }: RowProps) {
   return create("tr", {
     children: create("td", {
       children: [
-        create("code", { children: name }),
+        create("code", { children: escapeHtml(name) }),
         create("span", {
           style: { opacity: "0.6" },
           children: ` ${getSchemaName(schema, true)}`,
