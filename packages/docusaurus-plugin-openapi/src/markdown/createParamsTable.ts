@@ -44,7 +44,7 @@ export function createParamsTable({ parameters, type }: Props) {
           create("tr", {
             children: create("td", {
               children: [
-                create("code", { children: param.name }),
+                create("code", { children: escape(param.name) }),
                 guard(param.schema, (schema) =>
                   create("span", {
                     style: { opacity: "0.6" },
