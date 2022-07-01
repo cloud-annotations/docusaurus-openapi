@@ -1,3 +1,14 @@
+## 0.6.1 (Jul 1, 2022)
+
+High level enhancements
+
+- In multi-spec mode, categories get squashed if they only contain a single API spec.
+
+Other enhancements and bug fixes
+
+- Escape html in parameter names ([#189](https://github.com/cloud-annotations/docusaurus-openapi/pull/189))
+- Category squashing ([#188](https://github.com/cloud-annotations/docusaurus-openapi/pull/188))
+
 ## 0.6.0 (Jun 23, 2022)
 
 High level enhancements
