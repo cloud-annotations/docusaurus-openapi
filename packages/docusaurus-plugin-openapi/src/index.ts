@@ -6,6 +6,7 @@
  * ========================================================================== */
 
 import path from "path";
+import fs from "fs-extra";
 
 import type {
   LoadContext,
@@ -19,6 +20,14 @@ import {
   docuHash,
   addTrailingPathSeparator,
   posixPath,
+  aliasedSitePath,
+  getFolderContainingFile,
+  getContentPathList,
+  encodePath,
+  fileToPath,
+  parseMarkdownString,
+  Globby,
+  createAbsoluteFilePathMatcher,
 } from "@docusaurus/utils";
 import chalk from "chalk";
 import { Configuration } from "webpack";
@@ -26,14 +35,14 @@ import { Configuration } from "webpack";
 import { createApiPageMD, createInfoPageMD } from "./markdown";
 import { readOpenapiFiles, processOpenapiFiles } from "./openapi";
 import { generateSidebar } from "./sidebars";
-import type { PluginOptions, LoadedContent } from "./types";
+import type { PluginOptions, LoadedContent, MdxPageMetadata } from "./types";
 import { isURL } from "./util";
 
 export default function pluginOpenAPI(
   context: LoadContext,
   options: PluginOptions
 ): Plugin<LoadedContent> {
-  const { baseUrl, generatedFilesDir } = context;
+  const { baseUrl, generatedFilesDir, siteDir } = context;
 
   const pluginId = options.id ?? DEFAULT_PLUGIN_ID;
 
@@ -62,6 +71,37 @@ export default function pluginOpenAPI(
     async loadContent() {
       const { routeBasePath } = options;
 
+      async function toMetadata(
+        relativeSource: string
+      ): Promise<MdxPageMetadata> {
+        const source = path.join(contentPath, relativeSource);
+        const aliasedSourcePath = aliasedSitePath(source, siteDir);
+        const permalink = normalizeUrl([
+          baseUrl,
+          options.routeBasePath,
+          encodePath(fileToPath(relativeSource)),
+        ]);
+        const content = await fs.readFile(source, "utf-8");
+        const {
+          frontMatter: unsafeFrontMatter,
+          contentTitle,
+          excerpt,
+        } = parseMarkdownString(content);
+        const frontMatter = unsafeFrontMatter; // TODO validatePageFrontMatter(unsafeFrontMatter);
+        return {
+          type: "mdx",
+          permalink,
+          source: aliasedSourcePath,
+          id: "", // FIXME
+          unversionedId: "", // FIXME
+          sourceDirName: "", // FIXME
+          slug: "",
+          title: (frontMatter.title ?? contentTitle) + "",
+          description: (frontMatter.description ?? excerpt) + "",
+          frontMatter,
+        };
+      }
+
       try {
         const openapiFiles = await readOpenapiFiles(contentPath, {});
         const loadedApi = await processOpenapiFiles(openapiFiles, {
@@ -69,6 +109,29 @@ export default function pluginOpenAPI(
           routeBasePath,
           siteDir: context.siteDir,
         });
+        // console.log(openapiFiles)
+        // const markdownFiles = await readMarkdownFiles(contentPath, {
+        //   baseUrl,
+        //   routeBasePath,
+        //   siteDir: context.siteDir,
+        // })
+
+        const pagesFiles: string[] = [];
+        if (
+          !contentPath.endsWith(".json") &&
+          !contentPath.endsWith(".yaml") &&
+          !contentPath.endsWith(".yml")
+        ) {
+          pagesFiles.push(
+            ...(await Globby(["**/*.{md,mdx}"], {
+              cwd: contentPath,
+              // ignore: options.exclude, // TODO
+            }))
+          );
+        }
+
+        loadedApi.push(...(await Promise.all(pagesFiles.map(toMetadata))));
+
         return { loadedApi };
       } catch (e) {
         console.error(chalk.red(`Loading of api failed for "${contentPath}"`));
@@ -98,67 +161,47 @@ export default function pluginOpenAPI(
       const promises = loadedApi.map(async (item) => {
         const pageId = `site-${routeBasePath}-${item.id}`;
 
-        await createData(
-          `${docuHash(pageId)}.json`,
-          JSON.stringify(item, null, 2)
-        );
-
-        // TODO: "-content" should be inside hash to prevent name too long errors.
-        const markdown = await createData(
-          `${docuHash(pageId)}-content.mdx`,
-          item.type === "api" ? createApiPageMD(item) : createInfoPageMD(item)
-        );
-        return {
-          path: item.permalink,
-          component: apiItemComponent,
-          exact: true,
-          modules: {
-            content: markdown,
-          },
-          sidebar: sidebarName,
-        };
-      });
-
-      promises.push(
-        ...[0].map(async (item: any) => {
-          item = {
-            type: "doc",
-            id: "authentication",
-            unversionedId: "authentication",
-            title: "This is MarkDown",
-            description: "For **real**!",
-            source: "@site/examples/overview/authentication.md",
-            sourceDirName: "overview",
-            slug: "/authentication",
-            frontMatter: {},
-            permalink: "/multi-spec/overview/authentication",
-          };
-
-          const pageId = "overview/authentication";
-
+        if (item.type === "api" || item.type === "info") {
           await createData(
             `${docuHash(pageId)}.json`,
             JSON.stringify(item, null, 2)
           );
 
+          // TODO: "-content" should be inside hash to prevent name too long errors.
           const markdown = await createData(
             `${docuHash(pageId)}-content.mdx`,
-            "This is **MarkDown**!"
-            // createInfoPageMD(item)
+            item.type === "api" ? createApiPageMD(item) : createInfoPageMD(item)
           );
-
           return {
             path: item.permalink,
-            component: "@theme/ApiItem",
+            component: apiItemComponent,
             exact: true,
             modules: {
-              // content: item.source,
               content: markdown,
             },
             sidebar: sidebarName,
           };
-        })
-      );
+        } else {
+          await createData(
+            // Note that this created data path must be in sync with
+            // metadataPath provided to mdx-loader.
+            `${docuHash(item.source)}.json`,
+            JSON.stringify(item, null, 2)
+          );
+
+          return {
+            path: item.permalink,
+            //component: "@theme/DocItem",
+            //component: '@theme/MDXPage',
+            component: "@theme/MyProva",
+            exact: true,
+            modules: {
+              content: item.source,
+            },
+            sidebar: sidebarName,
+          };
+        }
+      });
 
       // Important: the layout component should not end with /,
       // as it conflicts with the home doc
@@ -235,7 +278,7 @@ export default function pluginOpenAPI(
           rules: [
             {
               test: /(\.mdx?)$/,
-              include: [dataDir].map(addTrailingPathSeparator),
+              include: [dataDir, contentPath].map(addTrailingPathSeparator),
               use: [
                 getJSLoader({ isServer }),
                 {
@@ -246,8 +289,25 @@ export default function pluginOpenAPI(
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
                     metadataPath: (mdxPath: string) => {
-                      return mdxPath.replace(/(-content\.mdx?)$/, ".json");
+                      if (mdxPath.startsWith(dataDir)) {
+                        // The MDX file already lives in `dataDir`: this is an OpenAPI MDX
+                        return mdxPath.replace(/(-content\.mdx?)$/, ".json");
+                      } else {
+                        // Standard resolution
+                        console.log("***", mdxPath);
+                        const aliasedSource = aliasedSitePath(mdxPath, siteDir);
+                        console.log("###", aliasedSource);
+                        console.log("BB", aliasedSource);
+                        return path.join(
+                          dataDir,
+                          `${docuHash(aliasedSource)}.json`
+                        );
+                      }
                     },
+                    // isMDXPartial: createAbsoluteFilePathMatcher(
+                    //   [],
+                    //   [contentPath],
+                    // ),
                   },
                 },
               ].filter(Boolean),

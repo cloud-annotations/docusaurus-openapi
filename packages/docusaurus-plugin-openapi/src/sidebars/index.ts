@@ -18,6 +18,7 @@ import type { DeepPartial } from "utility-types";
 
 import type {
   InfoPageMetadata,
+  MdxPageMetadata,
   PropSidebar,
   PropSidebarItemCategory,
 } from "../types";
@@ -35,8 +36,9 @@ type InfoItem = Pick<InfoPageMetadata, keys>;
 type ApiItem = Pick<ApiPageMetadata, keys> & {
   api: DeepPartial<ApiPageMetadata["api"]>;
 };
+type MdxItem = Pick<MdxPageMetadata, keys>;
 
-type Item = InfoItem | ApiItem;
+type Item = InfoItem | ApiItem | MdxItem;
 
 const CategoryMetadataFilenameBase = "_category_";
 
@@ -162,7 +164,7 @@ export async function generateSidebar(
     ],
   });
 
-  console.log(JSON.stringify(sidebar, null, 2));
+  // console.log(JSON.stringify(sidebar, null, 2));
 
   return sidebar;
 }

@@ -188,7 +188,7 @@ function bindCollectionToApiItems(
       .replace(/:([a-z0-9-_]+)/gi, "{$1}"); // replace "/:variableName" with "/{variableName}"
 
     const apiItem = items.find((item) => {
-      if (item.type === "info") {
+      if (item.type === "info" || item.type === "mdx") {
         return false;
       }
       return item.api.path === path && item.api.method === method;
