@@ -147,6 +147,23 @@ export async function generateSidebar(
     }
   }
 
+  sidebar.push({
+    type: "category",
+    label: "Overview",
+    collapsed: false,
+    collapsible: true,
+    items: [
+      {
+        type: "link",
+        label: "Authentication",
+        href: "/multi-spec/overview/authentication",
+        docId: "authentication",
+      },
+    ],
+  });
+
+  console.log(JSON.stringify(sidebar, null, 2));
+
   return sidebar;
 }
 

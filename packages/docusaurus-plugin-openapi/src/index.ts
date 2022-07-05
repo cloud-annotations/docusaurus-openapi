@@ -119,6 +119,47 @@ export default function pluginOpenAPI(
         };
       });
 
+      promises.push(
+        ...[0].map(async (item: any) => {
+          item = {
+            type: "doc",
+            id: "authentication",
+            unversionedId: "authentication",
+            title: "This is MarkDown",
+            description: "For **real**!",
+            source: "@site/examples/overview/authentication.md",
+            sourceDirName: "overview",
+            slug: "/authentication",
+            frontMatter: {},
+            permalink: "/multi-spec/overview/authentication",
+          };
+
+          const pageId = "overview/authentication";
+
+          await createData(
+            `${docuHash(pageId)}.json`,
+            JSON.stringify(item, null, 2)
+          );
+
+          const markdown = await createData(
+            `${docuHash(pageId)}-content.mdx`,
+            "This is **MarkDown**!"
+            // createInfoPageMD(item)
+          );
+
+          return {
+            path: item.permalink,
+            component: "@theme/ApiItem",
+            exact: true,
+            modules: {
+              // content: item.source,
+              content: markdown,
+            },
+            sidebar: sidebarName,
+          };
+        })
+      );
+
       // Important: the layout component should not end with /,
       // as it conflicts with the home doc
       // Workaround fix for https://github.com/facebook/docusaurus/issues/2917
