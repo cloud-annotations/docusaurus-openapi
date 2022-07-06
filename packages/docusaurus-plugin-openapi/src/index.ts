@@ -191,8 +191,8 @@ export default function pluginOpenAPI(
 
           return {
             path: item.permalink,
-            //component: "@theme/DocItem",
-            //component: '@theme/MDXPage',
+            // component: "@theme/DocItem",
+            // component: '@theme/MDXPage',
             component: "@theme/MyProva",
             exact: true,
             modules: {
@@ -294,10 +294,7 @@ export default function pluginOpenAPI(
                         return mdxPath.replace(/(-content\.mdx?)$/, ".json");
                       } else {
                         // Standard resolution
-                        console.log("***", mdxPath);
                         const aliasedSource = aliasedSitePath(mdxPath, siteDir);
-                        console.log("###", aliasedSource);
-                        console.log("BB", aliasedSource);
                         return path.join(
                           dataDir,
                           `${docuHash(aliasedSource)}.json`
