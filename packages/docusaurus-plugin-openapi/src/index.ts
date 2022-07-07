@@ -21,13 +21,10 @@ import {
   addTrailingPathSeparator,
   posixPath,
   aliasedSitePath,
-  getFolderContainingFile,
-  getContentPathList,
   encodePath,
   fileToPath,
   parseMarkdownString,
   Globby,
-  createAbsoluteFilePathMatcher,
 } from "@docusaurus/utils";
 import chalk from "chalk";
 import { Configuration } from "webpack";
@@ -37,6 +34,8 @@ import { readOpenapiFiles, processOpenapiFiles } from "./openapi";
 import { generateSidebar } from "./sidebars";
 import type { PluginOptions, LoadedContent, MdxPageMetadata } from "./types";
 import { isURL } from "./util";
+import getSlug from "./docs/slug";
+import { validateDocFrontMatter } from "./docs/frontMatter";
 
 export default function pluginOpenAPI(
   context: LoadContext,
@@ -72,9 +71,20 @@ export default function pluginOpenAPI(
       const { routeBasePath } = options;
 
       async function toMetadata(
+        /** E.g. "api/plugins/myDoc.mdx" */
         relativeSource: string
       ): Promise<MdxPageMetadata> {
         const source = path.join(contentPath, relativeSource);
+
+        // E.g. api/plugins/myDoc -> myDoc; myDoc -> myDoc
+        const sourceFileNameWithoutExtension = path.basename(
+          source,
+          path.extname(source)
+        );
+
+        // E.g. api/plugins/myDoc -> api/plugins; myDoc -> .
+        const sourceDirName = path.dirname(relativeSource);
+
         const aliasedSourcePath = aliasedSitePath(source, siteDir);
         const permalink = normalizeUrl([
           baseUrl,
@@ -87,17 +97,48 @@ export default function pluginOpenAPI(
           contentTitle,
           excerpt,
         } = parseMarkdownString(content);
-        const frontMatter = unsafeFrontMatter; // TODO validatePageFrontMatter(unsafeFrontMatter);
+        const frontMatter = validateDocFrontMatter(unsafeFrontMatter);
+
+        const { filename: unprefixedFileName, numberPrefix } = {
+          filename: sourceFileNameWithoutExtension,
+          numberPrefix: undefined,
+        };
+
+        const baseID: string = frontMatter.id ?? unprefixedFileName;
+        if (baseID.includes("/")) {
+          throw new Error(`Document id "${baseID}" cannot include slash.`);
+        }
+
+        // TODO legacy retrocompatibility
+        // I think it's bad to affect the front matter id with the dirname?
+        function computeDirNameIdPrefix() {
+          if (sourceDirName === ".") {
+            return undefined;
+          }
+          return sourceDirName;
+        }
+
+        const unversionedId = [computeDirNameIdPrefix(), baseID]
+          .filter(Boolean)
+          .join("/");
+
+        const docSlug = getSlug({
+          baseID,
+          source,
+          sourceDirName,
+          frontMatterSlug: frontMatter.slug,
+        });
+
         return {
           type: "mdx",
           permalink,
           source: aliasedSourcePath,
-          id: "", // FIXME
-          unversionedId: "", // FIXME
-          sourceDirName: "", // FIXME
-          slug: "",
-          title: (frontMatter.title ?? contentTitle) + "",
-          description: (frontMatter.description ?? excerpt) + "",
+          id: unversionedId,
+          unversionedId: unversionedId,
+          sourceDirName: sourceDirName,
+          slug: docSlug,
+          title: (frontMatter.title as string) ?? contentTitle,
+          description: (frontMatter.description as string) ?? excerpt,
           frontMatter,
         };
       }
@@ -109,12 +150,6 @@ export default function pluginOpenAPI(
           routeBasePath,
           siteDir: context.siteDir,
         });
-        // console.log(openapiFiles)
-        // const markdownFiles = await readMarkdownFiles(contentPath, {
-        //   baseUrl,
-        //   routeBasePath,
-        //   siteDir: context.siteDir,
-        // })
 
         const pagesFiles: string[] = [];
         if (

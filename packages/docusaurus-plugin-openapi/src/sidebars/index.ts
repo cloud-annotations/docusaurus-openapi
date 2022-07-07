@@ -50,6 +50,10 @@ function isInfoItem(item: Item): item is InfoItem {
   return item.type === "info";
 }
 
+function isMdxItem(item: Item): item is MdxItem {
+  return item.type === "mdx";
+}
+
 const Terminator = "."; // a file or folder can never be "."
 const BreadcrumbSeparator = "/";
 function getBreadcrumbs(dir: string) {
@@ -83,17 +87,22 @@ export async function generateSidebar(
     for (const crumb of breadcrumbs) {
       // We hit a spec file, create the groups for it.
       if (crumb === Terminator) {
-        const title = items.filter(isApiItem)[0]?.api.info?.title;
-        const fileName = path.basename(source, path.extname(source));
-        // Title could be an empty string so `??` won't work here.
-        const label = !title ? fileName : title;
-        visiting.push({
-          type: "category" as const,
-          label,
-          collapsible: options.sidebarCollapsible,
-          collapsed: options.sidebarCollapsed,
-          items: groupByTags(items, options),
-        });
+        if (isMdxItem(items[0])) {
+          visiting.push(...groupByTags(items, options));
+        } else {
+          const title = items.filter(isApiItem)[0]?.api.info?.title;
+          const fileName = path.basename(source, path.extname(source));
+          // Title could be an empty string so `??` won't work here.
+          const label = !title ? fileName : title;
+          visiting.push({
+            type: "category" as const,
+            label,
+            collapsible: options.sidebarCollapsible,
+            collapsed: options.sidebarCollapsed,
+            items: groupByTags(items, options),
+          });
+        }
+
         visiting = sidebar; // reset
         break;
       }
@@ -149,23 +158,6 @@ export async function generateSidebar(
     }
   }
 
-  sidebar.push({
-    type: "category",
-    label: "Overview",
-    collapsed: false,
-    collapsible: true,
-    items: [
-      {
-        type: "link",
-        label: "Authentication",
-        href: "/multi-spec/overview/authentication",
-        docId: "authentication",
-      },
-    ],
-  });
-
-  // console.log(JSON.stringify(sidebar, null, 2));
-
   return sidebar;
 }
 
@@ -173,14 +165,19 @@ export async function generateSidebar(
  * Takes a flat list of pages and groups them into categories based on there tags.
  */
 function groupByTags(items: Item[], options: Options): PropSidebar {
-  const intros = items.filter(isInfoItem).map((item) => {
-    return {
-      type: "link" as const,
-      label: item.title,
-      href: item.permalink,
-      docId: item.id,
-    };
-  });
+  const intros = items
+    .filter((m) => isInfoItem(m) || isMdxItem(m))
+    .map((item) => {
+      const fileName = path.basename(item.source, path.extname(item.source));
+      const label = !item.title ? fileName : item.title;
+
+      return {
+        type: "link" as const,
+        label: label,
+        href: item.permalink,
+        docId: item.id,
+      };
+    });
 
   const apiItems = items.filter(isApiItem);
 
