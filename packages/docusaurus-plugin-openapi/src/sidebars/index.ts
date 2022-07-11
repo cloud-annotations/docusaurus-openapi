@@ -37,7 +37,7 @@ type InfoItem = Pick<InfoPageMetadata, keys>;
 type ApiItem = Pick<ApiPageMetadata, keys> & {
   api: DeepPartial<ApiPageMetadata["api"]>;
 };
-type MdxItem = Pick<MdxPageMetadata, keys>;
+type MdxItem = Pick<MdxPageMetadata, keys | "frontMatter">;
 
 type Item = InfoItem | ApiItem | MdxItem;
 
@@ -164,7 +164,7 @@ export async function generateSidebar(
 
   sidebar = recursiveSidebarSort(sidebar);
 
-  console.log(sidebar);
+  // console.log(sidebar);
 
   return sidebar;
 }
@@ -200,6 +200,10 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         label: label,
         href: item.permalink,
         docId: item.id,
+        position: isMdxItem(item)
+          ? (item.frontMatter?.sidebar_position as number) ??
+            BottomSidebarPosition
+          : BottomSidebarPosition,
       };
     });
 
@@ -224,6 +228,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         },
         item.api.method
       ),
+      position: BottomSidebarPosition,
     };
   }
 
@@ -237,6 +242,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         items: apiItems
           .filter((item) => !!item.api.tags?.includes(tag))
           .map(createLink),
+        position: BottomSidebarPosition,
       };
     })
     .filter((item) => item.items.length > 0); // Filter out any categories with no items.
@@ -250,6 +256,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
       items: apiItems
         .filter(({ api }) => api.tags === undefined || api.tags.length === 0)
         .map(createLink),
+      position: BottomSidebarPosition,
     },
   ];
 
