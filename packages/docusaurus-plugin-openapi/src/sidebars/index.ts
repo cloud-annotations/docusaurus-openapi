@@ -92,6 +92,13 @@ export async function generateSidebar(
       if (crumb === Terminator) {
         if (isMdxItem(items[0])) {
           visiting.push(...groupByTags(items, options));
+        } else if (
+          ["_spec_.json", "_spec_.yml", "_spec_.yaml"].includes(
+            path.basename(items[0].source)
+          )
+        ) {
+          // Don't create a category for this spec file
+          visiting.push(...groupByTags(items, options));
         } else {
           const title = items.filter(isApiItem)[0]?.api.info?.title;
           const fileName = path.basename(source, path.extname(source));

@@ -238,6 +238,14 @@ export async function readOpenapiFiles(
       cwd: openapiPath,
       ignore: GlobExcludeDefault,
     });
+
+    // Explicitly look for _spec_ files, which are excluded by default since they start with _
+    allFiles.push(
+      ...(await Globby(["**/_spec_.{json,yaml,yml}"], {
+        cwd: openapiPath,
+      }))
+    );
+
     const sources = allFiles.filter((x) => !x.includes("_category_")); // todo: regex exclude?
     return Promise.all(
       sources.map(async (source) => {
