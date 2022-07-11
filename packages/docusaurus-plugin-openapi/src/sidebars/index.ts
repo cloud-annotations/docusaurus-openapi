@@ -13,13 +13,14 @@ import chalk from "chalk";
 import clsx from "clsx";
 import fs from "fs-extra";
 import Yaml from "js-yaml";
-import { groupBy, uniq } from "lodash";
+import { groupBy, sortBy, uniq } from "lodash";
 import type { DeepPartial } from "utility-types";
 
 import type {
   InfoPageMetadata,
   MdxPageMetadata,
   PropSidebar,
+  PropSidebarItem,
   PropSidebarItemCategory,
 } from "../types";
 import { ApiPageMetadata } from "../types";
@@ -41,6 +42,8 @@ type MdxItem = Pick<MdxPageMetadata, keys>;
 type Item = InfoItem | ApiItem | MdxItem;
 
 const CategoryMetadataFilenameBase = "_category_";
+
+const BottomSidebarPosition = 999999;
 
 function isApiItem(item: Item): item is ApiItem {
   return item.type === "api";
@@ -97,6 +100,7 @@ export async function generateSidebar(
           visiting.push({
             type: "category" as const,
             label,
+            position: BottomSidebarPosition,
             collapsible: options.sidebarCollapsible,
             collapsed: options.sidebarCollapsed,
             items: groupByTags(items, options),
@@ -129,7 +133,7 @@ export async function generateSidebar(
         type: "category" as const,
         className: meta?.className,
         customProps: meta?.customProps,
-        position: meta?.position,
+        position: meta?.position ?? BottomSidebarPosition,
         label,
         collapsible: meta?.collapsible ?? options.sidebarCollapsible,
         collapsed: meta?.collapsed ?? options.sidebarCollapsed,
@@ -158,6 +162,26 @@ export async function generateSidebar(
     }
   }
 
+  sidebar = recursiveSidebarSort(sidebar);
+
+  console.log(sidebar);
+
+  return sidebar;
+}
+
+/**
+ * Sort the sidebar recursively based on `position`.
+ * @param sidebar
+ * @returns
+ */
+function recursiveSidebarSort(sidebar: PropSidebar | PropSidebarItem[]) {
+  // Use lodash sortBy to ensure sorting stability
+  sidebar = sortBy(sidebar, (item) => item.position);
+  for (const item of sidebar) {
+    if (item.type === "category") {
+      item.items = recursiveSidebarSort(item.items);
+    }
+  }
   return sidebar;
 }
 

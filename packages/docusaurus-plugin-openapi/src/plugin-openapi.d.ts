@@ -13,6 +13,7 @@ declare module "@docusaurus/plugin-content-docs-types" {
   export type SidebarItemBase = {
     className?: string;
     customProps?: Record<string, unknown>;
+    position?: number;
   };
 
   export type SidebarItemLink = SidebarItemBase & {
