@@ -336,10 +336,6 @@ export default function pluginOpenAPI(
                         );
                       }
                     },
-                    // isMDXPartial: createAbsoluteFilePathMatcher(
-                    //   [],
-                    //   [contentPath],
-                    // ),
                   },
                 },
               ].filter(Boolean),

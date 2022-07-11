@@ -171,8 +171,6 @@ export async function generateSidebar(
 
   sidebar = recursiveSidebarSort(sidebar);
 
-  // console.log(sidebar);
-
   return sidebar;
 }
 
