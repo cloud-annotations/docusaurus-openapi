@@ -226,9 +226,7 @@ export default function pluginOpenAPI(
 
           return {
             path: item.permalink,
-            // component: "@theme/DocItem",
-            // component: '@theme/MDXPage',
-            component: "@theme/MyProva",
+            component: "@theme/MarkdownItem", // "@theme/DocItem"
             exact: true,
             modules: {
               content: item.source,
