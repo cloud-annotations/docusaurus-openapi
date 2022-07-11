@@ -1,10 +1,13 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */
+ * ========================================================================== */
 
+// taken from https://github.com/facebook/docusaurus/tree/main/packages/docusaurus-plugin-content-docs
+
+import type { DocFrontMatter } from "@docusaurus/plugin-content-docs";
 import {
   JoiFrontMatter as Joi, // Custom instance for front matter
   URISchema,
@@ -12,7 +15,6 @@ import {
   FrontMatterTOCHeadingLevels,
   validateFrontMatter,
 } from "@docusaurus/utils-validation";
-import type { DocFrontMatter } from "@docusaurus/plugin-content-docs";
 
 // NOTE: we don't add any default value on purpose here
 // We don't want default values to magically appear in doc metadata and props

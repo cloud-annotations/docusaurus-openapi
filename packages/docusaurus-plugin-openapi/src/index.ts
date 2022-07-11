@@ -6,7 +6,6 @@
  * ========================================================================== */
 
 import path from "path";
-import fs from "fs-extra";
 
 import type {
   LoadContext,
@@ -27,15 +26,16 @@ import {
   Globby,
 } from "@docusaurus/utils";
 import chalk from "chalk";
+import fs from "fs-extra";
 import { Configuration } from "webpack";
 
+import { validateDocFrontMatter } from "./docs/frontMatter";
+import getSlug from "./docs/slug";
 import { createApiPageMD, createInfoPageMD } from "./markdown";
 import { readOpenapiFiles, processOpenapiFiles } from "./openapi";
 import { generateSidebar } from "./sidebars";
 import type { PluginOptions, LoadedContent, MdxPageMetadata } from "./types";
 import { isURL } from "./util";
-import getSlug from "./docs/slug";
-import { validateDocFrontMatter } from "./docs/frontMatter";
 
 export default function pluginOpenAPI(
   context: LoadContext,
@@ -99,9 +99,8 @@ export default function pluginOpenAPI(
         } = parseMarkdownString(content);
         const frontMatter = validateDocFrontMatter(unsafeFrontMatter);
 
-        const { filename: unprefixedFileName, numberPrefix } = {
+        const { filename: unprefixedFileName } = {
           filename: sourceFileNameWithoutExtension,
-          numberPrefix: undefined,
         };
 
         const baseID: string = frontMatter.id ?? unprefixedFileName;

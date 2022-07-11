@@ -1,12 +1,21 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */
+ * ========================================================================== */
+
+// taken from https://github.com/facebook/docusaurus/tree/main/packages/docusaurus-plugin-content-docs
 
 import path from "path";
-import logger from "@docusaurus/logger";
+
+import type {
+  MetadataOptions,
+  CategoryIndexMatcher,
+  DocMetadataBase,
+  DocFrontMatter,
+} from "@docusaurus/plugin-content-docs";
+import type { LoadContext } from "@docusaurus/types";
 import {
   aliasedSitePath,
   normalizeUrl,
@@ -15,15 +24,8 @@ import {
   fileToPath,
 } from "@docusaurus/utils";
 
-import getSlug from "./slug";
 import { validateDocFrontMatter } from "./frontMatter";
-import type {
-  MetadataOptions,
-  CategoryIndexMatcher,
-  DocMetadataBase,
-  DocFrontMatter,
-} from "@docusaurus/plugin-content-docs";
-import type { LoadContext } from "@docusaurus/types";
+import getSlug from "./slug";
 // import type {SidebarsUtils} from './sidebars/utils';
 
 type DocFile = {
@@ -65,8 +67,8 @@ async function doProcessDocMetadata({
   >;
   env: DocEnv;
 }): Promise<DocMetadataBase> {
-  const { source, content, contentPath, filePath } = docFile;
-  const { siteDir, i18n } = context;
+  const { source, content, filePath } = docFile;
+  const { siteDir } = context;
 
   const {
     frontMatter: unsafeFrontMatter,
@@ -174,7 +176,7 @@ export function processDocMetadata(args: {
   try {
     return doProcessDocMetadata(args);
   } catch (err) {
-    logger.error`Can't process doc metadata for doc at path path=${args.docFile.filePath}`;
+    console.error`Can't process doc metadata for doc at path path=${args.docFile.filePath}`;
     throw err;
   }
 }

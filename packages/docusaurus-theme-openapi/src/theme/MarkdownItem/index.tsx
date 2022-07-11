@@ -1,11 +1,18 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
+
 import React from "react";
-import clsx from "clsx";
-import MDXContent from "@theme/MDXContent";
+
+import { PageMetadata } from "@docusaurus/theme-common";
 import DocPaginator from "@theme/DocPaginator";
-import TOC from "@theme/TOC";
+import MDXContent from "@theme/MDXContent";
+import clsx from "clsx";
 
 import styles from "../ApiItem/styles.module.css";
-import { PageMetadata } from "@docusaurus/theme-common";
 
 export default function MarkdownItem(props: any) {
   const { content: MDXPageContent } = props;
