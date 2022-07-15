@@ -8,13 +8,14 @@
 import React from "react";
 
 import { PageMetadata } from "@docusaurus/theme-common";
+import type { Props } from "@theme/MarkdownItem";
 import DocPaginator from "@theme/DocPaginator";
 import MDXContent from "@theme/MDXContent";
 import clsx from "clsx";
 
 import styles from "../ApiItem/styles.module.css";
 
-export default function MarkdownItem(props: any) {
+export default function MarkdownItem(props: Props) {
   const { content: MDXPageContent } = props;
   const {
     metadata: { title, description, frontMatter, previous, next },
