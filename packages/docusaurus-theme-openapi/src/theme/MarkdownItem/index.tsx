@@ -30,7 +30,13 @@ export default function MarkdownItem(props: Props) {
         <div className="col">
           <div className={styles.apiItemContainer}>
             <article>
-              <div className={clsx("theme-api-markdown", "markdown")}>
+              <div
+                className={clsx(
+                  "theme-api-markdown",
+                  "theme-api-markdown-item",
+                  "markdown"
+                )}
+              >
                 <MDXContent>
                   <MDXPageContent />
                 </MDXContent>
