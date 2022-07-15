@@ -8,8 +8,8 @@
 import React from "react";
 
 import { PageMetadata } from "@docusaurus/theme-common";
-import type { Props } from "@theme/MarkdownItem";
 import DocPaginator from "@theme/DocPaginator";
+import type { Props } from "@theme/MarkdownItem";
 import MDXContent from "@theme/MDXContent";
 import clsx from "clsx";
 
