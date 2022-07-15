@@ -120,3 +120,15 @@ declare module "@theme/ApiItem" {
   const ApiItem: (props: Props) => JSX.Element;
   export default ApiItem;
 }
+
+declare module "@theme/MarkdownItem" {
+  export interface Props {
+    readonly content: {
+      readonly metadata: Metadata;
+      (): JSX.Element;
+    };
+  }
+
+  const MarkdownItem: (props: Props) => JSX.Element;
+  export default MarkdownItem;
+}
