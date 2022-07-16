@@ -33,10 +33,9 @@ function VSCode({ value, language, onChange }: Props) {
         // change hex short codes like "#fff" to "#ffffff"
         // to fix: https://github.com/cloud-annotations/docusaurus-openapi/issues/183
         let res = "#"; // prepend #
-        color
-          .slice(1)
-          .split("")
-          .map((c) => (res += c + c)); // duplicate each character
+        for (const c of color.substring(1)) {
+          res += c + c; // duplicate each char
+        }
         return res;
       }
       return color;
