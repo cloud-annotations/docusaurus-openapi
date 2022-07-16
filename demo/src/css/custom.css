@@ -43,8 +43,11 @@ html[data-theme="dark"] {
 }
 
 .theme-api-markdown table {
-  --ifm-code-background: #161b22;
   --ifm-table-border-color: #21262d;
+}
+
+html[data-theme="dark"] .theme-api-markdown table {
+  --ifm-code-background: #161b22;
 }
 
 .theme-api-markdown table table {
@@ -156,6 +159,10 @@ html[data-theme="dark"] {
 }
 
 .hero--primary {
+  --ifm-hero-text-color: white;
+}
+
+html[data-theme="dark"] .hero--primary {
   --ifm-hero-background-color: #161b22;
   --ifm-hero-text-color: var(--ifm-heading-color);
 }
