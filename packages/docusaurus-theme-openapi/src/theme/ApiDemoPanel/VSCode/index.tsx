@@ -32,11 +32,12 @@ function VSCode({ value, language, onChange }: Props) {
       if (color.length === 4) {
         // change hex short codes like "#fff" to "#ffffff"
         // to fix: https://github.com/cloud-annotations/docusaurus-openapi/issues/183
-        return color
+        let res = "#"; // prepend #
+        color
           .slice(1)
           .split("")
-          .map((c) => c + c) // duplicate each character
-          .join("");
+          .map((c) => (res += c + c)); // duplicate each character
+        return res;
       } else {
         return color;
       }
