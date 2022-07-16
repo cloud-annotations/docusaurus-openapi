@@ -38,9 +38,8 @@ function VSCode({ value, language, onChange }: Props) {
           .split("")
           .map((c) => (res += c + c)); // duplicate each character
         return res;
-      } else {
-        return color;
       }
+      return color;
     }
 
     const LIGHT_BRIGHT = "#1c1e21";
