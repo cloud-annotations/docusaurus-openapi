@@ -28,7 +28,18 @@ function VSCode({ value, language, onChange }: Props) {
     const styles = getComputedStyle(document.documentElement);
     function getColor(property: string) {
       // Weird chrome bug, returns " #ffffff " instead of "#ffffff", see: https://github.com/cloud-annotations/docusaurus-openapi/issues/144
-      return styles.getPropertyValue(property).trim();
+      const color = styles.getPropertyValue(property).trim();
+      if (color.length === 4) {
+        // change hex short codes like "#fff" to "#ffffff"
+        // to fix: https://github.com/cloud-annotations/docusaurus-openapi/issues/183
+        return color
+          .slice(1)
+          .split("")
+          .map((c) => c + c) // duplicate each character
+          .join("");
+      } else {
+        return color;
+      }
     }
 
     const LIGHT_BRIGHT = "#1c1e21";
