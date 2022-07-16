@@ -68,8 +68,8 @@ const config = {
     /** @type {import('docusaurus-preset-openapi').ThemeConfig} */
     ({
       colorMode: {
-        disableSwitch: true,
-        defaultMode: "dark",
+        disableSwitch: false,
+        defaultMode: "light",
       },
       navbar: {
         title: "OpenAPI",
