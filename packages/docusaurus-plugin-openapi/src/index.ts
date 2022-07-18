@@ -20,17 +20,13 @@ import {
   addTrailingPathSeparator,
   posixPath,
   aliasedSitePath,
-  encodePath,
-  fileToPath,
-  parseMarkdownString,
   Globby,
 } from "@docusaurus/utils";
 import chalk from "chalk";
 import fs from "fs-extra";
 import { Configuration } from "webpack";
 
-import { validateDocFrontMatter } from "./docs/frontMatter";
-import getSlug from "./docs/slug";
+import { DocEnv, processDocMetadata } from "./docs/docs";
 import { createApiPageMD, createInfoPageMD } from "./markdown";
 import { readOpenapiFiles, processOpenapiFiles } from "./openapi";
 import { generateSidebar } from "./sidebars";
@@ -75,70 +71,22 @@ export default function pluginOpenAPI(
         relativeSource: string
       ): Promise<MdxPageMetadata> {
         const source = path.join(contentPath, relativeSource);
-
-        // E.g. api/plugins/myDoc -> myDoc; myDoc -> myDoc
-        const sourceFileNameWithoutExtension = path.basename(
-          source,
-          path.extname(source)
-        );
-
-        // E.g. api/plugins/myDoc -> api/plugins; myDoc -> .
-        const sourceDirName = path.dirname(relativeSource);
-
-        const aliasedSourcePath = aliasedSitePath(source, siteDir);
-        const permalink = normalizeUrl([
-          baseUrl,
-          options.routeBasePath,
-          encodePath(fileToPath(relativeSource)),
-        ]);
         const content = await fs.readFile(source, "utf-8");
-        const {
-          frontMatter: unsafeFrontMatter,
-          contentTitle,
-          excerpt,
-        } = parseMarkdownString(content);
-        const frontMatter = validateDocFrontMatter(unsafeFrontMatter);
-
-        const { filename: unprefixedFileName } = {
-          filename: sourceFileNameWithoutExtension,
-        };
-
-        const baseID: string = frontMatter.id ?? unprefixedFileName;
-        if (baseID.includes("/")) {
-          throw new Error(`Document id "${baseID}" cannot include slash.`);
-        }
-
-        // TODO legacy retrocompatibility
-        // I think it's bad to affect the front matter id with the dirname?
-        function computeDirNameIdPrefix() {
-          if (sourceDirName === ".") {
-            return undefined;
-          }
-          return sourceDirName;
-        }
-
-        const unversionedId = [computeDirNameIdPrefix(), baseID]
-          .filter(Boolean)
-          .join("/");
-
-        const docSlug = getSlug({
-          baseID,
-          source,
-          sourceDirName,
-          frontMatterSlug: frontMatter.slug,
-        });
 
         return {
           type: "mdx",
-          permalink,
-          source: aliasedSourcePath,
-          id: unversionedId,
-          unversionedId: unversionedId,
-          sourceDirName: sourceDirName,
-          slug: docSlug,
-          title: (frontMatter.title as string) ?? contentTitle,
-          description: (frontMatter.description as string) ?? excerpt,
-          frontMatter,
+          ...(await processDocMetadata({
+            docFile: {
+              contentPath: contentPath,
+              filePath: source,
+              source: relativeSource,
+              content: content,
+            },
+            relativeSource: relativeSource,
+            context: context,
+            options: options,
+            env: process.env.NODE_ENV as DocEnv,
+          })),
         };
       }
 
