@@ -70,6 +70,12 @@ export function createParamsTable({ parameters, type }: Props) {
                     children: createDescription(message),
                   })
                 ),
+                guard(param.schema?.description, (description) =>
+                  create("div", {
+                    style: { marginTop: "var(--ifm-table-cell-padding)" },
+                    children: createDescription(description),
+                  })
+                ),
                 guard(param.description, (description) =>
                   create("div", {
                     style: { marginTop: "var(--ifm-table-cell-padding)" },
