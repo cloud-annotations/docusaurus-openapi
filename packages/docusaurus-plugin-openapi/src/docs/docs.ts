@@ -26,7 +26,6 @@ import {
 
 import { validateDocFrontMatter } from "./frontMatter";
 import getSlug from "./slug";
-// import type {SidebarsUtils} from './sidebars/utils';
 
 type DocFile = {
   contentPath: string; // /!\ may be localized
