@@ -1,8 +1,14 @@
+/* ============================================================================
+ * Copyright (c) Cloud Annotations
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ * ========================================================================== */
 import { isURL } from "./util";
 
 describe("util", () => {
   describe("isURL", () => {
-    it("full external link", async () => {
+    it("full external link", () => {
       const url = "http://www.google.com";
       expect(isURL(url)).toBe(true);
     });
