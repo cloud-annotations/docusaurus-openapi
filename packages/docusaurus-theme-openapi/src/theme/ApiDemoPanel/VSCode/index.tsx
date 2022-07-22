@@ -26,10 +26,12 @@ function VSCode({ value, language, onChange }: Props) {
 
   function handleEditorWillMount(monaco: Monaco) {
     const styles = getComputedStyle(document.documentElement);
+    // check if the color is short hex color (e.g. #fff)
+    const shortHexRegex = /^#([0-9A-Fa-f]{3})$/;
     function getColor(property: string) {
       // Weird chrome bug, returns " #ffffff " instead of "#ffffff", see: https://github.com/cloud-annotations/docusaurus-openapi/issues/144
       const color = styles.getPropertyValue(property).trim();
-      if (color.length === 4) {
+      if (color.match(shortHexRegex)) {
         // change hex short codes like "#fff" to "#ffffff"
         // to fix: https://github.com/cloud-annotations/docusaurus-openapi/issues/183
         let res = "#"; // prepend #
