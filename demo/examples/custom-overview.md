@@ -1,5 +1,6 @@
 ---
 sidebar_position: 0
+slug: /multi-spec/
 ---
 
 # Custom Overview
