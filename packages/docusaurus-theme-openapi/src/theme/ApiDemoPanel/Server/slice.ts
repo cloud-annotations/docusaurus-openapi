@@ -7,9 +7,20 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // TODO: we might want to export this
-import { ServerObject } from "docusaurus-plugin-openapi/src/openapi/types";
+import {
+  ServerObject,
+  ServerVariable,
+} from "docusaurus-plugin-openapi/src/openapi/types";
 import { ThemeConfig } from "../../../types";
 import { createStorage } from "../storage-utils";
+
+interface Map<T> {
+  [key: string]: T;
+}
+
+export type ServerObjectWithStorage = ServerObject & {
+  variables?: Map<ServerVariable & { storedValue: string }>;
+};
 
 export function createServer({
   servers,
@@ -20,7 +31,10 @@ export function createServer({
 }): State {
   const storage = createStorage(opts?.authPersistance);
 
-  let options: ServerObject[] = servers.map((s) => {
+  let options: ServerObjectWithStorage[] = servers.map((s) => {
+    // A deep copy of the original ServerObject, augmented with `storedValue` props.
+    const srv = JSON.parse(JSON.stringify(s)) as ServerObjectWithStorage;
+
     let persisted = undefined;
     try {
       persisted = JSON.parse(
@@ -36,23 +50,31 @@ export function createServer({
       persisted.variables = {};
     }
 
-    s.variables = s.variables ?? {};
+    srv.variables = srv.variables ?? {};
 
-    for (const v of Object.keys(s.variables ?? {})) {
+    for (const v of Object.keys(srv.variables)) {
       if (v in persisted.variables) {
-        s.variables[v].default = persisted.variables[v].default;
+        if (
+          persisted.variables[v].storedValue !== undefined &&
+          persisted.variables[v].storedValue !== null &&
+          persisted.variables[v].storedValue !== ""
+        ) {
+          srv.variables[v].storedValue = persisted.variables[v].storedValue;
+        } else {
+          srv.variables[v].storedValue = srv.variables[v].default;
+        }
       }
     }
 
-    return s;
+    return srv;
   });
 
   return { value: options[0], options: options };
 }
 
 export interface State {
-  value?: ServerObject;
-  options: ServerObject[];
+  value?: ServerObjectWithStorage;
+  options: ServerObjectWithStorage[];
 }
 
 const initialState: State = {} as any;
@@ -69,7 +91,7 @@ export const slice = createSlice({
       action: PayloadAction<{ key: string; value: string }>
     ) => {
       if (state.value?.variables) {
-        state.value.variables[action.payload.key].default =
+        state.value.variables[action.payload.key].storedValue =
           action.payload.value;
       }
     },

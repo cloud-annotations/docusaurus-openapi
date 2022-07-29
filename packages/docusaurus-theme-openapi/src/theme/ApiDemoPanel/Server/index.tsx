@@ -38,7 +38,7 @@ function Server() {
         Object.keys(value.variables).forEach((variable) => {
           url = url.replace(
             `{${variable}}`,
-            value.variables?.[variable].default ?? ""
+            value.variables?.[variable].storedValue ?? ""
           );
         });
       }
@@ -78,6 +78,7 @@ function Server() {
               <FormItem label={key}>
                 <FormSelect
                   options={value.variables[key].enum}
+                  value={value.variables?.[key].storedValue}
                   onChange={(e) => {
                     dispatch(setServerVariable({ key, value: e.target.value }));
                   }}
@@ -89,6 +90,7 @@ function Server() {
             <FormItem label={key}>
               <FormTextInput
                 placeholder={value.variables?.[key].default}
+                value={value.variables?.[key].storedValue}
                 onChange={(e) => {
                   dispatch(setServerVariable({ key, value: e.target.value }));
                 }}
