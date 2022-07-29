@@ -189,33 +189,31 @@ export default function pluginOpenAPI(
       const apiBaseRoute = normalizeUrl([baseUrl, routeBasePath]);
       const basePath = apiBaseRoute === "/" ? "" : apiBaseRoute;
 
+      // Generates a new root route using the first api item.
       async function rootRoute() {
-        // If we have a document with an explicit "/" slug, we use that as root route. Otherwise, we use the first API item.
-        const doc = (await Promise.all(promises)).find(
-          (d) => normalizeUrl([d.path, "/"]) === normalizeUrl([basePath, "/"])
-        );
-        if (doc) {
-          return doc;
-        } else {
-          const item = loadedApi[0];
-          const pageId = `site-${routeBasePath}-${item.id}`;
+        const item = loadedApi[0];
+        const pageId = `site-${routeBasePath}-${item.id}`;
 
-          return {
-            path: basePath,
-            component: apiItemComponent,
-            exact: true,
-            modules: {
-              // TODO: "-content" should be inside hash to prevent name too long errors.
-              content: path.join(dataDir, `${docuHash(pageId)}-content.mdx`),
-            },
-            sidebar: sidebarName,
-          };
-        }
+        return {
+          path: basePath,
+          component: apiItemComponent,
+          exact: true,
+          modules: {
+            // TODO: "-content" should be inside hash to prevent name too long errors.
+            content: path.join(dataDir, `${docuHash(pageId)}-content.mdx`),
+          },
+          sidebar: sidebarName,
+        };
       }
+
+      // Whether we already have a document whose permalink falls on the root route.
+      const hasRootRoute = (await Promise.all(promises)).find(
+        (d) => normalizeUrl([d.path, "/"]) === normalizeUrl([basePath, "/"])
+      );
 
       const routes = (await Promise.all([
         ...promises,
-        rootRoute(),
+        ...(hasRootRoute ? [] : [rootRoute()]),
       ])) as RouteConfig[];
 
       const apiBaseMetadataPath = await createData(
