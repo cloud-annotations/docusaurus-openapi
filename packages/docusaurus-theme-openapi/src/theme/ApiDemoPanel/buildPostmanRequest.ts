@@ -5,10 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import {
-  ParameterObject,
-  ServerObject,
-} from "docusaurus-plugin-openapi/src/openapi/types";
+import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import cloneDeep from "lodash/cloneDeep";
 import sdk from "postman-collection";
 

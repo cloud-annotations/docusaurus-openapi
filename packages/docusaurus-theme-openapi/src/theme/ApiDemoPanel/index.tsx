@@ -25,9 +25,9 @@ import ParamOptions from "./ParamOptions";
 import { createPersistanceMiddleware } from "./persistanceMiddleware";
 import Response from "./Response";
 import Server from "./Server";
+import { createServer } from "./Server/slice";
 import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
-import { createServer } from "./Server/slice";
 
 function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
   const { siteConfig } = useDocusaurusContext();
