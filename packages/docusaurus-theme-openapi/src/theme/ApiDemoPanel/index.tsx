@@ -27,6 +27,7 @@ import Response from "./Response";
 import Server from "./Server";
 import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
+import { createServer } from "./Server/slice";
 
 function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
   const { siteConfig } = useDocusaurusContext();
@@ -66,13 +67,18 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
     options,
   });
 
+  const server = createServer({
+    servers,
+    options,
+  });
+
   const persistanceMiddleware = createPersistanceMiddleware(options);
 
   const store2 = createStoreWithState(
     {
       accept: { value: acceptArray[0], options: acceptArray },
       contentType: { value: contentTypeArray[0], options: contentTypeArray },
-      server: { value: servers[0], options: servers },
+      server: server,
       response: { value: undefined },
       body: { type: "empty" },
       params,

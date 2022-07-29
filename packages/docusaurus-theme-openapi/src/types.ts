@@ -9,5 +9,6 @@ export interface ThemeConfig {
   api?: {
     proxy?: string;
     authPersistance?: false | "localStorage" | "sessionStorage";
+    serverVariablesPersistance?: false | "localStorage" | "sessionStorage";
   };
 }
