@@ -30,8 +30,6 @@ import {
   aliasedSitePath,
   normalizeUrl,
   parseMarkdownString,
-  encodePath,
-  fileToPath,
 } from "@docusaurus/utils";
 
 import { validateDocFrontMatter } from "./frontMatter";
