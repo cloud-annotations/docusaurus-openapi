@@ -139,11 +139,7 @@ async function doProcessDocMetadata({
 
   const description: string = frontMatter.description ?? excerpt ?? "";
 
-  const permalink = normalizeUrl([
-    context.baseUrl,
-    options.routeBasePath,
-    encodePath(fileToPath(relativeSource)),
-  ]);
+  const permalink = normalizeUrl([context.baseUrl, docSlug]);
 
   const draft = isDraftForEnvironment({ env, frontMatter });
 

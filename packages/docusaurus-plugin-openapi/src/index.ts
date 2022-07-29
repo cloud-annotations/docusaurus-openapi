@@ -190,19 +190,27 @@ export default function pluginOpenAPI(
       const basePath = apiBaseRoute === "/" ? "" : apiBaseRoute;
 
       async function rootRoute() {
-        const item = loadedApi[0];
-        const pageId = `site-${routeBasePath}-${item.id}`;
+        // If we have a document with an explicit "/" slug, we use that as root route. Otherwise, we use the first API item.
+        const doc = (await Promise.all(promises)).find(
+          (d) => normalizeUrl([d.path, "/"]) === normalizeUrl([basePath, "/"])
+        );
+        if (doc) {
+          return doc;
+        } else {
+          const item = loadedApi[0];
+          const pageId = `site-${routeBasePath}-${item.id}`;
 
-        return {
-          path: basePath,
-          component: apiItemComponent,
-          exact: true,
-          modules: {
-            // TODO: "-content" should be inside hash to prevent name too long errors.
-            content: path.join(dataDir, `${docuHash(pageId)}-content.mdx`),
-          },
-          sidebar: sidebarName,
-        };
+          return {
+            path: basePath,
+            component: apiItemComponent,
+            exact: true,
+            modules: {
+              // TODO: "-content" should be inside hash to prevent name too long errors.
+              content: path.join(dataDir, `${docuHash(pageId)}-content.mdx`),
+            },
+            sidebar: sidebarName,
+          };
+        }
       }
 
       const routes = (await Promise.all([
