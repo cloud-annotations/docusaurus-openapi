@@ -26,7 +26,7 @@ export const DEFAULT_OPTIONS: Omit<PluginOptions, "id" | "sidebarPath"> = {
   rehypePlugins: [],
   beforeDefaultRemarkPlugins: [],
   beforeDefaultRehypePlugins: [],
-  admonitions: {},
+  admonitions: true,
   sidebarCollapsible: true,
   sidebarCollapsed: true,
 };
