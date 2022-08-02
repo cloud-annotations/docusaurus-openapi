@@ -16,7 +16,7 @@ import type { ApiRoute } from "@theme/ApiItem";
 import type { Props } from "@theme/ApiPage";
 import BackToTopButton from "@theme/BackToTopButton";
 import DocSidebar from "@theme/DocSidebar";
-import IconArrow from "@theme/IconArrow";
+import IconArrow from "@theme/Icon/Arrow";
 import Layout from "@theme/Layout";
 import MDXComponents from "@theme/MDXComponents";
 import NotFound from "@theme/NotFound";
