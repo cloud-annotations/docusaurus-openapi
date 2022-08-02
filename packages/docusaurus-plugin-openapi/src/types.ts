@@ -26,7 +26,13 @@ export interface PluginOptions extends MDXOptions {
   routeBasePath: string;
   apiLayoutComponent: string;
   apiItemComponent: string;
-  admonitions: Record<string, unknown>;
+  admonitions:
+    | boolean
+    // AdmonitionOptions is not exported from @docusaurus/mdx-loader
+    | {
+        tag: string;
+        keywords: string[];
+      };
   sidebarCollapsible: boolean;
   sidebarCollapsed: boolean;
 }
