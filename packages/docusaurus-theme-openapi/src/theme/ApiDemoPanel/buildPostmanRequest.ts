@@ -5,15 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import {
-  ParameterObject,
-  ServerObject,
-} from "docusaurus-plugin-openapi/src/openapi/types";
+import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import cloneDeep from "lodash/cloneDeep";
 import sdk from "postman-collection";
 
 import { AuthState, Scheme } from "./Authorization/slice";
 import { Body, Content } from "./Body/slice";
+import { ServerObjectWithStorage } from "./Server/slice";
 
 type Param = {
   value?: string | string[];
@@ -191,7 +189,7 @@ function setBody(clonedPostman: sdk.Request, body: Body) {
 
 // TODO: finish these types
 interface Options {
-  server?: ServerObject;
+  server?: ServerObjectWithStorage;
   queryParams: Param[];
   pathParams: Param[];
   cookieParams: Param[];
@@ -226,7 +224,7 @@ function buildPostmanRequest(
     const variables = server.variables;
     if (variables) {
       Object.keys(variables).forEach((variable) => {
-        url = url.replace(`{${variable}}`, variables[variable].default);
+        url = url.replace(`{${variable}}`, variables[variable].storedValue);
       });
     }
     clonedPostman.url.host = [url];
