@@ -1,13 +1,9 @@
 ## 0.6.1 (Aug 3, 2022)
 
-High level enhancements
-
-- TODO HIGHLIGHTS
-
 Other enhancements and bug fixes
 
 - Persist server variables configuration ([#202](https://github.com/cloud-annotations/docusaurus-openapi/pull/202))
-- fix(theme): new location for theme icons  ([#203](https://github.com/cloud-annotations/docusaurus-openapi/pull/203))
+- fix(theme): new location for theme icons ([#203](https://github.com/cloud-annotations/docusaurus-openapi/pull/203))
 - Fix: loading failed for local openapi json file on Windows ([#197](https://github.com/cloud-annotations/docusaurus-openapi/pull/197))
 - ensure description from schema is not ignored ([#194](https://github.com/cloud-annotations/docusaurus-openapi/pull/194))
 - Fix illegal color value bug ([#196](https://github.com/cloud-annotations/docusaurus-openapi/pull/196))
