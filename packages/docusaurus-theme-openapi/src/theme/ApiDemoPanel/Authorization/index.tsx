@@ -167,7 +167,7 @@ function Authorization() {
 
           if (a.type === "apiKey") {
             return (
-              <FormItem label={a.key} key={a.key + "-apiKey"}>
+              <FormItem label={a.name} key={a.key + "-apiKey"}>
                 <FormTextInput
                   placeholder={a.name}
                   onChange={(e) => {
