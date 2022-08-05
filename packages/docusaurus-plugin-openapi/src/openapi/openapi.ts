@@ -124,7 +124,9 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
       const security = operationObject.security ?? openapiData.security;
 
       // Add security schemes so we know how to handle security.
-      const securitySchemes = openapiData.components?.securitySchemes;
+      const securitySchemes =
+        openapiData.components?.securitySchemes ??
+        openapiData.securityDefinitions;
 
       // Make sure schemes are lowercase. See: https://github.com/cloud-annotations/docusaurus-plugin-openapi/issues/79
       if (securitySchemes) {

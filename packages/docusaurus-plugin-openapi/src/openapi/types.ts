@@ -17,6 +17,10 @@ export interface OpenApiObject {
   servers?: ServerObject[];
   paths: PathsObject;
   components?: ComponentsObject;
+  /**
+   * @deprecated in 3.0.0 - use components.securitySchemes instead
+   */
+  securityDefinitions?: Map<SecuritySchemeObject>;
   security?: SecurityRequirementObject[];
   tags?: TagObject[];
   externalDocs?: ExternalDocumentationObject;

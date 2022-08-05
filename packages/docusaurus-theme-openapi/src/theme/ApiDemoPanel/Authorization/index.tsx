@@ -165,6 +165,26 @@ function Authorization() {
             );
           }
 
+          if (a.type === "apiKey") {
+            return (
+              <FormItem label={a.key} key={a.key + "-apiKey"}>
+                <FormTextInput
+                  placeholder={a.name}
+                  onChange={(e) => {
+                    const value = e.target.value.trim();
+                    dispatch(
+                      setAuthData({
+                        scheme: a.key,
+                        key: a.name,
+                        value: value ? value : undefined,
+                      })
+                    );
+                  }}
+                />
+              </FormItem>
+            );
+          }
+
           return null;
         })}
         <LockButton
