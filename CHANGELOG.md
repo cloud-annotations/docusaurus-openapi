@@ -1,3 +1,14 @@
+## 0.6.2 (Aug 11, 2022)
+
+High level enhancements
+
+- Authorize with api keys in header
+
+Other enhancements and bug fixes
+
+- feat(auth): authorize with api keys in header ([#208](https://github.com/cloud-annotations/docusaurus-openapi/pull/208))
+- add example key serverVariablesPersistance in demo ([#204](https://github.com/cloud-annotations/docusaurus-openapi/pull/204))
+
 ## 0.6.1 (Aug 3, 2022)
 
 Other enhancements and bug fixes
