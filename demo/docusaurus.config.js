@@ -118,6 +118,7 @@ const config = {
       },
       api: {
         authPersistance: "localStorage",
+        serverVariablesPersistance: "localStorage",
       },
     }),
 };
