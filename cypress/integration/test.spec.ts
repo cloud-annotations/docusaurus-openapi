@@ -6,12 +6,22 @@
  * ========================================================================== */
 
 describe("test", () => {
-  it("loads Petstore page", () => {
-    cy.visit("/petstore");
-    navTo(
-      [/^pet$/i, /add a new pet to the store/i],
-      /add a new pet to the store/i
-    );
+  describe("Petstore", () => {
+    it("loads Petstore page", () => {
+      cy.visit("/petstore");
+      navTo(
+        [/^pet$/i, /add a new pet to the store/i],
+        /add a new pet to the store/i
+      );
+    });
+
+    it("renders authentication header fields", () => {
+      cy.visit("/petstore/find-pet-by-id");
+      cy.findByRole("button", { name: /authorize/i })
+        .should("exist")
+        .click();
+      cy.get('input[placeholder="api_key"]').should("exist");
+    });
   });
 
   it("loads Cloud Object Storage page", () => {

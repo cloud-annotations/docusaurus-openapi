@@ -267,6 +267,18 @@ function buildPostmanRequest(
       });
       continue;
     }
+
+    if (a.type === "apiKey" && a.in === "header") {
+      if (auth.data && auth.data[a.key]) {
+        const value = auth.data[a.key][a.name];
+        if (value) {
+          otherHeaders.push({
+            key: a.name,
+            value,
+          });
+        }
+      }
+    }
   }
 
   setHeaders(

@@ -132,6 +132,9 @@ export const slice = createSlice({
       action: PayloadAction<{ scheme: string; key: string; value?: string }>
     ) => {
       const { scheme, key, value } = action.payload;
+      if (!state.data[scheme]) {
+        state.data[scheme] = {};
+      }
       state.data[scheme][key] = value;
     },
     setSelectedAuth: (state, action: PayloadAction<string>) => {
