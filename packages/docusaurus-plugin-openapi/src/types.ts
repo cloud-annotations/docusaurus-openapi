@@ -41,7 +41,7 @@ export interface LoadedContent {
   loadedApi: ApiMetadata[];
 }
 
-export type ApiMetadata = ApiPageMetadata | InfoPageMetadata;
+export type ApiMetadata = ApiPageMetadata | InfoPageMetadata | MdxPageMetadata;
 
 export interface ApiMetadataBase {
   sidebar?: string;
@@ -79,6 +79,10 @@ export interface ApiItem extends OperationObject {
 export interface InfoPageMetadata extends ApiMetadataBase {
   type: "info";
   info: ApiInfo;
+}
+
+export interface MdxPageMetadata extends ApiMetadataBase {
+  type: "mdx";
 }
 
 export type ApiInfo = InfoObject;
