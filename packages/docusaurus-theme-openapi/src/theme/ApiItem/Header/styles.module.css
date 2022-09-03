@@ -1,0 +1,12 @@
+.apiDocHeader {
+  position: relative;
+
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.apiDocDescription {
+  margin-top: 10px;
+}

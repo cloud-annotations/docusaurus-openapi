@@ -46,6 +46,22 @@
   --openapi-dropzone-hover-shim: rgba(235, 237, 240, 0.8);
 
   --openapi-inverse-color: var(--ifm-color-gray-100);
+
+  --openapi-api-method-get-background: #0e9b71;
+  --openapi-api-method-get-shadow: 1px 1px 0 #0d8d67, 0 1px 0 #0d8d67,
+    1px 0 0 #0d8d67;
+
+  --openapi-api-method-post-background: #0272d9;
+  --openapi-api-method-post-shadow: 1px 1px 0 #026aca, 0 1px 0 #026aca,
+    1px 0 0 #026aca;
+
+  --openapi-api-method-put-background: #674ead;
+  --openapi-api-method-put-shadow: 1px 1px 0 #604aa2, 0 1px 0 #604aa2,
+    1px 0 0 #604aa2;
+
+  --openapi-api-method-delete-background: #c71b29;
+  --openapi-api-method-delete-shadow: 1px 1px 0 #b91926, 0 1px 0 #b91926,
+    1px 0 0 #b91926;
 }
 
 html[data-theme="dark"] {

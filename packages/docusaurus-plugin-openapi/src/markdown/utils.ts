@@ -33,7 +33,11 @@ export function guard<T>(
 
 export function render(children: Children): string {
   if (Array.isArray(children)) {
-    return children.filter((c) => c !== undefined).join("");
+    /**
+     * When rendering the markdown children, we separate each child with
+     * two newlines (\n\n) to ensure that the markdown is rendered correctly.
+     */
+    return children.filter((c) => c !== undefined).join("\n\n");
   }
   return children ?? "";
 }

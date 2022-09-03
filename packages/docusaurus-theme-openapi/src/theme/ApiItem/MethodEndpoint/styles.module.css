@@ -1,0 +1,21 @@
+.headlineContainerArticleInfo {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+.apiUrl {
+  font-size: 13px;
+}
+
+.apiParam {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.apiParam:hover {
+  text-decoration: none;
+}

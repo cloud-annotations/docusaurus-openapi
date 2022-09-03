@@ -1,0 +1,17 @@
+.apiMethod {
+  border-radius: var(--openapi-card-border-radius);
+  box-shadow: var(--box-shadow-pill);
+  box-sizing: border-box;
+  color: #fff;
+  display: inline-flex;
+  font-size: 8px;
+  font-weight: 500;
+  height: 16px;
+  justify-content: center;
+  line-height: 16px;
+  min-width: 40px;
+  padding: 0 8px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
