@@ -22,6 +22,29 @@ describe("test", () => {
         .click();
       cy.get('input[placeholder="api_key"]').should("exist");
     });
+
+    it("select a new server should update the request url", () => {
+      cy.visit("/petstore/update-an-existing-pet");
+
+      cy.get('[class^="apiUrl_"]').should(
+        "have.text",
+        "//petstore.swagger.io/v2/pet/"
+      );
+
+      // The Edit button is hidden unless hovered over.
+      cy.contains("button", "Edit").click({ force: true });
+
+      cy.get("[class^=formItem_]")
+        .contains("Endpoint")
+        .get("select")
+        .eq(1)
+        .select("//petstore.swagger.io/sandbox");
+
+      cy.get('[class^="apiUrl_"]').should(
+        "have.text",
+        "//petstore.swagger.io/sandbox/pet/"
+      );
+    });
   });
 
   it("loads Cloud Object Storage page", () => {
