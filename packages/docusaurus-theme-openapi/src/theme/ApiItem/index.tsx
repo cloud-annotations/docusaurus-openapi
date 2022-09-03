@@ -7,9 +7,11 @@
 
 import React from "react";
 
+import BrowserOnly from "@docusaurus/BrowserOnly";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import { PageMetadata } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { Store } from "@reduxjs/toolkit";
 import type { Props } from "@theme/ApiItem";
 import DocPaginator from "@theme/DocPaginator";
 import clsx from "clsx";
@@ -38,79 +40,101 @@ function ApiItem(props: Props): JSX.Element {
   const themeConfig = siteConfig.themeConfig as ThemeConfig;
   const options = themeConfig.api;
 
-  const acceptArray = Array.from(
-    new Set(
-      Object.values(api?.responses ?? {})
-        .map((response) => Object.keys(response.content ?? {}))
-        .flat()
-    )
-  );
+  let store: Store;
 
-  const content = api?.requestBody?.content ?? {};
+  if (ExecutionEnvironment.canUseDOM) {
+    const acceptArray = Array.from(
+      new Set(
+        Object.values(api?.responses ?? {})
+          .map((response) => Object.keys(response.content ?? {}))
+          .flat()
+      )
+    );
 
-  const contentTypeArray = Object.keys(content);
+    const content = api?.requestBody?.content ?? {};
 
-  const servers = api?.servers ?? [];
+    const contentTypeArray = Object.keys(content);
 
-  const params = {
-    path: [] as ParameterObject[],
-    query: [] as ParameterObject[],
-    header: [] as ParameterObject[],
-    cookie: [] as ParameterObject[],
-  };
+    const servers = api?.servers ?? [];
 
-  api?.parameters?.forEach((param) => {
-    params[param.in].push(param);
-  });
+    const params = {
+      path: [] as ParameterObject[],
+      query: [] as ParameterObject[],
+      header: [] as ParameterObject[],
+      cookie: [] as ParameterObject[],
+    };
 
-  const auth = createAuth({
-    security: api?.security,
-    securitySchemes: api?.securitySchemes,
-    options,
-  });
+    api?.parameters?.forEach((param) => {
+      params[param.in].push(param);
+    });
 
-  const server = createServer({
-    servers,
-    options,
-  });
+    const auth = createAuth({
+      security: api?.security,
+      securitySchemes: api?.securitySchemes,
+      options,
+    });
 
-  const persistanceMiddleware = createPersistanceMiddleware(options);
+    const server = createServer({
+      servers,
+      options,
+    });
 
-  const store2 = createStoreWithState(
-    {
-      accept: { value: acceptArray[0], options: acceptArray },
-      contentType: { value: contentTypeArray[0], options: contentTypeArray },
-      server: server,
-      response: { value: undefined },
-      body: { type: "empty" },
-      params,
-      auth,
-    },
-    [persistanceMiddleware]
+    const persistanceMiddleware = createPersistanceMiddleware(options);
+
+    store = createStoreWithState(
+      {
+        accept: { value: acceptArray[0], options: acceptArray },
+        contentType: { value: contentTypeArray[0], options: contentTypeArray },
+        server: server,
+        response: { value: undefined },
+        body: { type: "empty" },
+        params,
+        auth,
+      },
+      [persistanceMiddleware]
+    );
+  }
+
+  const fallback: JSX.Element = (
+    <div className="row">
+      <div className="col">
+        <div className={styles.apiItemContainer}>
+          <article>
+            <div className={clsx("theme-api-markdown", "markdown")}></div>
+          </article>
+        </div>
+        <div className={clsx("col", api ? "col--5" : "col--3")}>
+          {api && <ApiDemoPanel item={api} />}
+        </div>
+      </div>
+    </div>
   );
 
   return (
     <>
       <PageMetadata {...{ title, description, keywords, image }} />
+      <BrowserOnly fallback={fallback}>
+        {() => (
+          <Provider store={store}>
+            <div className="row">
+              <div className="col">
+                <div className={styles.apiItemContainer}>
+                  <article>
+                    <div className={clsx("theme-api-markdown", "markdown")}>
+                      <ApiContent />
+                    </div>
+                  </article>
 
-      <div className="row">
-        <Provider store={store2}>
-          <div className="col">
-            <div className={styles.apiItemContainer}>
-              <article>
-                <div className={clsx("theme-api-markdown", "markdown")}>
-                  <ApiContent />
+                  <DocPaginator previous={previous} next={next} />
                 </div>
-              </article>
-
-              <DocPaginator previous={previous} next={next} />
+              </div>
+              <div className={clsx("col", api ? "col--5" : "col--3")}>
+                {api && <ApiDemoPanel item={api} />}
+              </div>
             </div>
-          </div>
-          <div className={clsx("col", api ? "col--5" : "col--3")}>
-            {api && <ApiDemoPanel item={api} />}
-          </div>
-        </Provider>
-      </div>
+          </Provider>
+        )}
+      </BrowserOnly>
     </>
   );
 }
