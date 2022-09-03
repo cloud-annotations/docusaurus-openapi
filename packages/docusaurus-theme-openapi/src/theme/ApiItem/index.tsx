@@ -7,7 +7,6 @@
 
 import React from "react";
 
-import BrowserOnly from "@docusaurus/BrowserOnly";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import { PageMetadata } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -40,7 +39,7 @@ function ApiItem(props: Props): JSX.Element {
   const themeConfig = siteConfig.themeConfig as ThemeConfig;
   const options = themeConfig.api;
 
-  let store: Store;
+  let store2!: Store;
 
   if (ExecutionEnvironment.canUseDOM) {
     const acceptArray = Array.from(
@@ -81,7 +80,7 @@ function ApiItem(props: Props): JSX.Element {
 
     const persistanceMiddleware = createPersistanceMiddleware(options);
 
-    store = createStoreWithState(
+    store2 = createStoreWithState(
       {
         accept: { value: acceptArray[0], options: acceptArray },
         contentType: { value: contentTypeArray[0], options: contentTypeArray },
@@ -95,46 +94,29 @@ function ApiItem(props: Props): JSX.Element {
     );
   }
 
-  const fallback: JSX.Element = (
-    <div className="row">
-      <div className="col">
-        <div className={styles.apiItemContainer}>
-          <article>
-            <div className={clsx("theme-api-markdown", "markdown")}></div>
-          </article>
-        </div>
-        <div className={clsx("col", api ? "col--5" : "col--3")}>
-          {api && <ApiDemoPanel item={api} />}
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <>
       <PageMetadata {...{ title, description, keywords, image }} />
-      <BrowserOnly fallback={fallback}>
-        {() => (
-          <Provider store={store}>
-            <div className="row">
-              <div className="col">
-                <div className={styles.apiItemContainer}>
-                  <article>
-                    <div className={clsx("theme-api-markdown", "markdown")}>
-                      <ApiContent />
-                    </div>
-                  </article>
+      {ExecutionEnvironment.canUseDOM && (
+        <Provider store={store2}>
+          <div className="row">
+            <div className="col">
+              <div className={styles.apiItemContainer}>
+                <article>
+                  <div className={clsx("theme-api-markdown", "markdown")}>
+                    <ApiContent />
+                  </div>
+                </article>
 
-                  <DocPaginator previous={previous} next={next} />
-                </div>
-              </div>
-              <div className={clsx("col", api ? "col--5" : "col--3")}>
-                {api && <ApiDemoPanel item={api} />}
+                <DocPaginator previous={previous} next={next} />
               </div>
             </div>
-          </Provider>
-        )}
-      </BrowserOnly>
+            <div className={clsx("col", api ? "col--5" : "col--3")}>
+              {api && <ApiDemoPanel item={api} />}
+            </div>
+          </div>
+        </Provider>
+      )}
     </>
   );
 }
