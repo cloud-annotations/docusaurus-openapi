@@ -22,7 +22,19 @@ interface Props {
 function Header({ title, method, path, children }: Props) {
   const value = useTypedSelector((state) => state.server.value);
 
-  const serverUrl = value?.url ?? "";
+  let serverUrl: string = "";
+
+  if (value) {
+    serverUrl = value.url.replace(/\/$/, "");
+    if (value.variables) {
+      Object.keys(value.variables).forEach((variable) => {
+        serverUrl = serverUrl.replace(
+          `{${variable}}`,
+          value.variables?.[variable].storedValue ?? ""
+        );
+      });
+    }
+  }
 
   return (
     <header className={styles.apiDocHeader}>

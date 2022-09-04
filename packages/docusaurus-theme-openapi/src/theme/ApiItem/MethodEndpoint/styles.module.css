@@ -10,13 +10,3 @@
 .apiUrl {
   font-size: 13px;
 }
-
-/* TODO - Re-add this styling when clicking an API param will focus the corresponding input to set the param value */
-/* .apiParam {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.apiParam:hover {
-  text-decoration: none;
-} */

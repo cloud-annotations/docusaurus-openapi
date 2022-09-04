@@ -31,6 +31,11 @@ function styleForMethod(method: string): React.CSSProperties | undefined {
         background: "var(--openapi-api-method-delete-background)",
         textShadow: "var(--openapi-api-method-delete-shadow)",
       };
+    case "head":
+      return {
+        background: "var(--openapi-api-method-head-background)",
+        textShadow: "var(--openapi-api-method-head-shadow)",
+      };
     default:
       return undefined;
   }
