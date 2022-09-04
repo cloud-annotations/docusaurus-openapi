@@ -28,7 +28,7 @@ describe("test", () => {
 
       cy.get('[class^="apiUrl_"]').should(
         "have.text",
-        "//petstore.swagger.io/v2/pet/"
+        "//petstore.swagger.io/v2/pet"
       );
 
       // The Edit button is hidden unless hovered over.
@@ -42,7 +42,7 @@ describe("test", () => {
 
       cy.get('[class^="apiUrl_"]').should(
         "have.text",
-        "//petstore.swagger.io/sandbox/pet/"
+        "//petstore.swagger.io/sandbox/pet"
       );
     });
   });
