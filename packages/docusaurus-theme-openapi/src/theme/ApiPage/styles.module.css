@@ -65,6 +65,8 @@
 
   --openapi-api-param: var(--ifm-color-gray-600);
   --openapi-api-param-required: var(--ifm-color-danger);
+
+  --openapi-border-color: rgba(0, 0, 0, 0.1);
 }
 
 html[data-theme="dark"] {

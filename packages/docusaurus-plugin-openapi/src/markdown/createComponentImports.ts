@@ -12,5 +12,6 @@ export function createComponentImports() {
   return [
     'import Header from "@theme/ApiItem/Header";',
     'import ParamsTable from "@theme/ApiItem/ParamsTable";',
+    'import RequestBodyTable from "@theme/ApiItem/RequestBodyTable";',
   ].join("\n");
 }

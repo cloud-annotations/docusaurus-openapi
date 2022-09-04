@@ -5,19 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { RequestBodyObject } from "../openapi/types";
-import { create } from "./utils";
+import React from "react";
+
+import styles from "./styles.module.css";
 
 interface Props {
-  requestBody?: RequestBodyObject;
+  children?: React.ReactNode;
 }
 
-export function createRequestBodyTable({ requestBody }: Props) {
-  if (requestBody === undefined) {
-    return undefined;
-  }
-  return create("RequestBodyTable", {
-    requestBody,
-    children: [],
-  });
+function ListItem({ children }: Props): JSX.Element {
+  return (
+    <div className={styles.listItem}>
+      <div className={styles.listItemLabel}>{children}</div>
+    </div>
+  );
 }
+
+export default ListItem;

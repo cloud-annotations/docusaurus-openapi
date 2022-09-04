@@ -34,7 +34,7 @@ export function createApiPageMD({ title, api }: ApiPageMetadata) {
     createParamsTable({ parameters, type: "query", title: "Query Params" }),
     createParamsTable({ parameters, type: "header", title: "Headers" }),
     createParamsTable({ parameters, type: "cookie", title: "Cookies" }),
-    createRequestBodyTable({ title: "Request Body", body: requestBody }),
+    createRequestBodyTable({ requestBody }),
     createStatusCodesTable({ responses }),
   ]);
 }

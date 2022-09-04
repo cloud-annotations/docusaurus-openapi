@@ -7,61 +7,17 @@
 
 import React from "react";
 
-import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import type { ApiItem } from "docusaurus-plugin-openapi/src/types";
 
+import { getSchemaQualifiedType } from "../../../utils";
 import ContentSection from "../ContentSection";
+import SchemaObject from "../SchemaObject";
 import styles from "./styles.module.css";
 
 interface Props {
   parameters: ApiItem["parameters"];
   type: "path" | "query" | "header" | "cookie";
   title: string;
-}
-
-function renderSchema(schema: ParameterObject["schema"]): JSX.Element | null {
-  if (!schema?.items) {
-    return null;
-  }
-  if (schema.items.enum) {
-    return (
-      <div>
-        <strong>
-          Possible values: [
-          {schema.items.enum.map((value, index) => (
-            <React.Fragment key={index}>
-              <code>{value}</code>
-              {index !== schema.items!.enum!.length - 1 && ", "}
-            </React.Fragment>
-          ))}
-          ]
-        </strong>
-      </div>
-    );
-  }
-  return null;
-}
-
-function getSchemaQualifiedType(schema: ParameterObject["schema"]): string {
-  if (!schema) {
-    return "";
-  }
-  if (schema.format) {
-    return schema.format;
-  }
-  if (schema.type) {
-    if (schema.type === "array") {
-      if (schema.items?.type) {
-        /**
-         * Displays the type of the array items, e.g. "string[]".
-         */
-        return `${schema.items.type}[]`;
-      }
-      return schema.type;
-    }
-    return schema.type;
-  }
-  return "";
 }
 
 function ParamsTable({ parameters, type, title }: Props): JSX.Element | null {
@@ -90,7 +46,7 @@ function ParamsTable({ parameters, type, title }: Props): JSX.Element | null {
             )}
           </div>
           <div className={styles.paramDescription}>
-            {renderSchema(param.schema)}
+            {param.schema && <SchemaObject items={param.schema.items} />}
             <div>{param.description}</div>
           </div>
         </div>
