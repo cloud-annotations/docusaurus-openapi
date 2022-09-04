@@ -33,6 +33,24 @@
   padding-left: 5px;
 }
 
+.paramRequired {
+  color: var(--openapi-api-param-required);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.paramHeader {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+}
+
+.paramName:not(:last-child):not(:only-child),
+.paramType:not(:last-child):not(:only-child),
+.paramRequired:not(:last-child):not(:only-child) {
+  margin-right: 5px;
+}
+
 .menuItemText span {
   display: flex;
   align-items: center;

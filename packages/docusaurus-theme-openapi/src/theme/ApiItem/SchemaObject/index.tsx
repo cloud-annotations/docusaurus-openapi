@@ -9,23 +9,25 @@ import React from "react";
 
 import type { SchemaObject as OpenApiSchemaObject } from "docusaurus-plugin-openapi/src/openapi/types";
 
-function SchemaObject(object?: OpenApiSchemaObject): JSX.Element | null {
+interface Props {
+  object?: OpenApiSchemaObject;
+}
+
+function SchemaObject({ object }: Props): JSX.Element | null {
   if (object === undefined) {
     return null;
   }
   if (object.enum) {
     return (
       <div>
-        <strong>
-          Possible values: [
-          {object.enum.map((value, index) => (
-            <React.Fragment key={index}>
-              <code>{value}</code>
-              {index !== object.enum!.length - 1 && ", "}
-            </React.Fragment>
-          ))}
-          ]
-        </strong>
+        Possible values: [
+        {object.enum.map((value, index) => (
+          <React.Fragment key={index}>
+            <code>{value}</code>
+            {index !== object.enum!.length - 1 && ", "}
+          </React.Fragment>
+        ))}
+        ]
       </div>
     );
   }

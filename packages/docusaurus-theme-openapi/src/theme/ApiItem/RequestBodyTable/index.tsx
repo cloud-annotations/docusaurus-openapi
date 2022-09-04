@@ -23,29 +23,42 @@ interface Props {
   requestBody: RequestBodyObject;
 }
 
-function renderSchemaTable(
-  properties: { [key: string]: OpenApiSchemaObject } | undefined
-) {
+interface SchemaTableProps {
+  properties: { [key: string]: OpenApiSchemaObject } | undefined;
+  /**
+   * Indicates if the property is required. For request bodies,
+   * this is specified in the `requestBody` object or at the individual
+   * property level.
+   */
+  required?: boolean;
+}
+
+function renderSchemaTable({ properties, required }: SchemaTableProps) {
   if (properties === undefined) {
     return null;
   }
   return Object.keys(properties).map((propertyName: string) => {
     const section = properties[propertyName];
-    console.log("section", section);
+    const propertyRequired = required ?? section.required;
     return (
       <ListItem key={propertyName}>
         <div className={styles.propertySection}>
-          <div>
+          <div className={styles.paramHeader}>
             <strong>{propertyName}</strong>
             <span className={styles.paramType}>
               {getSchemaQualifiedType(section)}
             </span>
+            {propertyRequired && (
+              <div className={styles.paramRequired}>required</div>
+            )}
           </div>
           {section.description && <div>{section.description}</div>}
-          {section.enum && <SchemaObject items={section} />}
+          {section.enum && <SchemaObject object={section} />}
           <div className={styles.propertyList}>
-            {section.properties && renderSchemaTable(section.properties)}
-            {section.items && renderSchemaTable(section.items.properties)}
+            {section.properties &&
+              renderSchemaTable({ properties: section.properties })}
+            {section.items &&
+              renderSchemaTable({ properties: section.items.properties })}
           </div>
         </div>
       </ListItem>
@@ -65,15 +78,13 @@ function RequestBodyTable({ requestBody }: Props): JSX.Element | null {
     return null;
   }
 
-  console.log("requestBody", requestBody);
-  console.log("contentType", contentType);
   const schema = requestBody.content[contentType]?.schema;
   const properties = requestBody.content[contentType]?.schema?.properties;
 
   return (
     <ContentSection title="Body params">
       {properties ? (
-        renderSchemaTable(properties)
+        renderSchemaTable({ properties, required: requestBody.required })
       ) : (
         <ListItem>
           <div className={styles.propertySection}>

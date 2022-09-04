@@ -23,16 +23,14 @@ function renderSchema(schema: ParameterObject["schema"]): JSX.Element | null {
   if (schema.items.enum) {
     return (
       <div>
-        <strong>
-          Possible values: [
-          {schema.items.enum.map((value, index) => (
-            <React.Fragment key={index}>
-              <code>{value}</code>
-              {index !== schema.items!.enum!.length - 1 && ", "}
-            </React.Fragment>
-          ))}
-          ]
-        </strong>
+        Possible values: [
+        {schema.items.enum.map((value, index) => (
+          <React.Fragment key={index}>
+            <code>{value}</code>
+            {index !== schema.items!.enum!.length - 1 && ", "}
+          </React.Fragment>
+        ))}
+        ]
       </div>
     );
   }
