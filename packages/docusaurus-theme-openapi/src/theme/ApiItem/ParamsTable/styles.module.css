@@ -1,0 +1,44 @@
+.paramName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.paramRequired {
+  color: var(--openapi-api-param-required);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.paramType {
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--openapi-api-param);
+}
+
+.paramName:not(:last-child):not(:only-child),
+.paramType:not(:last-child):not(:only-child),
+.paramRequired:not(:last-child):not(:only-child) {
+  margin-right: 5px;
+}
+
+.paramHeader {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+}
+
+.paramDescription {
+  font-size: 13px;
+}
+
+.paramContainer {
+  padding: 10px;
+  background: var(--openapi-card-background-color);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%);
+  border-radius: var(--openapi-card-border-radius);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}

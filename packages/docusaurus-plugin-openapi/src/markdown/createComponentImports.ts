@@ -9,5 +9,8 @@
  * The component imports for the custom components used in the markdown.
  */
 export function createComponentImports() {
-  return ['import Header from "@theme/ApiItem/Header";'].join("\n");
+  return [
+    'import Header from "@theme/ApiItem/Header";',
+    'import ParamsTable from "@theme/ApiItem/ParamsTable";',
+  ].join("\n");
 }

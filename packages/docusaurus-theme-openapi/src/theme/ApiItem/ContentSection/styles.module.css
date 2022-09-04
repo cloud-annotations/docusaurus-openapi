@@ -1,0 +1,24 @@
+.sectionHeader {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+.sectionHeaderTitle {
+  color: #c6cbd3;
+  font-size: 0.75rem;
+
+  text-transform: uppercase;
+}
+
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+}
