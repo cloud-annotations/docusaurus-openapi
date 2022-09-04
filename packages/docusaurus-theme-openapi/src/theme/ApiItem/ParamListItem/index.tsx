@@ -7,16 +7,13 @@
 
 import React from "react";
 
-import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
-import type { ApiItem } from "docusaurus-plugin-openapi/src/types";
+import type { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 
-import ContentSection from "../ContentSection";
 import styles from "./styles.module.css";
 
 interface Props {
-  parameters: ApiItem["parameters"];
-  type: "path" | "query" | "header" | "cookie";
-  title: string;
+  param: ParameterObject;
+  children?: React.ReactNode;
 }
 
 function renderSchema(schema: ParameterObject["schema"]): JSX.Element | null {
@@ -64,39 +61,24 @@ function getSchemaQualifiedType(schema: ParameterObject["schema"]): string {
   return "";
 }
 
-function ParamsTable({ parameters, type, title }: Props): JSX.Element | null {
-  if (parameters === undefined) {
-    return null;
-  }
-
-  const params = parameters.filter((param) => param?.in === type);
-  if (params.length === 0) {
-    return null;
-  }
-
+function ParamListItem({ param, children }: Props) {
   return (
-    <ContentSection title={title}>
-      {params.map((param, index) => (
-        <div key={index} className={styles.paramContainer}>
-          <div className={styles.paramHeader}>
-            <label className={styles.paramName}>{param.name}</label>
-            {param.schema && (
-              <div className={styles.paramType}>
-                {getSchemaQualifiedType(param.schema)}
-              </div>
-            )}
-            {param.required && (
-              <div className={styles.paramRequired}>required</div>
-            )}
+    <div className={styles.paramContainer}>
+      <div className={styles.paramHeader}>
+        <label className={styles.paramName}>{param.name}</label>
+        {param.schema && (
+          <div className={styles.paramType}>
+            {getSchemaQualifiedType(param.schema)}
           </div>
-          <div className={styles.paramDescription}>
-            {renderSchema(param.schema)}
-            <div>{param.description}</div>
-          </div>
-        </div>
-      ))}
-    </ContentSection>
+        )}
+        {param.required && <div className={styles.paramRequired}>required</div>}
+      </div>
+      <div className={styles.paramDescription}>
+        {renderSchema(param.schema)}
+        {children}
+      </div>
+    </div>
   );
 }
 
-export default ParamsTable;
+export default ParamListItem;
