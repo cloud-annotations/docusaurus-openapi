@@ -32,6 +32,8 @@
 }
 
 .paramDescription {
+  --ifm-paragraph-margin-bottom: 0;
+
   font-size: 13px;
 }
 

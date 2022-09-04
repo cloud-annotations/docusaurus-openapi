@@ -17,28 +17,12 @@ interface Props {
 }
 
 function MethodEndpoint({ method, path, serverUrl }: Props) {
-  const url = serverUrl + path;
-  const pathSegments = path.split("/");
-  const params = pathSegments.slice(2);
-
+  const url = serverUrl + path.replace(/{([a-z0-9-_]+)}/gi, ":$1");
   return (
     <div className={styles.headlineContainerArticleInfo}>
       <ApiMethodPill method={method} />
       <span className={styles.apiUrl} title={url}>
-        {serverUrl}
-        {"/" + pathSegments[1] + "/"}
-        {params.map((param, index) => {
-          const isPathParam = param.startsWith("{") && param.endsWith("}");
-          return (
-            <label
-              key={index}
-              className={isPathParam ? styles.apiParam : undefined}
-            >
-              {param.replace(/{([a-z0-9-_]+)}/gi, ":$1")}
-              {index !== params.length - 1 && "/"}
-            </label>
-          );
-        })}
+        {url}
       </span>
     </div>
   );

@@ -6,6 +6,7 @@
  * ========================================================================== */
 
 import { ApiItem } from "../types";
+import { createDescription } from "./createDescription";
 import { create } from "./utils";
 
 interface Props {
@@ -25,10 +26,13 @@ export function createParamsTable({ parameters, type, title }: Props) {
   if (params.length === 0) {
     return undefined;
   }
-  return create("ParamsTable", {
-    parameters,
-    type,
+  return create("ContentSection", {
     title,
-    children: [],
+    children: params.map((param) =>
+      create("ParamListItem", {
+        param,
+        children: [createDescription(param.description)],
+      })
+    ),
   });
 }
