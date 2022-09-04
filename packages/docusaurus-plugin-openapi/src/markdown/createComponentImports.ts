@@ -13,6 +13,8 @@ export function createComponentImports() {
     'import Header from "@theme/ApiItem/Header";',
     'import ContentSection from "@theme/ApiItem/ContentSection";',
     'import ParamListItem from "@theme/ApiItem/ParamListItem";',
-    'import RequestBodyTable from "@theme/ApiItem/RequestBodyTable";',
+    'import RequestBody from "@theme/ApiItem/RequestBody";',
+    'import BodyParamListItem from "@theme/ApiItem/BodyParamListItem";',
+    'import SchemaObject from "@theme/ApiItem/SchemaObject";',
   ].join("\n");
 }

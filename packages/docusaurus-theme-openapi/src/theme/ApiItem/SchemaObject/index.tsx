@@ -17,19 +17,26 @@ function SchemaObject({ object }: Props): JSX.Element | null {
   if (object === undefined) {
     return null;
   }
-  if (object.enum) {
+
+  // enum is a reserved word
+  const { minLength, enum: objectEnum } = object;
+
+  if (objectEnum) {
     return (
       <div>
         Possible values: [
-        {object.enum.map((value, index) => (
+        {objectEnum.map((value, index) => (
           <React.Fragment key={index}>
             <code>{value}</code>
-            {index !== object.enum!.length - 1 && ", "}
+            {index !== objectEnum!.length - 1 && ", "}
           </React.Fragment>
         ))}
         ]
       </div>
     );
+  }
+  if (minLength !== undefined) {
+    return <div>Possible values: {minLength} ≤ length</div>;
   }
   return null;
 }

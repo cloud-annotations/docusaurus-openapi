@@ -1,0 +1,7 @@
+.apiRequestBody {
+  display: none;
+}
+
+.apiRequestBodyVisible {
+  display: block;
+}
