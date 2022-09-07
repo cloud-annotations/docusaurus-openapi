@@ -65,20 +65,12 @@ function getOptionsForLanguage(language: string) {
   }
 }
 
+// TODO make this configurable via theme options
 const DEFAULT_TOP_LANGUAGES = ["shell", "nodejs", "ruby", "php"];
-
-/**
-
-var clientrect = temp1.getBBox();
-var viewBox = clientrect.x+' '+clientrect.y+' '+clientrect.width+' '+clientrect.height;
-console.log(viewBox);
-
-*/
 
 const availableLanguages: Language[] = codegen
   .getLanguageList()
   .map((language: any) => {
-    console.log("language", language);
     return {
       tabName: language.name ?? language.label,
       highlight: language.syntax_mode,
@@ -96,6 +88,10 @@ export const languageMenuItems = availableLanguages.filter(
   (language) => !DEFAULT_TOP_LANGUAGES.includes(language.language)
 );
 
+/**
+ * Returns the SVG icon for the given language.
+ * @param language The language to get the icon for.
+ */
 export const getIconForLanguage = (language: string): JSX.Element | null => {
   switch (language) {
     case "curl":

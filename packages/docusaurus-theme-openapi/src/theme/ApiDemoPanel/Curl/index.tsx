@@ -37,52 +37,6 @@ interface Language {
   options: { [key: string]: boolean };
 }
 
-// const languageSet = LanguageSet;
-// const languageSet: Language[] = [
-//   {
-//     tabName: "cURL",
-//     highlight: "bash",
-//     language: "curl",
-//     variant: "curl",
-//     options: {
-//       longFormat: false,
-//       followRedirect: true,
-//       trimRequestBody: true,
-//     },
-//   },
-//   {
-//     tabName: "Node",
-//     highlight: "javascript",
-//     language: "nodejs",
-//     variant: "axios",
-//     options: {
-//       ES6_enabled: true,
-//       followRedirect: true,
-//       trimRequestBody: true,
-//     },
-//   },
-//   {
-//     tabName: "Go",
-//     highlight: "go",
-//     language: "go",
-//     variant: "native",
-//     options: {
-//       followRedirect: true,
-//       trimRequestBody: true,
-//     },
-//   },
-//   {
-//     tabName: "Python",
-//     highlight: "python",
-//     language: "python",
-//     variant: "requests",
-//     options: {
-//       followRedirect: true,
-//       trimRequestBody: true,
-//     },
-//   },
-// ];
-
 const languageTheme = {
   plain: {
     color: "var(--ifm-code-color)",
@@ -180,6 +134,9 @@ function Curl({ postman, codeSamples }: Props) {
   ];
 
   const [language, setLanguage] = useState(langs[0]);
+  const [activeMenuLanguage, setActiveMenuLanguage] = useState(
+    languageMenuItems[0]
+  );
 
   const [codeText, setCodeText] = useState("");
 
@@ -244,6 +201,8 @@ function Curl({ postman, codeSamples }: Props) {
     return null;
   }
 
+  const activeMenuIcon = getIconForLanguage(activeMenuLanguage.language);
+
   return (
     <>
       <div className={clsx(styles.buttonGroup, "api-code-tab-group")}>
@@ -264,11 +223,28 @@ function Curl({ postman, codeSamples }: Props) {
             </button>
           );
         })}
+        {activeMenuLanguage && (
+          <button
+            className={clsx(
+              language === activeMenuLanguage ? styles.selected : undefined,
+              language === activeMenuLanguage
+                ? "api-code-tab--active"
+                : undefined,
+              "api-code-tab"
+            )}
+            onClick={() => setLanguage(activeMenuLanguage)}
+          >
+            {activeMenuIcon && (
+              <div className={styles.apiCodeTabIcon}>{activeMenuIcon}</div>
+            )}
+            {activeMenuLanguage.tabName}
+          </button>
+        )}
         <IconButton
           className="api-code-tab"
           aria-label="more"
-          id="long-button"
-          aria-controls={open ? "long-menu" : undefined}
+          id="language-set-button"
+          aria-controls={open ? "language-set-menu" : undefined}
           aria-expanded={open ? "true" : undefined}
           aria-haspopup="true"
           onClick={handleClick}
@@ -276,9 +252,9 @@ function Curl({ postman, codeSamples }: Props) {
           <MoreVertIcon />
         </IconButton>
         <Menu
-          id="long-menu"
+          id="language-set-menu"
           MenuListProps={{
-            "aria-labelledby": "long-button",
+            "aria-labelledby": "language-set-button",
           }}
           anchorEl={anchorEl}
           open={open}
@@ -292,7 +268,13 @@ function Curl({ postman, codeSamples }: Props) {
           {languageMenuItems.map((lang) => {
             const icon = getIconForLanguage(lang.language);
             return (
-              <MenuItem key={lang.tabName} onClick={() => setLanguage(lang)}>
+              <MenuItem
+                key={lang.tabName}
+                onClick={() => {
+                  setLanguage(lang);
+                  setActiveMenuLanguage(lang);
+                }}
+              >
                 {icon && <div className={styles.apiCodeTabIcon}>{icon}</div>}
                 {lang.tabName}
               </MenuItem>
