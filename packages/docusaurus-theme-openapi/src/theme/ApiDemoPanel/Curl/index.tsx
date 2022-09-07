@@ -127,8 +127,8 @@ function Curl({ postman, codeSamples }: Props) {
   // TODO
   const langs = [
     ...((siteConfig?.themeConfig?.languageTabs as Language[] | undefined) ?? [
-      ...languageMenuItems,
       ...languageTabItems,
+      ...languageMenuItems,
     ]),
     ...codeSamples,
   ];
