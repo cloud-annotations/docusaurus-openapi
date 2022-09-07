@@ -8,6 +8,11 @@
 import React, { useRef, useState, useEffect } from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MuiMenuItem from "@mui/material/MenuItem";
+import { styled } from "@mui/material/styles";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
@@ -17,6 +22,11 @@ import Highlight, { defaultProps } from "prism-react-renderer";
 import { useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
+import {
+  getIconForLanguage,
+  languageMenuItems,
+  languageTabItems,
+} from "./language-set";
 import styles from "./styles.module.css";
 
 interface Language {
@@ -27,50 +37,51 @@ interface Language {
   options: { [key: string]: boolean };
 }
 
-const languageSet: Language[] = [
-  {
-    tabName: "cURL",
-    highlight: "bash",
-    language: "curl",
-    variant: "curl",
-    options: {
-      longFormat: false,
-      followRedirect: true,
-      trimRequestBody: true,
-    },
-  },
-  {
-    tabName: "Node",
-    highlight: "javascript",
-    language: "nodejs",
-    variant: "axios",
-    options: {
-      ES6_enabled: true,
-      followRedirect: true,
-      trimRequestBody: true,
-    },
-  },
-  {
-    tabName: "Go",
-    highlight: "go",
-    language: "go",
-    variant: "native",
-    options: {
-      followRedirect: true,
-      trimRequestBody: true,
-    },
-  },
-  {
-    tabName: "Python",
-    highlight: "python",
-    language: "python",
-    variant: "requests",
-    options: {
-      followRedirect: true,
-      trimRequestBody: true,
-    },
-  },
-];
+// const languageSet = LanguageSet;
+// const languageSet: Language[] = [
+//   {
+//     tabName: "cURL",
+//     highlight: "bash",
+//     language: "curl",
+//     variant: "curl",
+//     options: {
+//       longFormat: false,
+//       followRedirect: true,
+//       trimRequestBody: true,
+//     },
+//   },
+//   {
+//     tabName: "Node",
+//     highlight: "javascript",
+//     language: "nodejs",
+//     variant: "axios",
+//     options: {
+//       ES6_enabled: true,
+//       followRedirect: true,
+//       trimRequestBody: true,
+//     },
+//   },
+//   {
+//     tabName: "Go",
+//     highlight: "go",
+//     language: "go",
+//     variant: "native",
+//     options: {
+//       followRedirect: true,
+//       trimRequestBody: true,
+//     },
+//   },
+//   {
+//     tabName: "Python",
+//     highlight: "python",
+//     language: "python",
+//     variant: "requests",
+//     options: {
+//       followRedirect: true,
+//       trimRequestBody: true,
+//     },
+//   },
+// ];
 
 const languageTheme = {
   plain: {
@@ -127,6 +138,10 @@ interface Props {
   codeSamples: any; // TODO: Type this...
 }
 
+const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
+  lineHeight: "1.25",
+}));
+
 function Curl({ postman, codeSamples }: Props) {
   // TODO: match theme for vscode.
 
@@ -146,10 +161,21 @@ function Curl({ postman, codeSamples }: Props) {
 
   const auth = useTypedSelector((state) => state.auth);
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   // TODO
   const langs = [
-    ...((siteConfig?.themeConfig?.languageTabs as Language[] | undefined) ??
-      languageSet),
+    ...((siteConfig?.themeConfig?.languageTabs as Language[] | undefined) ?? [
+      ...languageMenuItems,
+      ...languageTabItems,
+    ]),
     ...codeSamples,
   ];
 
@@ -221,10 +247,11 @@ function Curl({ postman, codeSamples }: Props) {
   return (
     <>
       <div className={clsx(styles.buttonGroup, "api-code-tab-group")}>
-        {langs.map((lang) => {
+        {languageTabItems.map((lang) => {
+          const icon = getIconForLanguage(lang.language);
           return (
             <button
-              key={lang.tabName || lang.label}
+              key={lang.tabName}
               className={clsx(
                 language === lang ? styles.selected : undefined,
                 language === lang ? "api-code-tab--active" : undefined,
@@ -232,10 +259,46 @@ function Curl({ postman, codeSamples }: Props) {
               )}
               onClick={() => setLanguage(lang)}
             >
-              {lang.tabName || lang.label}
+              {icon && <div className={styles.apiCodeTabIcon}>{icon}</div>}
+              {lang.tabName}
             </button>
           );
         })}
+        <IconButton
+          className="api-code-tab"
+          aria-label="more"
+          id="long-button"
+          aria-controls={open ? "long-menu" : undefined}
+          aria-expanded={open ? "true" : undefined}
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          MenuListProps={{
+            "aria-labelledby": "long-button",
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+              width: "20ch",
+            },
+          }}
+        >
+          {languageMenuItems.map((lang) => {
+            const icon = getIconForLanguage(lang.language);
+            return (
+              <MenuItem key={lang.tabName} onClick={() => setLanguage(lang)}>
+                {icon && <div className={styles.apiCodeTabIcon}>{icon}</div>}
+                {lang.tabName}
+              </MenuItem>
+            );
+          })}
+        </Menu>
       </div>
 
       <Highlight

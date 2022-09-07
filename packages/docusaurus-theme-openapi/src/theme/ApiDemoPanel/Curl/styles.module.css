@@ -58,8 +58,11 @@
   border-radius: calc(var(--margin));
   /* border-radius: 0.25rem; */
 
-  display: block;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1;
+  align-items: center;
+  justify-content: center;
 
   /* margin: 2px; */
   margin: var(--margin);
@@ -81,4 +84,16 @@
 .buttonGroup button.selected {
   background: var(--ifm-menu-color-background-active);
   color: var(--ifm-menu-color-active);
+}
+
+.apiCodeTabIcon {
+  width: 16px;
+  height: 16px;
+
+  margin-right: 4px;
+}
+
+.apiCodeTabIcon svg {
+  width: 100%;
+  height: 100%;
 }
