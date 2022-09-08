@@ -262,6 +262,8 @@ function Curl({ postman, codeSamples }: Props) {
           PaperProps={{
             style: {
               width: "20ch",
+              backgroundColor: "var(--ifm-background-surface-color)",
+              color: "var(--ifm-color-content)",
             },
           }}
         >
