@@ -277,7 +277,7 @@ function Curl({ postman, codeSamples }: Props) {
                   setActiveMenuLanguage(lang);
                 }}
               >
-                {icon && <div className={styles.apiCodeTabIcon}>{icon}</div>}
+                {icon && <div className={styles.apiCodeMenuIcon}>{icon}</div>}
                 {lang.tabName}
               </MenuItem>
             );
