@@ -7,6 +7,7 @@
 
 import React from "react";
 
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import sdk from "postman-collection";
 
 import { useTypedDispatch, useTypedSelector } from "../hooks";
@@ -37,6 +38,8 @@ interface Props {
 }
 
 function Execute({ postman, proxy }: Props) {
+  const { siteConfig } = useDocusaurusContext();
+
   const pathParams = useTypedSelector((state) => state.params.path);
   const queryParams = useTypedSelector((state) => state.params.query);
   const cookieParams = useTypedSelector((state) => state.params.cookie);
@@ -64,10 +67,13 @@ function Execute({ postman, proxy }: Props) {
     auth,
   });
 
+  const buttonText =
+    siteConfig?.themeConfig?.submitRequestButtonText ?? "Execute";
+
   return (
     <button
-      className="button button--block button--primary"
-      style={{ height: "48px", marginBottom: "var(--ifm-spacing-vertical)" }}
+      className="button button--primary"
+      style={{ height: "48px" }}
       disabled={!isValidRequest}
       onClick={async () => {
         dispatch(setResponse("loading..."));
@@ -79,7 +85,7 @@ function Execute({ postman, proxy }: Props) {
         }
       }}
     >
-      Execute
+      {buttonText}
     </button>
   );
 }

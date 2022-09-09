@@ -10,6 +10,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import accept from "./Accept/slice";
 import auth from "./Authorization/slice";
 import body from "./Body/slice";
+import code from "./Code/slice";
 import contentType from "./ContentType/slice";
 import params from "./ParamOptions/slice";
 import response from "./Response/slice";
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   body,
   params,
   auth,
+  code,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -27,14 +27,7 @@ import PythonIcon from "./icons/python.svg";
 import RubyIcon from "./icons/ruby.svg";
 import ShellIcon from "./icons/shell.svg";
 import SwiftIcon from "./icons/swift.svg";
-
-interface Language {
-  tabName: string;
-  highlight: string;
-  language: string;
-  variant: string;
-  options: { [key: string]: boolean };
-}
+import { Language } from "./language";
 
 function getOptionsForLanguage(language: string) {
   switch (language) {

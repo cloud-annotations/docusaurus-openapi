@@ -15,3 +15,11 @@
   /* hack for view calculation when monaco is hidden */
   position: relative;
 }
+
+.optionsActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--ifm-spacing-vertical);
+  margin-bottom: var(--ifm-spacing-vertical);
+}

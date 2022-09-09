@@ -18,6 +18,7 @@ import Accept from "./Accept";
 import Authorization from "./Authorization";
 import { createAuth } from "./Authorization/slice";
 import Body from "./Body";
+import CopyToClipboard from "./CopyToClipboard";
 import Curl from "./Curl";
 import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
@@ -83,6 +84,7 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
       body: { type: "empty" },
       params,
       auth,
+      code: { value: "" },
     },
     [persistanceMiddleware]
   );
@@ -120,7 +122,10 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
           codeSamples={(item as any)["x-code-samples"] ?? []}
         />
 
-        <Execute postman={postman} proxy={options?.proxy} />
+        <div className={styles.optionsActions}>
+          <CopyToClipboard />
+          <Execute postman={postman} proxy={options?.proxy} />
+        </div>
 
         <Response />
       </div>

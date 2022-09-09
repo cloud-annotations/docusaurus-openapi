@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -17,75 +17,17 @@ import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
 import sdk from "postman-collection";
-import Highlight, { defaultProps } from "prism-react-renderer";
 
-import { useTypedSelector } from "../hooks";
+import { setCode } from "../Code/slice";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
+import VSCode from "../VSCode";
 import buildPostmanRequest from "./../buildPostmanRequest";
-import FloatingButton from "./../FloatingButton";
 import {
   getIconForLanguage,
   languageMenuItems,
   languageTabItems,
 } from "./language-set";
 import styles from "./styles.module.css";
-
-interface Language {
-  tabName: string;
-  highlight: string;
-  language: string;
-  variant: string;
-  options: { [key: string]: boolean };
-}
-
-const languageTheme = {
-  plain: {
-    color: "var(--ifm-code-color)",
-  },
-  styles: [
-    {
-      types: ["inserted", "attr-name"],
-      style: {
-        color: "var(--openapi-code-green)",
-      },
-    },
-    {
-      types: ["string", "url"],
-      style: {
-        color: "var(--openapi-code-green)",
-      },
-    },
-    {
-      types: ["builtin", "char", "constant", "function"],
-      style: {
-        color: "var(--openapi-code-blue)",
-      },
-    },
-    {
-      types: ["punctuation", "operator"],
-      style: {
-        color: "var(--openapi-code-dim)",
-      },
-    },
-    {
-      types: ["class-name"],
-      style: {
-        color: "var(--openapi-code-orange)",
-      },
-    },
-    {
-      types: ["tag", "arrow", "keyword"],
-      style: {
-        color: "var(--openapi-code-purple)",
-      },
-    },
-    {
-      types: ["boolean"],
-      style: {
-        color: "var(--openapi-code-red)",
-      },
-    },
-  ],
-};
 
 interface Props {
   postman: sdk.Request;
@@ -97,11 +39,7 @@ const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
 }));
 
 function Curl({ postman, codeSamples }: Props) {
-  // TODO: match theme for vscode.
-
   const { siteConfig } = useDocusaurusContext();
-
-  const [copyText, setCopyText] = useState("Copy");
 
   const contentType = useTypedSelector((state) => state.contentType.value);
   const accept = useTypedSelector((state) => state.accept.value);
@@ -140,6 +78,8 @@ function Curl({ postman, codeSamples }: Props) {
 
   const [codeText, setCodeText] = useState("");
 
+  const dispatch = useTypedDispatch();
+
   useEffect(() => {
     if (language && !!language.options) {
       const postmanRequest = buildPostmanRequest(postman, {
@@ -164,12 +104,15 @@ function Curl({ postman, codeSamples }: Props) {
             return;
           }
           setCodeText(snippet);
+          dispatch(setCode(snippet));
         }
       );
     } else if (language && !!language.source) {
       setCodeText(language.source);
+      dispatch(setCode(language.source));
     } else {
       setCodeText("");
+      dispatch(setCode(""));
     }
   }, [
     accept,
@@ -183,19 +126,8 @@ function Curl({ postman, codeSamples }: Props) {
     queryParams,
     server,
     auth,
+    dispatch,
   ]);
-
-  const ref = useRef<HTMLDivElement>(null);
-
-  const handleCurlCopy = () => {
-    setCopyText("Copied");
-    setTimeout(() => {
-      setCopyText("Copy");
-    }, 2000);
-    if (ref.current?.innerText) {
-      navigator.clipboard.writeText(ref.current.innerText);
-    }
-  };
 
   if (language === undefined) {
     return null;
@@ -285,40 +217,18 @@ function Curl({ postman, codeSamples }: Props) {
         </Menu>
       </div>
 
-      <Highlight
-        {...defaultProps}
-        theme={languageTheme}
-        code={codeText}
+      <VSCode
+        className={styles.monaco}
+        value={codeText}
         language={language.highlight || language.lang}
-      >
-        {({ className, tokens, getLineProps, getTokenProps }) => (
-          <FloatingButton onClick={handleCurlCopy} label={copyText}>
-            <pre
-              className={className}
-              style={{
-                background: "var(--openapi-card-background-color)",
-                paddingRight: "60px",
-                borderRadius:
-                  "2px 2px var(--openapi-card-border-radius) var(--openapi-card-border-radius)",
-              }}
-            >
-              <code ref={ref}>
-                {tokens.map((line, i) => (
-                  <span {...getLineProps({ line, key: i })}>
-                    {line.map((token, key) => {
-                      if (token.types.includes("arrow")) {
-                        token.types = ["arrow"];
-                      }
-                      return <span {...getTokenProps({ token, key })} />;
-                    })}
-                    {"\n"}
-                  </span>
-                ))}
-              </code>
-            </pre>
-          </FloatingButton>
-        )}
-      </Highlight>
+        editorOptions={{
+          lineNumbers: "on",
+          lineNumbersMinChars: 5,
+          readOnly: true,
+          domReadOnly: true,
+          lineDecorationsWidth: "20px",
+        }}
+      />
     </>
   );
 }

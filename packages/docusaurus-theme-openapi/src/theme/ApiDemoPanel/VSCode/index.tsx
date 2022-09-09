@@ -8,17 +8,29 @@
 import React, { useState } from "react";
 
 import { useColorMode } from "@docusaurus/theme-common";
-import Editor, { Monaco } from "@monaco-editor/react";
+import Editor, { Monaco, EditorProps } from "@monaco-editor/react";
+import clsx from "clsx";
 
 import styles from "./styles.module.css";
 
 interface Props {
   value?: string;
   language?: string;
-  onChange(value: string): any;
+  className?: string;
+  /**
+   * Options to apply to the Monaco VSCode editor.
+   */
+  editorOptions?: EditorProps["options"];
+  onChange?: (value: string) => any;
 }
 
-function VSCode({ value, language, onChange }: Props) {
+function VSCode({
+  value,
+  language,
+  onChange,
+  editorOptions,
+  className,
+}: Props) {
   const [focused, setFocused] = useState(false);
 
   const { colorMode } = useColorMode();
@@ -110,7 +122,9 @@ function VSCode({ value, language, onChange }: Props) {
   }
 
   return (
-    <div className={focused ? styles.monacoFocus : styles.monaco}>
+    <div
+      className={clsx(focused ? styles.monacoFocus : styles.monaco, className)}
+    >
       <Editor
         value={value}
         language={language}
@@ -132,6 +146,7 @@ function VSCode({ value, language, onChange }: Props) {
           scrollbar: {
             horizontal: "hidden",
           },
+          ...editorOptions,
         }}
         onMount={(editor) => {
           editor.onDidFocusEditorText(() => {
@@ -148,7 +163,9 @@ function VSCode({ value, language, onChange }: Props) {
           let prevHeight = 0;
 
           const updateEditorHeight = () => {
-            onChange(editor.getValue());
+            if (onChange) {
+              onChange(editor.getValue());
+            }
             const editorElement = editor.getDomNode();
 
             if (!editorElement) {
