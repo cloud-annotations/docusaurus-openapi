@@ -22,6 +22,7 @@ import { setCode } from "../Code/slice";
 import { useTypedDispatch, useTypedSelector } from "../hooks";
 import VSCode from "../VSCode";
 import buildPostmanRequest from "./../buildPostmanRequest";
+import { Language } from "./language";
 import {
   getIconForLanguage,
   languageMenuItems,

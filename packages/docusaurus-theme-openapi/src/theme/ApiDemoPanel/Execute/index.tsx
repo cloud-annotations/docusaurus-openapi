@@ -10,6 +10,7 @@ import React from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import sdk from "postman-collection";
 
+import { ThemeConfig } from "../../../types";
 import { useTypedDispatch, useTypedSelector } from "../hooks";
 import { Param } from "../ParamOptions/slice";
 import { setResponse } from "../Response/slice";
@@ -68,7 +69,8 @@ function Execute({ postman, proxy }: Props) {
   });
 
   const buttonText =
-    siteConfig?.themeConfig?.submitRequestButtonText ?? "Execute";
+    (siteConfig?.themeConfig as ThemeConfig)?.submitRequestButtonText ??
+    "Execute";
 
   return (
     <button
