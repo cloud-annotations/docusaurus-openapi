@@ -33,6 +33,7 @@ The demo site includes custom styling for color coded request methods in the sid
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
+  margin-left: 4px;
 }
 
 .get > .menu__link::after {
