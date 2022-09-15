@@ -51,6 +51,10 @@
   --openapi-api-method-get-shadow: 1px 1px 0 #0d8d67, 0 1px 0 #0d8d67,
     1px 0 0 #0d8d67;
 
+  --openapi-api-method-patch-background: #df7d03;
+  --openapi-api-method-patch-shadow: 1px 1px 0 #d07503, 0 1px 0 #d07503,
+    1px 0 0 #d07503;
+
   --openapi-api-method-post-background: #0272d9;
   --openapi-api-method-post-shadow: 1px 1px 0 #026aca, 0 1px 0 #026aca,
     1px 0 0 #026aca;
@@ -63,9 +67,9 @@
   --openapi-api-method-delete-shadow: 1px 1px 0 #b91926, 0 1px 0 #b91926,
     1px 0 0 #b91926;
 
-  --openapi-api-method-head-background: var(--ifm-color-gray-600);
-  --openapi-api-method-head-shadow: 1px 1px 0 var(--ifm-color-gray-600),
-    0 1px 0 var(--ifm-color-gray-600), 1px 0 0 var(--ifm-color-gray-600);
+  --openapi-api-method-head-background: #384248;
+  --openapi-api-method-head-shadow: 1px 1px 0 #313a3f, 0 1px 0 #313a3f,
+    1px 0 0 #313a3f;
 }
 
 html[data-theme="dark"] {
