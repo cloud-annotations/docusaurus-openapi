@@ -225,41 +225,47 @@ html[data-theme="dark"] .header-github-link:before {
 .get > .menu__link::after {
   content: "get";
 
-  background: #0e9b71;
-  text-shadow: 1px 1px 0 #0d8d67, 0 1px 0 #0d8d67, 1px 0 0 #0d8d67;
+  background: var(--openapi-api-method-get-background);
+  color: var(--openapi-api-method-get-color);
+  text-shadow: var(--openapi-api-method-get-shadow);
 }
 
 .post > .menu__link::after {
   content: "post";
 
-  background: #0272d9;
-  text-shadow: 1px 1px 0 #026aca, 0 1px 0 #026aca, 1px 0 0 #026aca;
+  background: var(--openapi-api-method-post-background);
+  color: var(--openapi-api-method-post-color);
+  text-shadow: var(--openapi-api-method-post-shadow);
 }
 
 .delete > .menu__link::after {
   content: "delete";
 
-  background: #c71b29;
-  text-shadow: 1px 1px 0 #b91926, 0 1px 0 #b91926, 1px 0 0 #b91926;
+  background: var(--openapi-api-method-delete-background);
+  color: var(--openapi-api-method-delete-color);
+  text-shadow: var(--openapi-api-method-delete-shadow);
 }
 
 .put > .menu__link::after {
   content: "put";
 
-  background: #674ead;
-  text-shadow: 1px 1px 0 #604aa2, 0 1px 0 #604aa2, 1px 0 0 #604aa2;
+  background: var(--openapi-api-method-put-background);
+  color: var(--openapi-api-method-put-color);
+  text-shadow: var(--openapi-api-method-put-shadow);
 }
 
 .patch > .menu__link::after {
   content: "patch";
 
-  background: #df7d03;
-  text-shadow: 1px 1px 0 #d07503, 0 1px 0 #d07503, 1px 0 0 #d07503;
+  background: var(--openapi-api-method-patch-background);
+  color: var(--openapi-api-method-patch-color);
+  text-shadow: var(--openapi-api-method-patch-shadow);
 }
 
 .head > .menu__link::after {
   content: "head";
 
-  background: #384248;
-  text-shadow: 1px 1px 0 #313a3f, 0 1px 0 #313a3f, 1px 0 0 #313a3f;
+  background: var(--openapi-api-method-head-background);
+  color: var(--openapi-api-method-head-color);
+  text-shadow: var(--openapi-api-method-head-shadow);
 }
