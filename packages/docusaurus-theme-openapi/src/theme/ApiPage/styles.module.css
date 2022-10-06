@@ -47,25 +47,30 @@
 
   --openapi-inverse-color: var(--ifm-color-gray-100);
 
-  --openapi-api-method-get-background: #0e9b71;
-  --openapi-api-method-get-shadow: 1px 1px 0 #0d8d67, 0 1px 0 #0d8d67,
-    1px 0 0 #0d8d67;
+  --openapi-api-method-get-background: var(--ifm-color-success);
+  --openapi-api-method-get-shadow: 1px 1px 0 var(--ifm-color-success),
+    0 1px 0 var(--ifm-color-success), 1px 0 0 var(--ifm-color-success);
 
-  --openapi-api-method-post-background: #0272d9;
-  --openapi-api-method-post-shadow: 1px 1px 0 #026aca, 0 1px 0 #026aca,
-    1px 0 0 #026aca;
+  --openapi-api-method-patch-background: var(--ifm-color-info);
+  --openapi-api-method-patch-shadow: 1px 1px 0 var(--ifm-color-info),
+    0 1px 0 var(--ifm-color-info), 1px 0 0 var(--ifm-color-info);
 
-  --openapi-api-method-put-background: #674ead;
-  --openapi-api-method-put-shadow: 1px 1px 0 #604aa2, 0 1px 0 #604aa2,
-    1px 0 0 #604aa2;
+  --openapi-api-method-post-background: var(--ifm-color-primary);
+  --openapi-api-method-post-shadow: 1px 1px 0 var(--ifm-color-primary),
+    0 1px 0 var(--ifm-color-primary), 1px 0 0 var(--ifm-color-primary);
 
-  --openapi-api-method-delete-background: #c71b29;
-  --openapi-api-method-delete-shadow: 1px 1px 0 #b91926, 0 1px 0 #b91926,
-    1px 0 0 #b91926;
+  --openapi-api-method-put-background: var(--ifm-color-warning);
+  --openapi-api-method-put-shadow: 1px 1px 0 var(--ifm-color-warning),
+    0 1px 0 var(--ifm-color-warning), 1px 0 0 var(--ifm-color-warning);
+  --openapi-api-method-put-color: var(--ifm-color-black);
 
-  --openapi-api-method-head-background: var(--ifm-color-gray-600);
-  --openapi-api-method-head-shadow: 1px 1px 0 var(--ifm-color-gray-600),
-    0 1px 0 var(--ifm-color-gray-600), 1px 0 0 var(--ifm-color-gray-600);
+  --openapi-api-method-delete-background: var(--ifm-color-danger);
+  --openapi-api-method-delete-shadow: 1px 1px 0 var(--ifm-color-danger),
+    0 1px 0 var(--ifm-color-danger), 1px 0 0 var(--ifm-color-danger);
+
+  --openapi-api-method-head-background: var(--ifm-color-secondary);
+  --openapi-api-method-head-shadow: 1px 1px 0 var(--ifm-color-secondary),
+    0 1px 0 var(--ifm-color-secondary), 1px 0 0 var(--ifm-color-secondary);
 
   --openapi-api-param: var(--ifm-color-gray-600);
   --openapi-api-param-required: var(--ifm-color-danger);

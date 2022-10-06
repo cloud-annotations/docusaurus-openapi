@@ -14,26 +14,37 @@ function styleForMethod(method: string): React.CSSProperties | undefined {
     case "get":
       return {
         background: "var(--openapi-api-method-get-background)",
+        color: "var(--openapi-api-method-get-color)",
         textShadow: "var(--openapi-api-method-get-shadow)",
       };
     case "put":
       return {
         background: "var(--openapi-api-method-put-background)",
+        color: "var(--openapi-api-method-put-color)",
         textShadow: "var(--openapi-api-method-put-shadow)",
       };
     case "post":
       return {
         background: "var(--openapi-api-method-post-background)",
+        color: "var(--openapi-api-method-post-color)",
         textShadow: "var(--openapi-api-method-post-shadow)",
       };
     case "delete":
       return {
         background: "var(--openapi-api-method-delete-background)",
+        color: "var(--openapi-api-method-delete-color)",
         textShadow: "var(--openapi-api-method-delete-shadow)",
+      };
+    case "patch":
+      return {
+        background: "var(--openapi-api-method-patch-background)",
+        color: "var(--openapi-api-method-patch-color)",
+        textShadow: "var(--openapi-api-method-patch-shadow)",
       };
     case "head":
       return {
         background: "var(--openapi-api-method-head-background)",
+        color: "var(--openapi-api-method-head-color)",
         textShadow: "var(--openapi-api-method-head-shadow)",
       };
     default:
