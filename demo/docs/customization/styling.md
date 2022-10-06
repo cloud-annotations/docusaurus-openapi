@@ -14,11 +14,7 @@ The demo site includes custom styling for color coded request methods in the sid
 }
 
 .api-method > .menu__link::after {
-  border-radius: 8px;
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 2px 0
-      rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
-  color: #fff;
   display: inline-flex;
   font-size: 8px;
   font-weight: 600;
@@ -39,48 +35,36 @@ The demo site includes custom styling for color coded request methods in the sid
 .get > .menu__link::after {
   content: "get";
 
-  background: var(--openapi-api-method-get-background);
-  color: var(--openapi-api-method-get-color, #fff);
-  text-shadow: var(--openapi-api-method-get-shadow);
+  color: var(--openapi-api-method-get-color);
 }
 
 .post > .menu__link::after {
   content: "post";
 
-  background: var(--openapi-api-method-post-background);
-  color: var(--openapi-api-method-post-color, #fff);
-  text-shadow: var(--openapi-api-method-post-shadow);
+  color: var(--openapi-api-method-post-color);
 }
 
 .delete > .menu__link::after {
   content: "delete";
 
-  background: var(--openapi-api-method-delete-background);
-  color: var(--openapi-api-method-delete-color, #fff);
-  text-shadow: var(--openapi-api-method-delete-shadow);
+  color: var(--openapi-api-method-delete-color);
 }
 
 .put > .menu__link::after {
   content: "put";
 
-  background: var(--openapi-api-method-put-background);
-  color: var(--openapi-api-method-put-color, #fff);
-  text-shadow: var(--openapi-api-method-put-shadow);
+  color: var(--openapi-api-method-put-color);
 }
 
 .patch > .menu__link::after {
   content: "patch";
 
-  background: var(--openapi-api-method-patch-background);
-  color: var(--openapi-api-method-patch-color, #fff);
-  text-shadow: var(--openapi-api-method-patch-shadow);
+  color: var(--openapi-api-method-patch-color);
 }
 
 .head > .menu__link::after {
   content: "head";
 
-  background: var(--openapi-api-method-head-background);
-  color: var(--openapi-api-method-head-color, #fff);
-  text-shadow: var(--openapi-api-method-head-shadow);
+  color: var(--openapi-api-method-head-color);
 }
 ```
