@@ -7,7 +7,6 @@
 
 import React from "react";
 
-import clsx from "clsx";
 import type { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 
 import styles from "./styles.module.css";
@@ -64,7 +63,7 @@ function getSchemaQualifiedType(schema: ParameterObject["schema"]): string {
 
 function ParamListItem({ param, children }: Props) {
   return (
-    <div className={clsx("openapi-param-list-item", styles.paramContainer)}>
+    <div className={styles.paramItem}>
       <div className={styles.paramHeader}>
         <label className={styles.paramName}>{param.name}</label>
         {param.schema && (
