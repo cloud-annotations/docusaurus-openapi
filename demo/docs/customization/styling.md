@@ -40,7 +40,7 @@ The demo site includes custom styling for color coded request methods in the sid
   content: "get";
 
   background: var(--openapi-api-method-get-background);
-  color: var(--openapi-api-method-get-color);
+  color: var(--openapi-api-method-get-color, #fff);
   text-shadow: var(--openapi-api-method-get-shadow);
 }
 
@@ -48,7 +48,7 @@ The demo site includes custom styling for color coded request methods in the sid
   content: "post";
 
   background: var(--openapi-api-method-post-background);
-  color: var(--openapi-api-method-post-color);
+  color: var(--openapi-api-method-post-color, #fff);
   text-shadow: var(--openapi-api-method-post-shadow);
 }
 
@@ -56,7 +56,7 @@ The demo site includes custom styling for color coded request methods in the sid
   content: "delete";
 
   background: var(--openapi-api-method-delete-background);
-  color: var(--openapi-api-method-delete-color);
+  color: var(--openapi-api-method-delete-color, #fff);
   text-shadow: var(--openapi-api-method-delete-shadow);
 }
 
@@ -64,7 +64,7 @@ The demo site includes custom styling for color coded request methods in the sid
   content: "put";
 
   background: var(--openapi-api-method-put-background);
-  color: var(--openapi-api-method-put-color);
+  color: var(--openapi-api-method-put-color, #fff);
   text-shadow: var(--openapi-api-method-put-shadow);
 }
 
@@ -72,7 +72,7 @@ The demo site includes custom styling for color coded request methods in the sid
   content: "patch";
 
   background: var(--openapi-api-method-patch-background);
-  color: var(--openapi-api-method-patch-color);
+  color: var(--openapi-api-method-patch-color, #fff);
   text-shadow: var(--openapi-api-method-patch-shadow);
 }
 
@@ -80,7 +80,7 @@ The demo site includes custom styling for color coded request methods in the sid
   content: "head";
 
   background: var(--openapi-api-method-head-background);
-  color: var(--openapi-api-method-head-color);
+  color: var(--openapi-api-method-head-color, #fff);
   text-shadow: var(--openapi-api-method-head-shadow);
 }
 ```

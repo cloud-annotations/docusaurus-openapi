@@ -226,7 +226,7 @@ html[data-theme="dark"] .header-github-link:before {
   content: "get";
 
   background: var(--openapi-api-method-get-background);
-  color: var(--openapi-api-method-get-color);
+  color: var(--openapi-api-method-get-color, #fff);
   text-shadow: var(--openapi-api-method-get-shadow);
 }
 
@@ -234,7 +234,7 @@ html[data-theme="dark"] .header-github-link:before {
   content: "post";
 
   background: var(--openapi-api-method-post-background);
-  color: var(--openapi-api-method-post-color);
+  color: var(--openapi-api-method-post-color, #fff);
   text-shadow: var(--openapi-api-method-post-shadow);
 }
 
@@ -242,7 +242,7 @@ html[data-theme="dark"] .header-github-link:before {
   content: "delete";
 
   background: var(--openapi-api-method-delete-background);
-  color: var(--openapi-api-method-delete-color);
+  color: var(--openapi-api-method-delete-color, #fff);
   text-shadow: var(--openapi-api-method-delete-shadow);
 }
 
@@ -250,7 +250,7 @@ html[data-theme="dark"] .header-github-link:before {
   content: "put";
 
   background: var(--openapi-api-method-put-background);
-  color: var(--openapi-api-method-put-color);
+  color: var(--openapi-api-method-put-color, #fff);
   text-shadow: var(--openapi-api-method-put-shadow);
 }
 
@@ -258,7 +258,7 @@ html[data-theme="dark"] .header-github-link:before {
   content: "patch";
 
   background: var(--openapi-api-method-patch-background);
-  color: var(--openapi-api-method-patch-color);
+  color: var(--openapi-api-method-patch-color, #fff);
   text-shadow: var(--openapi-api-method-patch-shadow);
 }
 
@@ -266,6 +266,6 @@ html[data-theme="dark"] .header-github-link:before {
   content: "head";
 
   background: var(--openapi-api-method-head-background);
-  color: var(--openapi-api-method-head-color);
+  color: var(--openapi-api-method-head-color, #fff);
   text-shadow: var(--openapi-api-method-head-shadow);
 }
