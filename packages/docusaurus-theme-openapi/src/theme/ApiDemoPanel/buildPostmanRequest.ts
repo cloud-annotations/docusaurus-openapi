@@ -29,7 +29,7 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
       if (Array.isArray(param.value)) {
         return new sdk.QueryParam({
           key: param.name,
-          value: param.value.join(","),
+          value: param.value.map(encodeURIComponent).join(","),
         });
       }
 
@@ -46,7 +46,7 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
 
       return new sdk.QueryParam({
         key: param.name,
-        value: param.value,
+        value: encodeURIComponent(param.value),
       });
     })
     .filter((item): item is sdk.QueryParam => item !== undefined);
@@ -57,10 +57,15 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
 }
 
 function setPathParams(postman: sdk.Request, queryParams: Param[]) {
+  const recursiveEncodeURIComponent = (c: string | string[]) =>
+    Array.isArray(c) ? c.map(encodeURIComponent) : encodeURIComponent(c);
+
   const source = queryParams.map((param) => {
     return new sdk.Variable({
       key: param.name,
-      value: param.value || `:${param.name}`,
+      value: param.value
+        ? recursiveEncodeURIComponent(param.value)
+        : `:${param.name}`,
     });
   });
   postman.url.variables.assimilate(source, false);
