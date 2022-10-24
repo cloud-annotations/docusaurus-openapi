@@ -20,7 +20,15 @@ export interface StringContent {
   value?: string;
 }
 
-export type Content = FileContent | StringContent | undefined;
+export type ArrayContent = {
+  type: "array";
+  value?: {
+    type: "string";
+    value?: string[];
+  };
+};
+
+export type Content = FileContent | StringContent | ArrayContent | undefined;
 
 export interface FormBody {
   type: "form";
@@ -31,7 +39,7 @@ export interface FormBody {
 
 export interface RawBody {
   type: "raw";
-  content: Content;
+  content: Exclude<Content, ArrayContent>;
 }
 
 export interface EmptyBody {
@@ -97,6 +105,33 @@ export const slice = createSlice({
       };
       return state;
     },
+    setArrayFormBody: (
+      state,
+      action: PayloadAction<{ key: string; value: string[] }>
+    ) => {
+      if (state?.type !== "form") {
+        return {
+          type: "form",
+          content: {
+            [action.payload.key]: {
+              type: "array",
+              value: {
+                type: "string",
+                value: action.payload.value,
+              },
+            },
+          },
+        };
+      }
+      state.content[action.payload.key] = {
+        type: "array",
+        value: {
+          type: "string",
+          value: action.payload.value,
+        },
+      };
+      return state;
+    },
     setFileFormBody: (
       state,
       action: PayloadAction<{ key: string; value: FileContent["value"] }>
@@ -127,6 +162,7 @@ export const {
   setFileRawBody,
   clearFormBodyKey,
   setStringFormBody,
+  setArrayFormBody,
   setFileFormBody,
 } = slice.actions;
 

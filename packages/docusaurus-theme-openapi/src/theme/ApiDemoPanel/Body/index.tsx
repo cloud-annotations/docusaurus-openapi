@@ -22,8 +22,10 @@ import {
   setFileFormBody,
   setFileRawBody,
   setStringFormBody,
+  setArrayFormBody,
   setStringRawBody,
 } from "./slice";
+import FormMultiSelect from "../FormMultiSelect";
 
 interface Props {
   jsonRequestBodyExample: string;
@@ -165,6 +167,37 @@ function Body({ requestBodyMetadata, jsonRequestBodyExample }: Props) {
                 </FormItem>
               );
             }
+
+            if (
+              val.type === "array" &&
+              val.items.enum &&
+              val.items.type === "string"
+            ) {
+              return (
+                <FormItem key={key} label={key}>
+                  <FormMultiSelect
+                    options={val.items.enum}
+                    onChange={(e) => {
+                      const values = Array.prototype.filter
+                        .call(e.target.options, (o) => o.selected)
+                        .map((o) => o.value);
+
+                      if (values.length === 0) {
+                        dispatch(clearFormBodyKey(key));
+                      } else {
+                        dispatch(
+                          setArrayFormBody({
+                            key: key,
+                            value: values,
+                          })
+                        );
+                      }
+                    }}
+                  />
+                </FormItem>
+              );
+            }
+
             // TODO: support all the other types.
             return (
               <FormItem key={key} label={key}>
