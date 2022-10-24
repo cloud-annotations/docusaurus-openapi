@@ -10,6 +10,7 @@ import React from "react";
 import { RequestBodyObject } from "docusaurus-plugin-openapi/src/openapi/types";
 
 import ContentType from "../ContentType";
+import FormMultiSelect from "../FormMultiSelect";
 import FormSelect from "../FormSelect";
 import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormFileUpload from "./../FormFileUpload";
@@ -25,7 +26,6 @@ import {
   setArrayFormBody,
   setStringRawBody,
 } from "./slice";
-import FormMultiSelect from "../FormMultiSelect";
 
 interface Props {
   jsonRequestBodyExample: string;
