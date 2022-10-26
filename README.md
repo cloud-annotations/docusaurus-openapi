@@ -99,7 +99,7 @@ my-website
 ```
 
 - `/docusaurus.config.js` - A config file containing the site configuration. This can be used to configure the OpenAPI preset
-- `/openapi.json` - The default OpenAPI defination that will be served _(path can be configured in `docusaurus.config.js`)_.
+- `/openapi.json` - The default OpenAPI definition that will be served _(path can be configured in `docusaurus.config.js`)_.
 
 For more info see [project structure rundown](https://docusaurus.io/docs/installation#project-structure-rundown).
 
