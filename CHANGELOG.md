@@ -1,3 +1,15 @@
+## 0.6.3 (Nov 7, 2022)
+
+High level enhancements
+
+- Compatibility with Docusaurus 2.2.0 ([#223](https://github.com/cloud-annotations/docusaurus-openapi/pull/223))
+- Support for loading custom Markdown Files: ([#193](https://github.com/cloud-annotations/docusaurus-openapi/pull/193))
+
+Other enhancements and bug fixes
+
+- Enable multiselect in form-urlencoded body ([#220](https://github.com/cloud-annotations/docusaurus-openapi/pull/220))
+- Encode values in query and path parameters ([#219](https://github.com/cloud-annotations/docusaurus-openapi/pull/219))
+
 ## 0.6.2 (Aug 11, 2022)
 
 High level enhancements
