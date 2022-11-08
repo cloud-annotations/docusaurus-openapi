@@ -13,12 +13,14 @@ import chalk from "chalk";
 import clsx from "clsx";
 import fs from "fs-extra";
 import Yaml from "js-yaml";
-import { groupBy, uniq } from "lodash";
+import { groupBy, sortBy, uniq } from "lodash";
 import type { DeepPartial } from "utility-types";
 
 import type {
   InfoPageMetadata,
+  MdxPageMetadata,
   PropSidebar,
+  PropSidebarItem,
   PropSidebarItemCategory,
 } from "../types";
 import { ApiPageMetadata } from "../types";
@@ -35,10 +37,13 @@ type InfoItem = Pick<InfoPageMetadata, keys>;
 type ApiItem = Pick<ApiPageMetadata, keys> & {
   api: DeepPartial<ApiPageMetadata["api"]>;
 };
+type MdxItem = Pick<MdxPageMetadata, keys | "frontMatter">;
 
-type Item = InfoItem | ApiItem;
+type Item = InfoItem | ApiItem | MdxItem;
 
 const CategoryMetadataFilenameBase = "_category_";
+
+const BottomSidebarPosition = 999999;
 
 function isApiItem(item: Item): item is ApiItem {
   return item.type === "api";
@@ -46,6 +51,10 @@ function isApiItem(item: Item): item is ApiItem {
 
 function isInfoItem(item: Item): item is InfoItem {
   return item.type === "info";
+}
+
+function isMdxItem(item: Item): item is MdxItem {
+  return item.type === "mdx";
 }
 
 const Terminator = "."; // a file or folder can never be "."
@@ -81,17 +90,30 @@ export async function generateSidebar(
     for (const crumb of breadcrumbs) {
       // We hit a spec file, create the groups for it.
       if (crumb === Terminator) {
-        const title = items.filter(isApiItem)[0]?.api.info?.title;
-        const fileName = path.basename(source, path.extname(source));
-        // Title could be an empty string so `??` won't work here.
-        const label = !title ? fileName : title;
-        visiting.push({
-          type: "category" as const,
-          label,
-          collapsible: options.sidebarCollapsible,
-          collapsed: options.sidebarCollapsed,
-          items: groupByTags(items, options),
-        });
+        if (isMdxItem(items[0])) {
+          visiting.push(...groupByTags(items, options));
+        } else if (
+          ["_spec_.json", "_spec_.yml", "_spec_.yaml"].includes(
+            path.basename(items[0].source)
+          )
+        ) {
+          // Don't create a category for this spec file
+          visiting.push(...groupByTags(items, options));
+        } else {
+          const title = items.filter(isApiItem)[0]?.api.info?.title;
+          const fileName = path.basename(source, path.extname(source));
+          // Title could be an empty string so `??` won't work here.
+          const label = !title ? fileName : title;
+          visiting.push({
+            type: "category" as const,
+            label,
+            position: BottomSidebarPosition,
+            collapsible: options.sidebarCollapsible,
+            collapsed: options.sidebarCollapsed,
+            items: groupByTags(items, options),
+          });
+        }
+
         visiting = sidebar; // reset
         break;
       }
@@ -118,7 +140,7 @@ export async function generateSidebar(
         type: "category" as const,
         className: meta?.className,
         customProps: meta?.customProps,
-        position: meta?.position,
+        position: meta?.position ?? BottomSidebarPosition,
         label,
         collapsible: meta?.collapsible ?? options.sidebarCollapsible,
         collapsed: meta?.collapsed ?? options.sidebarCollapsed,
@@ -147,6 +169,24 @@ export async function generateSidebar(
     }
   }
 
+  sidebar = recursiveSidebarSort(sidebar);
+
+  return sidebar;
+}
+
+/**
+ * Sort the sidebar recursively based on `position`.
+ * @param sidebar
+ * @returns
+ */
+function recursiveSidebarSort(sidebar: PropSidebar | PropSidebarItem[]) {
+  // Use lodash sortBy to ensure sorting stability
+  sidebar = sortBy(sidebar, (item) => item.position);
+  for (const item of sidebar) {
+    if (item.type === "category") {
+      item.items = recursiveSidebarSort(item.items);
+    }
+  }
   return sidebar;
 }
 
@@ -154,14 +194,23 @@ export async function generateSidebar(
  * Takes a flat list of pages and groups them into categories based on there tags.
  */
 function groupByTags(items: Item[], options: Options): PropSidebar {
-  const intros = items.filter(isInfoItem).map((item) => {
-    return {
-      type: "link" as const,
-      label: item.title,
-      href: item.permalink,
-      docId: item.id,
-    };
-  });
+  const intros = items
+    .filter((m) => isInfoItem(m) || isMdxItem(m))
+    .map((item) => {
+      const fileName = path.basename(item.source, path.extname(item.source));
+      const label = !item.title ? fileName : item.title;
+
+      return {
+        type: "link" as const,
+        label: label,
+        href: item.permalink,
+        docId: item.id,
+        position: isMdxItem(item)
+          ? (item.frontMatter?.sidebar_position as number) ??
+            BottomSidebarPosition
+          : BottomSidebarPosition,
+      };
+    });
 
   const apiItems = items.filter(isApiItem);
 
@@ -184,6 +233,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         },
         item.api.method
       ),
+      position: BottomSidebarPosition,
     };
   }
 
@@ -197,6 +247,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         items: apiItems
           .filter((item) => !!item.api.tags?.includes(tag))
           .map(createLink),
+        position: BottomSidebarPosition,
       };
     })
     .filter((item) => item.items.length > 0); // Filter out any categories with no items.
@@ -210,6 +261,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
       items: apiItems
         .filter(({ api }) => api.tags === undefined || api.tags.length === 0)
         .map(createLink),
+      position: BottomSidebarPosition,
     },
   ];
 

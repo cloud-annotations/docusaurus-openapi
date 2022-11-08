@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: ""
+servers:
+  - url: https://example.com
+security:
+  - basic_auth: []
+paths:
+  /Calls:
+    post:
+      tags:
+        - Calls
+      operationId: create_a_call
+      summary: Create a Call
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                StatusCallback:
+                  type: string
+                  example: https://your-api-endpoint.com/path
+                StatusCallbackEvent:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                      - initiated
+                      - ringing
+                      - answered
+                      - completed
+                  example:
+                    - completed
+            encoding:
+              StatusCallbackEvent:
+                style: form
+                explode: true
+      responses:
+        "200":
+          description: OK

@@ -29,7 +29,7 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
       if (Array.isArray(param.value)) {
         return new sdk.QueryParam({
           key: param.name,
-          value: param.value.join(","),
+          value: param.value.map(encodeURIComponent).join(","),
         });
       }
 
@@ -46,7 +46,7 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
 
       return new sdk.QueryParam({
         key: param.name,
-        value: param.value,
+        value: encodeURIComponent(param.value),
       });
     })
     .filter((item): item is sdk.QueryParam => item !== undefined);
@@ -57,10 +57,15 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
 }
 
 function setPathParams(postman: sdk.Request, queryParams: Param[]) {
+  const recursiveEncodeURIComponent = (c: string | string[]) =>
+    Array.isArray(c) ? c.map(encodeURIComponent) : encodeURIComponent(c);
+
   const source = queryParams.map((param) => {
     return new sdk.Variable({
       key: param.name,
-      value: param.value || `:${param.name}`,
+      value: param.value
+        ? recursiveEncodeURIComponent(param.value)
+        : `:${param.name}`,
     });
   });
   postman.url.variables.assimilate(source, false);
@@ -172,14 +177,51 @@ function setBody(clonedPostman: sdk.Request, body: Body) {
       }
       const params = Object.entries(body.content)
         .filter((entry): entry is [string, NonNullable<Content>] => !!entry[1])
+        .filter(([_key, content]) => content.type !== "array")
         .map(([key, content]) => {
-          if (content.type !== "file" && content.value) {
+          if (
+            content.type !== "file" &&
+            content.type !== "array" &&
+            content.value
+          ) {
             return new sdk.QueryParam({ key: key, value: content.value });
           }
           return undefined;
         })
         .filter((item): item is sdk.QueryParam => item !== undefined);
+
+      const arrayParams = Object.entries(body.content)
+        .filter((entry): entry is [string, NonNullable<Content>] => !!entry[1])
+        .filter(([_key, content]) => content.type === "array")
+        .map(([key, content]) => {
+          if (content.type === "array" && content.value) {
+            return {
+              key: key,
+              values: content.value?.value?.map(
+                (e) => new sdk.QueryParam({ key: key, value: e })
+              ),
+            };
+          }
+          return undefined;
+        })
+        .filter((item) => item !== undefined && item?.values !== undefined);
+
       clonedPostman.body.urlencoded?.assimilate(params, false);
+
+      // Now let's append the array keys
+      for (const arrayParam of arrayParams) {
+        clonedPostman.body.urlencoded?.remove(
+          (e) => e.key === arrayParam?.key,
+          undefined
+        );
+
+        arrayParam?.values?.forEach((queryParam) =>
+          clonedPostman.body?.urlencoded?.append(queryParam)
+        );
+      }
+
+      console.log(clonedPostman.body.urlencoded);
+
       return;
     }
     default:
