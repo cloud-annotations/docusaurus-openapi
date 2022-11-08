@@ -274,6 +274,8 @@ export default function pluginOpenAPI(
                     rehypePlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
+                    // Docusaurus 2.2.0 has a regression that requires this option to be set.
+                    markdownConfig: {},
                     metadataPath: (mdxPath: string) => {
                       if (mdxPath.startsWith(dataDir)) {
                         // The MDX file already lives in `dataDir`: this is an OpenAPI MDX
