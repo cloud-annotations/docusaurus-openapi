@@ -34,13 +34,25 @@ function resolveAllOf(allOf: SchemaObject[]) {
   return { properties, required };
 }
 
+interface RowOptions {
+  showRequiredLabel?: boolean;
+}
+
+const defaultRowOptions: RowOptions = { showRequiredLabel: true };
+
 interface RowProps {
   name: string;
   schema: SchemaObject;
   required: boolean;
+  options?: RowOptions;
 }
 
-function createRow({ name, schema, required }: RowProps) {
+function createRow({
+  name,
+  schema,
+  required,
+  options = defaultRowOptions,
+}: RowProps) {
   return create("tr", {
     children: create("td", {
       children: [
@@ -49,7 +61,7 @@ function createRow({ name, schema, required }: RowProps) {
           style: { opacity: "0.6" },
           children: ` ${getSchemaName(schema, true)}`,
         }),
-        guard(required, () => [
+        guard(required && options.showRequiredLabel, () => [
           create("span", {
             style: { opacity: "0.6" },
             children: " — ",
@@ -74,7 +86,7 @@ function createRow({ name, schema, required }: RowProps) {
             children: createDescription(description),
           })
         ),
-        createRows({ schema: schema }),
+        createRows({ schema: schema, options }),
       ],
     }),
   });
@@ -82,9 +94,13 @@ function createRow({ name, schema, required }: RowProps) {
 
 interface RowsProps {
   schema: SchemaObject;
+  options?: RowOptions;
 }
 
-function createRows({ schema }: RowsProps): string | undefined {
+function createRows({
+  schema,
+  options = defaultRowOptions,
+}: RowsProps): string | undefined {
   // object
   if (schema.properties !== undefined) {
     return createFullWidthTable({
@@ -100,6 +116,7 @@ function createRows({ schema }: RowsProps): string | undefined {
             required: Array.isArray(schema.required)
               ? schema.required.includes(key)
               : false,
+            options,
           })
         ),
       }),
@@ -120,6 +137,7 @@ function createRows({ schema }: RowsProps): string | undefined {
             name: key,
             schema: val,
             required: Array.isArray(required) ? required.includes(key) : false,
+            options,
           })
         ),
       }),
@@ -128,7 +146,7 @@ function createRows({ schema }: RowsProps): string | undefined {
 
   // array
   if (schema.items !== undefined) {
-    return createRows({ schema: schema.items });
+    return createRows({ schema: schema.items, options });
   }
 
   // primitive
@@ -137,9 +155,13 @@ function createRows({ schema }: RowsProps): string | undefined {
 
 interface RowsRootProps {
   schema: SchemaObject;
+  options?: RowOptions;
 }
 
-function createRowsRoot({ schema }: RowsRootProps) {
+function createRowsRoot({
+  schema,
+  options = defaultRowOptions,
+}: RowsRootProps) {
   // object
   if (schema.properties !== undefined) {
     return Object.entries(schema.properties).map(([key, val]) =>
@@ -149,6 +171,7 @@ function createRowsRoot({ schema }: RowsRootProps) {
         required: Array.isArray(schema.required)
           ? schema.required.includes(key)
           : false,
+        options,
       })
     );
   }
@@ -161,6 +184,7 @@ function createRowsRoot({ schema }: RowsRootProps) {
         name: key,
         schema: val,
         required: Array.isArray(required) ? required.includes(key) : false,
+        options,
       })
     );
   }
@@ -174,7 +198,7 @@ function createRowsRoot({ schema }: RowsRootProps) {
             style: { opacity: "0.6" },
             children: ` ${getSchemaName(schema, true)}`,
           }),
-          createRows({ schema: schema.items }),
+          createRows({ schema: schema.items, options }),
         ],
       }),
     });
@@ -215,9 +239,15 @@ interface Props {
     description?: string;
     required?: boolean;
   };
+  options?: RowOptions;
 }
 
-export function createSchemaTable({ title, body, ...rest }: Props) {
+export function createSchemaTable({
+  title,
+  body,
+  options = defaultRowOptions,
+  ...rest
+}: Props) {
   if (body === undefined || body.content === undefined) {
     return undefined;
   }
@@ -249,7 +279,7 @@ export function createSchemaTable({ title, body, ...rest }: Props) {
             style: { textAlign: "left" },
             children: [
               `${title} `,
-              guard(body.required, () => [
+              guard(body.required && options.showRequiredLabel, () => [
                 create("span", {
                   style: { opacity: "0.6" },
                   children: " — ",
@@ -270,7 +300,7 @@ export function createSchemaTable({ title, body, ...rest }: Props) {
         }),
       }),
       create("tbody", {
-        children: createRowsRoot({ schema: firstBody }),
+        children: createRowsRoot({ schema: firstBody, options }),
       }),
     ],
   });
