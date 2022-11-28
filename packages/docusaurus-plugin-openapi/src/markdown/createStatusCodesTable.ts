@@ -64,6 +64,7 @@ export function createStatusCodesTable({ responses }: Props) {
                     body: {
                       content: responses[code].content,
                     },
+                    type: "response",
                   }),
                 }),
               ],

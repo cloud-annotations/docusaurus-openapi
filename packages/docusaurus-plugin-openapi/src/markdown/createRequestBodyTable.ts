@@ -13,5 +13,5 @@ interface Props {
 }
 
 export function createRequestBodyTable({ title, body }: Props) {
-  return createSchemaTable({ title, body });
+  return createSchemaTable({ title, body, type: "request" });
 }

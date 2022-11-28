@@ -38,9 +38,10 @@ interface RowProps {
   name: string;
   schema: SchemaObject;
   required: boolean;
+  type: "request" | "response";
 }
 
-function createRow({ name, schema, required }: RowProps) {
+function createRow({ name, schema, required, type }: RowProps) {
   return create("tr", {
     children: create("td", {
       children: [
@@ -49,19 +50,7 @@ function createRow({ name, schema, required }: RowProps) {
           style: { opacity: "0.6" },
           children: ` ${getSchemaName(schema, true)}`,
         }),
-        guard(required, () => [
-          create("span", {
-            style: { opacity: "0.6" },
-            children: " — ",
-          }),
-          create("strong", {
-            style: {
-              fontSize: "var(--ifm-code-font-size)",
-              color: "var(--openapi-required)",
-            },
-            children: " REQUIRED",
-          }),
-        ]),
+        ...parseTitleLabel({ required, type }),
         guard(getQualifierMessage(schema), (message) =>
           create("div", {
             style: { marginTop: "var(--ifm-table-cell-padding)" },
@@ -74,17 +63,17 @@ function createRow({ name, schema, required }: RowProps) {
             children: createDescription(description),
           })
         ),
-        createRows({ schema: schema }),
+        createRows({ schema: schema, type }),
       ],
     }),
   });
 }
 
-interface RowsProps {
+interface RowsProps extends Pick<RowProps, "type"> {
   schema: SchemaObject;
 }
 
-function createRows({ schema }: RowsProps): string | undefined {
+function createRows({ schema, type }: RowsProps): string | undefined {
   // object
   if (schema.properties !== undefined) {
     return createFullWidthTable({
@@ -100,6 +89,7 @@ function createRows({ schema }: RowsProps): string | undefined {
             required: Array.isArray(schema.required)
               ? schema.required.includes(key)
               : false,
+            type,
           })
         ),
       }),
@@ -120,6 +110,7 @@ function createRows({ schema }: RowsProps): string | undefined {
             name: key,
             schema: val,
             required: Array.isArray(required) ? required.includes(key) : false,
+            type,
           })
         ),
       }),
@@ -128,18 +119,18 @@ function createRows({ schema }: RowsProps): string | undefined {
 
   // array
   if (schema.items !== undefined) {
-    return createRows({ schema: schema.items });
+    return createRows({ schema: schema.items, type });
   }
 
   // primitive
   return undefined;
 }
 
-interface RowsRootProps {
+interface RowsRootProps extends Pick<RowProps, "type"> {
   schema: SchemaObject;
 }
 
-function createRowsRoot({ schema }: RowsRootProps) {
+function createRowsRoot({ schema, type }: RowsRootProps) {
   // object
   if (schema.properties !== undefined) {
     return Object.entries(schema.properties).map(([key, val]) =>
@@ -149,6 +140,7 @@ function createRowsRoot({ schema }: RowsRootProps) {
         required: Array.isArray(schema.required)
           ? schema.required.includes(key)
           : false,
+        type,
       })
     );
   }
@@ -161,6 +153,7 @@ function createRowsRoot({ schema }: RowsRootProps) {
         name: key,
         schema: val,
         required: Array.isArray(required) ? required.includes(key) : false,
+        type,
       })
     );
   }
@@ -174,7 +167,7 @@ function createRowsRoot({ schema }: RowsRootProps) {
             style: { opacity: "0.6" },
             children: ` ${getSchemaName(schema, true)}`,
           }),
-          createRows({ schema: schema.items }),
+          createRows({ schema: schema.items, type }),
         ],
       }),
     });
@@ -215,9 +208,10 @@ interface Props {
     description?: string;
     required?: boolean;
   };
+  type: "request" | "response";
 }
 
-export function createSchemaTable({ title, body, ...rest }: Props) {
+export function createSchemaTable({ title, body, type, ...rest }: Props) {
   if (body === undefined || body.content === undefined) {
     return undefined;
   }
@@ -249,19 +243,7 @@ export function createSchemaTable({ title, body, ...rest }: Props) {
             style: { textAlign: "left" },
             children: [
               `${title} `,
-              guard(body.required, () => [
-                create("span", {
-                  style: { opacity: "0.6" },
-                  children: " — ",
-                }),
-                create("strong", {
-                  style: {
-                    fontSize: "var(--ifm-code-font-size)",
-                    color: "var(--openapi-required)",
-                  },
-                  children: " REQUIRED",
-                }),
-              ]),
+              ...parseTitleLabel({ required: body.required, type }),
               create("div", {
                 children: createDescription(body.description),
               }),
@@ -270,8 +252,43 @@ export function createSchemaTable({ title, body, ...rest }: Props) {
         }),
       }),
       create("tbody", {
-        children: createRowsRoot({ schema: firstBody }),
+        children: createRowsRoot({ schema: firstBody, type }),
       }),
     ],
   });
 }
+
+const parseTitleLabel = ({
+  required,
+  type,
+}: {
+  required?: boolean;
+  type: Props["type"];
+}) => [
+  guard(required && type === "request", () => [
+    create("span", {
+      style: { opacity: "0.6" },
+      children: " — ",
+    }),
+    create("strong", {
+      style: {
+        fontSize: "var(--ifm-code-font-size)",
+        color: "var(--openapi-required)",
+      },
+      children: " REQUIRED",
+    }),
+  ]),
+  guard(!required && type === "response", () => [
+    create("span", {
+      style: { opacity: "0.6" },
+      children: " — ",
+    }),
+    create("strong", {
+      style: {
+        fontSize: "var(--ifm-code-font-size)",
+        color: "var(--openapi-optional)",
+      },
+      children: " OPTIONAL",
+    }),
+  ]),
+];
