@@ -7,12 +7,7 @@
 
 import path from "path";
 
-import {
-  aliasedSitePath,
-  Globby,
-  GlobExcludeDefault,
-  normalizeUrl,
-} from "@docusaurus/utils";
+import { aliasedSitePath, Globby, normalizeUrl } from "@docusaurus/utils";
 import axios from "axios";
 import chalk from "chalk";
 import fs from "fs-extra";
@@ -238,15 +233,8 @@ export async function readOpenapiFiles(
     // TODO: Add config for inlcude/ignore
     const sources = await Globby(["**/*.{json,yaml,yml}"], {
       cwd: openapiPath,
-      ignore: [...GlobExcludeDefault, "**/_*.{json,yaml,yml}"],
+      ignore: ["**/_category_.{json,yaml,yml}"],
     });
-
-    // Explicitly look for _spec_ files, which are excluded by default since they start with _
-    sources.push(
-      ...(await Globby(["**/_spec_.{json,yaml,yml}"], {
-        cwd: openapiPath,
-      }))
-    );
 
     return Promise.all(
       sources.map(async (source) => {
