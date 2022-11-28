@@ -33,6 +33,7 @@
   --api-sidebar-hidden-width: 30px;
 
   --openapi-required: var(--openapi-code-red);
+  --openapi-optional: var(--openapi-code-dim);
 
   --openapi-card-background-color: #f6f8fa;
   --openapi-card-border-radius: var(--ifm-pre-border-radius);
@@ -62,6 +63,7 @@ html[data-theme="dark"] {
   --openapi-monaco-border-color: #606770;
 
   --openapi-required: var(--openapi-code-red);
+  --openapi-optional: var(--openapi-code-dim);
 
   --openapi-card-background-color: var(--ifm-card-background-color);
 

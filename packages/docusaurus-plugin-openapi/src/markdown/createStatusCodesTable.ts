@@ -64,9 +64,7 @@ export function createStatusCodesTable({ responses }: Props) {
                     body: {
                       content: responses[code].content,
                     },
-                    options: {
-                      showRequiredLabel: false,
-                    },
+                    type: "response",
                   }),
                 }),
               ],

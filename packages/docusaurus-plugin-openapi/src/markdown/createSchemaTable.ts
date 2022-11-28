@@ -34,25 +34,14 @@ function resolveAllOf(allOf: SchemaObject[]) {
   return { properties, required };
 }
 
-interface RowOptions {
-  showRequiredLabel?: boolean;
-}
-
-const defaultRowOptions: RowOptions = { showRequiredLabel: true };
-
 interface RowProps {
   name: string;
   schema: SchemaObject;
   required: boolean;
-  options?: RowOptions;
+  type: "request" | "response";
 }
 
-function createRow({
-  name,
-  schema,
-  required,
-  options = defaultRowOptions,
-}: RowProps) {
+function createRow({ name, schema, required, type }: RowProps) {
   return create("tr", {
     children: create("td", {
       children: [
@@ -61,19 +50,7 @@ function createRow({
           style: { opacity: "0.6" },
           children: ` ${getSchemaName(schema, true)}`,
         }),
-        guard(required && options.showRequiredLabel, () => [
-          create("span", {
-            style: { opacity: "0.6" },
-            children: " — ",
-          }),
-          create("strong", {
-            style: {
-              fontSize: "var(--ifm-code-font-size)",
-              color: "var(--openapi-required)",
-            },
-            children: " REQUIRED",
-          }),
-        ]),
+        ...parseTitleLabel({ required, type }),
         guard(getQualifierMessage(schema), (message) =>
           create("div", {
             style: { marginTop: "var(--ifm-table-cell-padding)" },
@@ -86,21 +63,17 @@ function createRow({
             children: createDescription(description),
           })
         ),
-        createRows({ schema: schema, options }),
+        createRows({ schema: schema, type }),
       ],
     }),
   });
 }
 
-interface RowsProps {
+interface RowsProps extends Pick<RowProps, "type"> {
   schema: SchemaObject;
-  options?: RowOptions;
 }
 
-function createRows({
-  schema,
-  options = defaultRowOptions,
-}: RowsProps): string | undefined {
+function createRows({ schema, type }: RowsProps): string | undefined {
   // object
   if (schema.properties !== undefined) {
     return createFullWidthTable({
@@ -116,7 +89,7 @@ function createRows({
             required: Array.isArray(schema.required)
               ? schema.required.includes(key)
               : false,
-            options,
+            type,
           })
         ),
       }),
@@ -137,7 +110,7 @@ function createRows({
             name: key,
             schema: val,
             required: Array.isArray(required) ? required.includes(key) : false,
-            options,
+            type,
           })
         ),
       }),
@@ -146,22 +119,18 @@ function createRows({
 
   // array
   if (schema.items !== undefined) {
-    return createRows({ schema: schema.items, options });
+    return createRows({ schema: schema.items, type });
   }
 
   // primitive
   return undefined;
 }
 
-interface RowsRootProps {
+interface RowsRootProps extends Pick<RowProps, "type"> {
   schema: SchemaObject;
-  options?: RowOptions;
 }
 
-function createRowsRoot({
-  schema,
-  options = defaultRowOptions,
-}: RowsRootProps) {
+function createRowsRoot({ schema, type }: RowsRootProps) {
   // object
   if (schema.properties !== undefined) {
     return Object.entries(schema.properties).map(([key, val]) =>
@@ -171,7 +140,7 @@ function createRowsRoot({
         required: Array.isArray(schema.required)
           ? schema.required.includes(key)
           : false,
-        options,
+        type,
       })
     );
   }
@@ -184,7 +153,7 @@ function createRowsRoot({
         name: key,
         schema: val,
         required: Array.isArray(required) ? required.includes(key) : false,
-        options,
+        type,
       })
     );
   }
@@ -198,7 +167,7 @@ function createRowsRoot({
             style: { opacity: "0.6" },
             children: ` ${getSchemaName(schema, true)}`,
           }),
-          createRows({ schema: schema.items, options }),
+          createRows({ schema: schema.items, type }),
         ],
       }),
     });
@@ -239,15 +208,10 @@ interface Props {
     description?: string;
     required?: boolean;
   };
-  options?: RowOptions;
+  type: "request" | "response";
 }
 
-export function createSchemaTable({
-  title,
-  body,
-  options = defaultRowOptions,
-  ...rest
-}: Props) {
+export function createSchemaTable({ title, body, type, ...rest }: Props) {
   if (body === undefined || body.content === undefined) {
     return undefined;
   }
@@ -279,19 +243,7 @@ export function createSchemaTable({
             style: { textAlign: "left" },
             children: [
               `${title} `,
-              guard(body.required && options.showRequiredLabel, () => [
-                create("span", {
-                  style: { opacity: "0.6" },
-                  children: " — ",
-                }),
-                create("strong", {
-                  style: {
-                    fontSize: "var(--ifm-code-font-size)",
-                    color: "var(--openapi-required)",
-                  },
-                  children: " REQUIRED",
-                }),
-              ]),
+              ...parseTitleLabel({ required: body.required, type }),
               create("div", {
                 children: createDescription(body.description),
               }),
@@ -300,8 +252,43 @@ export function createSchemaTable({
         }),
       }),
       create("tbody", {
-        children: createRowsRoot({ schema: firstBody, options }),
+        children: createRowsRoot({ schema: firstBody, type }),
       }),
     ],
   });
 }
+
+const parseTitleLabel = ({
+  required,
+  type,
+}: {
+  required?: boolean;
+  type: Props["type"];
+}) => [
+  guard(required && type === "request", () => [
+    create("span", {
+      style: { opacity: "0.6" },
+      children: " — ",
+    }),
+    create("strong", {
+      style: {
+        fontSize: "var(--ifm-code-font-size)",
+        color: "var(--openapi-required)",
+      },
+      children: " REQUIRED",
+    }),
+  ]),
+  guard(!required && type === "response", () => [
+    create("span", {
+      style: { opacity: "0.6" },
+      children: " — ",
+    }),
+    create("strong", {
+      style: {
+        fontSize: "var(--ifm-code-font-size)",
+        color: "var(--openapi-optional)",
+      },
+      children: " OPTIONAL",
+    }),
+  ]),
+];
