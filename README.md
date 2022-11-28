@@ -37,35 +37,35 @@ _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7
 Then open [http://localhost:3000/](http://localhost:3000/) to see your site.<br>
 When you’re ready to deploy to production, create a minified bundle with `npm run build`.
 
-## Creating a Site
+## Creating a new Site
 
 **You’ll need to have Node 14.0.0 or later version on your local development machine** (but it’s not required on the server). We recommend using the latest LTS version. You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.
 
 To create a new site, you may choose one of the following methods:
 
-### npx
+- ### npx
 
-```sh
-npx create-docusaurus-openapi my-website
-```
+  ```sh
+  npx create-docusaurus-openapi my-website
+  ```
 
-_([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) is a package runner tool that comes with npm 5.2+ and higher)_
+  _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) is a package runner tool that comes with npm 5.2+ and higher)_
 
-### npm
+- ### npm
 
-```sh
-npm init docusaurus-openapi my-website
-```
+  ```sh
+  npm init docusaurus-openapi my-website
+  ```
 
-_`npm init <initializer>` is available in npm 6+_
+  _`npm init <initializer>` is available in npm 6+_
 
-### Yarn
+- ### yarn
 
-```sh
-yarn create docusaurus-openapi my-website
-```
+  ```sh
+  yarn create docusaurus-openapi my-website
+  ```
 
-_[`yarn create <starter-kit-package>`](https://yarnpkg.com/lang/en/docs/cli/create/) is available in Yarn 0.25+_
+  _[`yarn create <starter-kit-package>`](https://yarnpkg.com/lang/en/docs/cli/create/) is available in Yarn 0.25+_
 
 It will create a directory called `my-website` inside the current folder.<br>
 Inside that directory, it will generate the initial project structure and install the transitive dependencies:
@@ -123,6 +123,37 @@ The page will automatically reload if you make changes to the code.
 Builds the site for production to the `build` folder.
 
 Docusaurus is a modern static website generator that will build the website into a directory of static contents, which can be copied to any static file hosting service like [GitHub pages](https://pages.github.com/), [Vercel](https://vercel.com/) or [Netlify](https://www.netlify.com/).
+
+## Add to an existing Site
+
+1. Install the dependency
+
+   ```sh
+   npm install docusaurus-preset-openapi
+   ```
+
+2. Edit your `docusaurus.config.js` file to use this preset
+   ```js
+   presets: [
+     [
+       "docusaurus-preset-openapi",
+       /** @type {import('docusaurus-preset-openapi').Options} */
+       {
+         api: {
+           path: "<PATH_TO_YOUR_OPENAPI_DOCUMENT>",
+           routeBasePath: "/api",
+         },
+         docs: {
+           sidebarPath: require.resolve("./sidebars.js"),
+           routeBasePath: "/",
+         },
+         theme: {
+           customCss: require.resolve("./src/css/custom.css"),
+         },
+       },
+     ],
+   ];
+   ```
 
 ## Popular Alternatives
 
