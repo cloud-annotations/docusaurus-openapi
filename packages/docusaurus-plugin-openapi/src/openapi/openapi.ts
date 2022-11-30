@@ -161,6 +161,9 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
           ),
           method,
           path,
+          parameters: (operationObject.parameters ?? []).concat(
+            pathObject.parameters ?? []
+          ),
           servers,
           security,
           securitySchemes,
