@@ -8,10 +8,10 @@
 import React, { useRef, useState, useEffect } from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import type { Props } from "@theme/ApiDemoPanel/Curl";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
-import sdk from "postman-collection";
 import Highlight, { defaultProps } from "prism-react-renderer";
 
 import { useTypedSelector } from "../hooks";
@@ -121,11 +121,6 @@ const languageTheme = {
     },
   ],
 };
-
-interface Props {
-  postman: sdk.Request;
-  codeSamples: any; // TODO: Type this...
-}
 
 function Curl({ postman, codeSamples }: Props) {
   // TODO: match theme for vscode.

@@ -132,3 +132,31 @@ declare module "@theme/MarkdownItem" {
   const MarkdownItem: (props: Props) => JSX.Element;
   export default MarkdownItem;
 }
+
+declare module "@theme/ApiDemoPanel" {
+  import type { Metadata } from "@theme/ApiItem";
+
+  export interface Props {
+    readonly item: NonNullable<Metadata["api"]>;
+  }
+
+  const ApiDemoPanel: (props: Props) => JSX.Element;
+  export default ApiDemoPanel;
+}
+
+declare module "@theme/ApiDemoPanel/Curl" {
+  import type { Request } from "postman-collection";
+
+  export interface Props {
+    readonly postman: Request;
+    readonly codeSamples: Array<Any>;
+  }
+
+  const Curl: (props: Props) => JSX.Element;
+  export default Curl;
+}
+
+declare module "@theme/ApiDemoPanel/Response" {
+  const Response: () => JSX.Element;
+  export default Response;
+}
