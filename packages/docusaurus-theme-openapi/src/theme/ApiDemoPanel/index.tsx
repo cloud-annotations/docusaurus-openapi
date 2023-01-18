@@ -8,7 +8,9 @@
 import React from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { Metadata } from "@theme/ApiItem";
+import type { Props } from "@theme/ApiDemoPanel";
+import Curl from "@theme/ApiDemoPanel/Curl";
+import Response from "@theme/ApiDemoPanel/Response";
 import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import sdk from "postman-collection";
 import { Provider } from "react-redux";
@@ -18,18 +20,16 @@ import Accept from "./Accept";
 import Authorization from "./Authorization";
 import { createAuth } from "./Authorization/slice";
 import Body from "./Body";
-import Curl from "./Curl";
 import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
 import ParamOptions from "./ParamOptions";
 import { createPersistanceMiddleware } from "./persistanceMiddleware";
-import Response from "./Response";
 import Server from "./Server";
 import { createServer } from "./Server/slice";
 import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
 
-function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
+function ApiDemoPanel({ item }: Props) {
   const { siteConfig } = useDocusaurusContext();
   const themeConfig = siteConfig.themeConfig as ThemeConfig;
   const options = themeConfig.api;
