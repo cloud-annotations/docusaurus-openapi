@@ -165,6 +165,12 @@ function ParamArrayFormItem({ param }: ParamProps) {
   const dispatch = useTypedDispatch();
 
   function handleAddItem() {
+    if (
+      param?.schema?.maxItems !== undefined &&
+      items.length >= param.schema.maxItems
+    ) {
+      return;
+    }
     setItems((i) => [
       ...i,
       {
@@ -230,9 +236,12 @@ function ParamArrayFormItem({ param }: ParamProps) {
           </button>
         </div>
       ))}
-      <button className={styles.buttonThin} onClick={handleAddItem}>
-        Add item
-      </button>
+      {(param?.schema?.maxItems == null ||
+        items.length < param.schema.maxItems) && (
+        <button className={styles.buttonThin} onClick={handleAddItem}>
+          Add item
+        </button>
+      )}
     </>
   );
 }
