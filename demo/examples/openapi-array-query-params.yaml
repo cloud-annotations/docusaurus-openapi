@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: ""
+servers:
+  - url: https://example.com
+paths:
+  /Things:
+    get:
+      summary: View Things
+      parameters:
+        - name: "arrayParam"
+          in: "query"
+          required: false
+          description: "You can pass 0, 1 or 2 occurrences of this in the query string"
+          style: "form"
+          explode: true
+          schema:
+            type: "array"
+            maxItems: 2
+            items:
+              type: "string"
+      responses:
+        "200":
+          description: OK
+  /Stuff:
+    get:
+      summary: View Stuff
+      parameters:
+        - name: "arrayParam"
+          in: "query"
+          required: false
+          description: "You can pass 0, 1 or 2 occurrences of this in the query string"
+          style: "pipeDelimited"
+          explode: false
+          schema:
+            type: "array"
+            maxItems: 2
+            items:
+              type: "string"
+      responses:
+        "200":
+          description: OK
