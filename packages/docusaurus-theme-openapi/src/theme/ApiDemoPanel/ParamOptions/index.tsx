@@ -243,9 +243,13 @@ function ParamArrayFormItem({ param }: ParamProps) {
           </button>
         </div>
       ))}
-      {(param?.schema?.maxItems == null ||
+      {((param?.schema?.maxItems == null ||
         items.length < param.schema.maxItems) && (
         <button className={styles.buttonThin} onClick={handleAddItem}>
+          Add item
+        </button>
+      )) || (
+        <button className={styles.buttonThin} disabled>
           Add item
         </button>
       )}
