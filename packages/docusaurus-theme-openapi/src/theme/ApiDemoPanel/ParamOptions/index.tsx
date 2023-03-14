@@ -247,7 +247,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
         className={styles.buttonThin}
         onClick={handleAddItem}
         disabled={
-          param?.schema?.maxItems == null ||
+          param?.schema?.maxItems != null &&
           items.length >= param.schema.maxItems
         }
       >
