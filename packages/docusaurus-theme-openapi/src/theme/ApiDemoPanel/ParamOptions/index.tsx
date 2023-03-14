@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { nanoid } from "@reduxjs/toolkit";
 
@@ -19,6 +19,11 @@ import styles from "./styles.module.css";
 
 interface ParamProps {
   param: Param;
+}
+
+interface Item {
+  id: string;
+  value?: string;
 }
 
 function ParamOption({ param }: ParamProps) {
@@ -161,10 +166,16 @@ function ArrayItem({
 }
 
 function ParamArrayFormItem({ param }: ParamProps) {
-  const [items, setItems] = useState<{ id: string; value?: string }[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const dispatch = useTypedDispatch();
 
   function handleAddItem() {
+    if (
+      param?.schema?.maxItems !== undefined &&
+      items.length >= param.schema.maxItems
+    ) {
+      return;
+    }
     setItems((i) => [
       ...i,
       {
@@ -173,7 +184,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
     ]);
   }
 
-  useEffect(() => {
+  function updateItems(items: Array<Item>) {
     const values = items
       .map((item) => item.value)
       .filter((item): item is string => !!item);
@@ -184,12 +195,13 @@ function ParamArrayFormItem({ param }: ParamProps) {
         value: values.length > 0 ? values : undefined,
       })
     );
-  }, [dispatch, items, param]);
+  }
 
   function handleDeleteItem(itemToDelete: { id: string }) {
     return () => {
       const newItems = items.filter((i) => i.id !== itemToDelete.id);
       setItems(newItems);
+      updateItems(newItems);
     };
   }
 
@@ -202,6 +214,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
         return i;
       });
       setItems(newItems);
+      updateItems(newItems);
     };
   }
 
@@ -230,7 +243,14 @@ function ParamArrayFormItem({ param }: ParamProps) {
           </button>
         </div>
       ))}
-      <button className={styles.buttonThin} onClick={handleAddItem}>
+      <button
+        className={styles.buttonThin}
+        onClick={handleAddItem}
+        disabled={
+          param?.schema?.maxItems != null &&
+          items.length >= param.schema.maxItems
+        }
+      >
         Add item
       </button>
     </>

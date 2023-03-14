@@ -179,7 +179,7 @@ export interface ParameterObject {
   allowEmptyValue?: boolean;
   //
   style?: string;
-  explode?: string;
+  explode?: boolean;
   allowReserved?: boolean;
   schema?: SchemaObject;
   example?: any;

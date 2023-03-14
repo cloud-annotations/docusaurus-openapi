@@ -17,19 +17,36 @@ type Param = {
   value?: string | string[];
 } & ParameterObject;
 
-function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
-  postman.url.query.clear();
+export function openApiQueryParams2PostmanQueryParams(
+  queryParams: Param[]
+): sdk.QueryParam[] {
+  let qp = [];
+  for (const param of queryParams) {
+    if (Array.isArray(param.value) && param?.explode === true) {
+      for (const value of param.value) {
+        qp.push({ ...param, value });
+      }
+    } else {
+      qp.push(param);
+    }
+  }
 
-  const qp = queryParams
+  return qp
     .map((param) => {
       if (!param.value) {
         return undefined;
       }
 
+      let delimiter = ",";
+      if (param?.style === "spaceDelimited") {
+        delimiter = "%20";
+      } else if (param?.style === "pipeDelimited") {
+        delimiter = "|";
+      }
       if (Array.isArray(param.value)) {
         return new sdk.QueryParam({
           key: param.name,
-          value: param.value.map(encodeURIComponent).join(","),
+          value: param.value.map(encodeURIComponent).join(delimiter),
         });
       }
 
@@ -50,7 +67,11 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
       });
     })
     .filter((item): item is sdk.QueryParam => item !== undefined);
+}
 
+function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
+  postman.url.query.clear();
+  const qp = openApiQueryParams2PostmanQueryParams(queryParams);
   if (qp.length > 0) {
     postman.addQueryParams(qp);
   }
