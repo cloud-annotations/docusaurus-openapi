@@ -1,3 +1,21 @@
+## 0.6.4 (Mar 15, 2023)
+
+High level enhancements
+
+- Fixes and enhancements for array query param handling ([#241](https://github.com/cloud-annotations/docusaurus-openapi/pull/241))
+  - Respect the `maxItems` property for array query params
+  - Add compatibility for `style` and `explode` properties when rendering array query params
+  - Fix infinite render loop on pages using array query params
+
+Other enhancements and bug fixes
+
+- Convert some relative imports in theme package ([#237](https://github.com/cloud-annotations/docusaurus-openapi/pull/237))
+- Ensure path-level parameters are passed to the theme ([#235](https://github.com/cloud-annotations/docusaurus-openapi/pull/235))
+- Hide required labels on response schemas ([#230](https://github.com/cloud-annotations/docusaurus-openapi/pull/230))
+- Fix invalid ignore pattern for underscore files ([#233](https://github.com/cloud-annotations/docusaurus-openapi/pull/233))
+- Add existing site install instructions ([#229](https://github.com/cloud-annotations/docusaurus-openapi/pull/229))
+- Docs: update template version ([#225](https://github.com/cloud-annotations/docusaurus-openapi/pull/225))
+
 ## 0.6.3 (Nov 7, 2022)
 
 High level enhancements
