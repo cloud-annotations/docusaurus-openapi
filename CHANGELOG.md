@@ -1,3 +1,9 @@
+## 0.6.5 (Jun 19, 2023)
+
+Bug fixes
+
+- Wrap code examples tabs in narrow browser windows ([#250](https://github.com/cloud-annotations/docusaurus-openapi/pull/250))
+
 ## 0.6.4 (Mar 15, 2023)
 
 High level enhancements
