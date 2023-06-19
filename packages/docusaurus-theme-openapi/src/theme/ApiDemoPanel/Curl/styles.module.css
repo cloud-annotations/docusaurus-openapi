@@ -10,7 +10,8 @@
   border-radius: var(--openapi-card-border-radius)
     var(--openapi-card-border-radius) 2px 2px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .buttonGroup button {
@@ -59,7 +60,6 @@
   /* border-radius: 0.25rem; */
 
   display: block;
-  width: 100%;
 
   /* margin: 2px; */
   margin: var(--margin);
