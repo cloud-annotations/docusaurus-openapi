@@ -12,6 +12,12 @@
   border-radius: 4px;
 }
 
+html[data-theme="light"] .input {
+  border-color: var(--ifm-color-primary-lightest);
+  border-style: solid;
+  border-width: 1px;
+}
+
 .input {
   composes: inputBase;
 }
