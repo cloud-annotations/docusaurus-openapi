@@ -78,6 +78,7 @@ function Execute({ postman, proxy }: Props) {
           dispatch(setResponse(e.message ?? "Error fetching."));
         }
       }}
+      type="submit"
     >
       Execute
     </button>

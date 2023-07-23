@@ -62,6 +62,7 @@ function Server() {
       <button
         className={styles.showMoreButton}
         onClick={() => setIsEditing(false)}
+        type="button"
       >
         Hide
       </button>

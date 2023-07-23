@@ -96,6 +96,7 @@ function FormFileUpload({ placeholder, onChange }: Props) {
           <>
             <button
               style={{ marginTop: "calc(var(--ifm-pre-padding) / 2)" }}
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setAndNotifyFile(undefined);

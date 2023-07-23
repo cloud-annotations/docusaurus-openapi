@@ -86,6 +86,7 @@ function ParamOptions() {
         <>
           <button
             className={styles.showMoreButton}
+            type="button"
             onClick={() => setShowOptional((prev) => !prev)}
           >
             <span
@@ -225,6 +226,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
           <ArrayItem param={param} onChange={handleChangeItem(item)} />
           <button
             className={styles.buttonDelete}
+            type="button"
             onClick={handleDeleteItem(item)}
           >
             <svg
@@ -245,6 +247,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
       ))}
       <button
         className={styles.buttonThin}
+        type="button"
         onClick={handleAddItem}
         disabled={
           param?.schema?.maxItems != null &&

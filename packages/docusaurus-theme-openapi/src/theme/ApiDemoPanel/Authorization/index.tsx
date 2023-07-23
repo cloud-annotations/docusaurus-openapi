@@ -33,6 +33,7 @@ function LockButton({ mode, children, style, ...rest }: Props) {
         marginBottom: "var(--ifm-spacing-vertical)",
         ...style,
       }}
+      type="button"
       {...rest}
     >
       <span>{children}</span>
