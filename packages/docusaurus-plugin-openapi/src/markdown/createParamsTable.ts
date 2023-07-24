@@ -85,7 +85,10 @@ export function createParamsTable({ parameters, type }: Props) {
                 guard(param.example, (example) =>
                   create("div", {
                     style: { marginTop: "var(--ifm-table-cell-padding)" },
-                    children: escape(`Example: ${example}`),
+                    children: [
+                      "Example: ",
+                      create("code", { children: escape(example) }),
+                    ],
                   })
                 ),
                 guard(param.examples, (examples) =>
@@ -93,7 +96,10 @@ export function createParamsTable({ parameters, type }: Props) {
                     style: { marginTop: "var(--ifm-table-cell-padding)" },
                     children: Object.entries(examples).map(([k, v]) =>
                       create("div", {
-                        children: escape(`Example (${k}): ${v.value}`),
+                        children: [
+                          `Example (${k}): `,
+                          create("code", { children: escape(v.value) }),
+                        ],
                       })
                     ),
                   })
