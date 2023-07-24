@@ -45,6 +45,7 @@
     "docusaurus-plugin-openapi": "^0.7.2",
     "immer": "^9.0.7",
     "lodash": "^4.17.20",
+    "marked": "^11.0.0",
     "monaco-editor": "^0.31.1",
     "postman-code-generators": "^1.0.0",
     "postman-collection": "^4.1.0",
@@ -54,6 +55,7 @@
     "react-redux": "^7.2.0",
     "redux-devtools-extension": "^2.13.8",
     "refractor": "^4.8.1",
+    "striptags": "^3.2.0",
     "webpack": "^5.88.1"
   },
   "peerDependencies": {
