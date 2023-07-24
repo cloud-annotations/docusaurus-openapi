@@ -87,40 +87,46 @@ function ApiDemoPanel({ item }: Props) {
     [persistanceMiddleware]
   );
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
   const { path, method } = item;
 
   return (
     <Provider store={store2}>
       <div style={{ marginTop: "3.5em" }}>
-        <Authorization />
+        <form onSubmit={handleSubmit}>
+          <Authorization />
 
-        {item.operationId !== undefined && (
-          <div style={{ marginBottom: "var(--ifm-table-cell-padding)" }}>
-            <code>
-              <b>{item.operationId}</b>
-            </code>
+          {item.operationId !== undefined && (
+            <div style={{ marginBottom: "var(--ifm-table-cell-padding)" }}>
+              <code>
+                <b>{item.operationId}</b>
+              </code>
+            </div>
+          )}
+
+          <MethodEndpoint method={method} path={path} />
+
+          <div className={styles.optionsPanel}>
+            <ParamOptions />
+            <Body
+              jsonRequestBodyExample={item.jsonRequestBodyExample}
+              requestBodyMetadata={item.requestBody}
+            />
+            <Accept />
           </div>
-        )}
 
-        <MethodEndpoint method={method} path={path} />
+          <Server />
 
-        <div className={styles.optionsPanel}>
-          <ParamOptions />
-          <Body
-            jsonRequestBodyExample={item.jsonRequestBodyExample}
-            requestBodyMetadata={item.requestBody}
+          <Curl
+            postman={postman}
+            codeSamples={(item as any)["x-code-samples"] ?? []}
           />
-          <Accept />
-        </div>
 
-        <Server />
-
-        <Curl
-          postman={postman}
-          codeSamples={(item as any)["x-code-samples"] ?? []}
-        />
-
-        <Execute postman={postman} proxy={options?.proxy} />
+          <Execute postman={postman} proxy={options?.proxy} />
+        </form>
 
         <Response />
       </div>

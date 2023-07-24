@@ -225,6 +225,7 @@ function Curl({ postman, codeSamples }: Props) {
                 language === lang ? "api-code-tab--active" : undefined,
                 "api-code-tab"
               )}
+              type="button"
               onClick={() => setLanguage(lang)}
             >
               {lang.tabName || lang.label}
