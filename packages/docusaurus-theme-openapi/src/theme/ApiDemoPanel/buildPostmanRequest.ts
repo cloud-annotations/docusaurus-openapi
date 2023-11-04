@@ -17,6 +17,30 @@ type Param = {
   value?: string | string[];
 } & ParameterObject;
 
+function endsWithHalfSurrogatePair(value: string) {
+  if (value.length === 0) {
+    return false;
+  }
+  const lastIndex = value.length - 1;
+  const charCode = value.charCodeAt(lastIndex);
+  // https://unicodebook.readthedocs.io/unicode_encodings.html#utf-16-surrogate-pairs
+  // If ends with high surrogates string is invalid and encodeURIComponent fails
+  // Only end checked for cases where surrogates input is sequential
+  // We assume the user inputs a valid string but sequential write might temporarily
+  // result in half a pair ending string
+  if (charCode < 0xd800 || charCode > 0xdbff) {
+    return false; // If any character is not a high surrogate, return false
+  }
+  return true;
+}
+
+function safeEncodeURIComponent(value: string | number | boolean) {
+  if (typeof value === "string" && endsWithHalfSurrogatePair(value)) {
+    return encodeURIComponent(value.slice(0, -1));
+  }
+  return encodeURIComponent(value);
+}
+
 export function openApiQueryParams2PostmanQueryParams(
   queryParams: Param[]
 ): sdk.QueryParam[] {
@@ -46,7 +70,7 @@ export function openApiQueryParams2PostmanQueryParams(
       if (Array.isArray(param.value)) {
         return new sdk.QueryParam({
           key: param.name,
-          value: param.value.map(encodeURIComponent).join(delimiter),
+          value: param.value.map(safeEncodeURIComponent).join(delimiter),
         });
       }
 
@@ -63,7 +87,7 @@ export function openApiQueryParams2PostmanQueryParams(
 
       return new sdk.QueryParam({
         key: param.name,
-        value: encodeURIComponent(param.value),
+        value: safeEncodeURIComponent(param.value),
       });
     })
     .filter((item): item is sdk.QueryParam => item !== undefined);
@@ -79,7 +103,9 @@ function setQueryParams(postman: sdk.Request, queryParams: Param[]) {
 
 function setPathParams(postman: sdk.Request, queryParams: Param[]) {
   const recursiveEncodeURIComponent = (c: string | string[]) =>
-    Array.isArray(c) ? c.map(encodeURIComponent) : encodeURIComponent(c);
+    Array.isArray(c)
+      ? c.map(safeEncodeURIComponent)
+      : safeEncodeURIComponent(c);
 
   const source = queryParams.map((param) => {
     return new sdk.Variable({
