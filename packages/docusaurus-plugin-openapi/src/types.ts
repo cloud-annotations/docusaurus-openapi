@@ -47,9 +47,7 @@ export interface ApiMetadataBase {
   sidebar?: string;
   previous?: ApiNavLink;
   next?: ApiNavLink;
-  //
   id: string; // TODO legacy versioned id => try to remove
-  unversionedId: string; // TODO new unversioned id => try to rename to "id"
   title: string;
   description: string;
   source: string; // @site aliased source => "@site/docs/folder/subFolder/subSubFolder/myDoc.md"
