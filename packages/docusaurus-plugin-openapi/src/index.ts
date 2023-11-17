@@ -37,7 +37,7 @@ export default function pluginOpenAPI(
   context: LoadContext,
   options: PluginOptions
 ): Plugin<LoadedContent> {
-  const { baseUrl, generatedFilesDir, siteDir } = context;
+  const { baseUrl, generatedFilesDir, siteDir, siteConfig } = context;
 
   const pluginId = options.id ?? DEFAULT_PLUGIN_ID;
 
@@ -274,8 +274,7 @@ export default function pluginOpenAPI(
                     rehypePlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
-                    // Docusaurus 2.2.0 has a regression that requires this option to be set.
-                    markdownConfig: {},
+                    markdownConfig: siteConfig.markdown,
                     metadataPath: (mdxPath: string) => {
                       if (mdxPath.startsWith(dataDir)) {
                         // The MDX file already lives in `dataDir`: this is an OpenAPI MDX

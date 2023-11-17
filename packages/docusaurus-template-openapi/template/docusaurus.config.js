@@ -1,11 +1,11 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const lightCodeTheme = require("prism-react-renderer").themes.github;
+const darkCodeTheme = require("prism-react-renderer").themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
-const config = {
+export default {
   title: "My Site",
   tagline: "Dinosaurs are cool",
   url: "https://your-docusaurus-test-site.com",
@@ -39,6 +39,15 @@ const config = {
       }),
     ],
   ],
+
+  markdown: {
+    format: "detect",
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: false,
+    },
+  },
 
   themeConfig:
     /** @type {import('docusaurus-preset-openapi').ThemeConfig} */
@@ -116,5 +125,3 @@ const config = {
       },
     }),
 };
-
-module.exports = config;
