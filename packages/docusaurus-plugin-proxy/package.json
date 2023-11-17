@@ -1,7 +1,7 @@
 {
   "name": "docusaurus-plugin-proxy",
   "description": "A dev server proxy for Docusaurus.",
-  "version": "0.6.3",
+  "version": "1.0.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -21,10 +21,10 @@
     "watch": "tsc --watch"
   },
   "devDependencies": {
-    "@docusaurus/types": "^2.0.0",
+    "@docusaurus/types": "^3.0.0",
     "@types/webpack-dev-server": "^4.5.0"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18.0"
   }
 }
