@@ -13,7 +13,7 @@ import {
   AdmonitionsSchema,
 } from "@docusaurus/utils-validation";
 import chalk from "chalk";
-import admonitions from "remark-admonitions";
+import admonitions from "remark-directive";
 
 import type { PluginOptions } from "./types";
 
