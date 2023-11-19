@@ -35,5 +35,10 @@ export function render(children: Children): string {
   if (Array.isArray(children)) {
     return children.filter((c) => c !== undefined).join("");
   }
-  return children ?? "";
+
+  if (children) {
+    return children.replace(/>\s+/g, ">").replace(/\s+</g, "<");
+  } else {
+    return "";
+  }
 }
