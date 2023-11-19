@@ -64,15 +64,6 @@ export default {
     ],
   ],
 
-  markdown: {
-    format: "detect",
-    mdx1Compat: {
-      comments: true,
-      admonitions: true,
-      headingIds: false,
-    },
-  },
-
   themeConfig:
     /** @type {import('docusaurus-preset-openapi').ThemeConfig} */
     ({
