@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@docusaurus/theme-common": "^3.0.0",
+    "@mdx-js/react": "^3.0.0",
     "@monaco-editor/react": "^4.3.1",
     "@reduxjs/toolkit": "^1.7.1",
     "buffer": "^6.0.3",
