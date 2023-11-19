@@ -9,13 +9,13 @@ import React, { useState } from "react";
 
 import { nanoid } from "@reduxjs/toolkit";
 
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormMultiSelect from "./../FormMultiSelect";
 import FormSelect from "./../FormSelect";
 import FormTextInput from "./../FormTextInput";
 import { Param, setParam } from "./slice";
 import styles from "./styles.module.css";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 interface ParamProps {
   param: Param;
@@ -305,11 +305,13 @@ function ParamMultiSelectFormItem({ param }: ParamProps) {
 
   const options = param.schema?.items?.enum ?? [];
 
+  console.log("ParamMultiSelectFormItem");
+
   return (
     <FormMultiSelect
       options={options as string[]}
       onChange={(e) => {
-        const values = Array.prototype.filter
+        const values = Array.prototype?.filter
           .call(e.target.options, (o) => o.selected)
           .map((o) => o.value);
 

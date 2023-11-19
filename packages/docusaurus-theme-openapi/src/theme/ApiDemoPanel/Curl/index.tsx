@@ -13,10 +13,11 @@ import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
 import { Highlight } from "prism-react-renderer";
-import { useTypedSelector } from "../hooks";
+
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
+import { useTypedSelector } from "../hooks";
 
 interface Language {
   tabName: string;

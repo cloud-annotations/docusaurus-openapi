@@ -7,9 +7,9 @@
 
 import React from "react";
 
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FloatingButton from "./../FloatingButton";
 import { clearResponse } from "./slice";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 // TODO: We probably shouldn't attempt to format XML...
 function formatXml(xml: string) {

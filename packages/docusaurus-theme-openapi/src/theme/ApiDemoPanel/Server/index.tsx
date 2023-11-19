@@ -7,13 +7,13 @@
 
 import React, { useState } from "react";
 
-import FloatingButton from "../FloatingButton";
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
 import FormTextInput from "./../FormTextInput";
 import { setServer, setServerVariable } from "./slice";
 import styles from "./styles.module.css";
+import FloatingButton from "../FloatingButton";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 function Server() {
   const [isEditing, setIsEditing] = useState(false);
