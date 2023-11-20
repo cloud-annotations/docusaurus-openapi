@@ -25,7 +25,7 @@
   "dependencies": {
     "@docusaurus/logger": "^3.0.0",
     "commander": "^5.1.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^11.0.0",
     "lodash": "^4.17.20",
     "prompts": "^2.4.1",
     "semver": "^7.3.4",
@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@types/prompts": "^2.0.9",
+    "@types/fs-extra": "^11.0.0",
     "@types/shelljs": "^0.8.6",
     "@types/supports-color": "^8.1.1"
   }

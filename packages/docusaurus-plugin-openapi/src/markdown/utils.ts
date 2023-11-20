@@ -17,7 +17,9 @@ export function create(tag: string, props: Props): string {
     propString += ` ${key}={${JSON.stringify(value)}}`;
   }
 
-  return `<${tag}${propString}>${render(children)}</${tag}>`;
+  return `<${tag}${propString}>
+  ${render(children)}
+</${tag}>`;
 }
 
 export function guard<T>(
@@ -33,7 +35,7 @@ export function guard<T>(
 
 export function render(children: Children): string {
   if (Array.isArray(children)) {
-    return children.filter((c) => c !== undefined).join("");
+    return children.filter((c) => c !== undefined).join("\n");
   }
   return children ?? "";
 }

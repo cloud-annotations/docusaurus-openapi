@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import path from "path";
+import { readFile } from "node:fs/promises";
+import { join, relative, resolve } from "node:path";
 
 import type {
   LoadContext,
@@ -23,7 +24,6 @@ import {
   Globby,
 } from "@docusaurus/utils";
 import chalk from "chalk";
-import fs from "fs-extra";
 import { Configuration } from "webpack";
 
 import { DocEnv, processDocMetadata } from "./docs/docs";
@@ -37,23 +37,23 @@ export default function pluginOpenAPI(
   context: LoadContext,
   options: PluginOptions
 ): Plugin<LoadedContent> {
-  const { baseUrl, generatedFilesDir, siteDir } = context;
+  const { baseUrl, generatedFilesDir, siteDir, siteConfig } = context;
 
   const pluginId = options.id ?? DEFAULT_PLUGIN_ID;
 
-  const pluginDataDirRoot = path.join(
+  const pluginDataDirRoot = join(
     generatedFilesDir,
     "docusaurus-plugin-openapi"
   );
 
-  const dataDir = path.join(pluginDataDirRoot, pluginId);
+  const dataDir = join(pluginDataDirRoot, pluginId);
 
   const aliasedSource = (source: string) =>
-    `~api/${posixPath(path.relative(pluginDataDirRoot, source))}`;
+    `~api/${posixPath(relative(pluginDataDirRoot, source))}`;
 
   const contentPath = isURL(options.path)
     ? options.path
-    : path.resolve(context.siteDir, options.path);
+    : resolve(context.siteDir, options.path);
 
   return {
     name: "docusaurus-plugin-openapi",
@@ -70,8 +70,8 @@ export default function pluginOpenAPI(
         /** E.g. "api/plugins/myDoc.mdx" */
         relativeSource: string
       ): Promise<MdxPageMetadata> {
-        const source = path.join(contentPath, relativeSource);
-        const content = await fs.readFile(source, "utf-8");
+        const source = join(contentPath, relativeSource);
+        const content = await readFile(source, "utf-8");
 
         return {
           type: "mdx",
@@ -200,7 +200,7 @@ export default function pluginOpenAPI(
           exact: true,
           modules: {
             // TODO: "-content" should be inside hash to prevent name too long errors.
-            content: path.join(dataDir, `${docuHash(pageId)}-content.mdx`),
+            content: join(dataDir, `${docuHash(pageId)}-content.mdx`),
           },
           sidebar: sidebarName,
         };
@@ -274,8 +274,7 @@ export default function pluginOpenAPI(
                     rehypePlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
-                    // Docusaurus 2.2.0 has a regression that requires this option to be set.
-                    markdownConfig: {},
+                    markdownConfig: siteConfig.markdown ?? { mdx1Compat: {} },
                     metadataPath: (mdxPath: string) => {
                       if (mdxPath.startsWith(dataDir)) {
                         // The MDX file already lives in `dataDir`: this is an OpenAPI MDX
@@ -283,10 +282,7 @@ export default function pluginOpenAPI(
                       } else {
                         // Standard resolution
                         const aliasedSource = aliasedSitePath(mdxPath, siteDir);
-                        return path.join(
-                          dataDir,
-                          `${docuHash(aliasedSource)}.json`
-                        );
+                        return join(dataDir, `${docuHash(aliasedSource)}.json`);
                       }
                     },
                   },

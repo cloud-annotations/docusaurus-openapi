@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import path from "path";
+import { lstat, readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 
 import { aliasedSitePath, Globby, normalizeUrl } from "@docusaurus/utils";
 import axios from "axios";
 import chalk from "chalk";
-import fs from "fs-extra";
 import yaml from "js-yaml";
 import JsonRefs from "json-refs";
 import resolveAllOf from "json-schema-resolve-allof";
@@ -225,7 +225,7 @@ export async function readOpenapiFiles(
       },
     ];
   }
-  const stat = await fs.lstat(openapiPath);
+  const stat = await lstat(openapiPath);
   if (stat.isDirectory()) {
     console.warn(
       chalk.yellow(
@@ -242,18 +242,18 @@ export async function readOpenapiFiles(
     return Promise.all(
       sources.map(async (source) => {
         // TODO: make a function for this
-        const fullPath = path.join(openapiPath, source);
-        const openapiString = await fs.readFile(fullPath, "utf-8");
+        const fullPath = join(openapiPath, source);
+        const openapiString = await readFile(fullPath, "utf-8");
         const data = yaml.load(openapiString) as OpenApiObjectWithRef;
         return {
           source: fullPath, // This will be aliased in process.
-          sourceDirName: path.dirname(source),
+          sourceDirName: dirname(source),
           data,
         };
       })
     );
   }
-  const openapiString = await fs.readFile(openapiPath, "utf-8");
+  const openapiString = await readFile(openapiPath, "utf-8");
   const data = yaml.load(openapiString) as OpenApiObjectWithRef;
   return [
     {

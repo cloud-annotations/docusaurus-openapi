@@ -9,5 +9,6 @@ export function createDescription(description: string | undefined) {
   if (!description) {
     return "";
   }
-  return `\n\n${description}\n\n`;
+  // Replace usages of <= or >= with \<= or \>= to avoid MDX3 parsing issues.
+  return `\n\n${description.replace(/([<>]=?)/g, "\\$1")}\n\n`;
 }
