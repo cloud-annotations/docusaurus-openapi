@@ -117,11 +117,7 @@ async function doProcessDocMetadata({
     return sourceDirName;
   }
 
-  const unversionedId = [computeDirNameIdPrefix(), baseID]
-    .filter(Boolean)
-    .join("/");
-
-  const id = unversionedId;
+  const id = [computeDirNameIdPrefix(), baseID].filter(Boolean).join("/");
 
   const docSlug = getSlug({
     baseID,
@@ -152,7 +148,6 @@ async function doProcessDocMetadata({
   // Adding properties to object after instantiation will cause hidden
   // class transitions.
   return {
-    // unversionedId,
     id,
     title,
     description,

@@ -85,7 +85,6 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
     const infoPage: PartialPage<InfoPageMetadata> = {
       type: "info",
       id: "introduction",
-      // unversionedId: "introduction",
       title: "Introduction",
       description: openapiData.info.description,
       slug: "/introduction",
@@ -144,7 +143,6 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
       const apiPage: PartialPage<ApiPageMetadata> = {
         type: "api",
         id: baseId,
-        // unversionedId: baseId,
         title: title,
         description: description ?? "",
         slug: "/" + baseId,
@@ -298,7 +296,6 @@ export async function processOpenapiFiles(
     }
 
     items[i].id = id;
-    // items[i].unversionedId = id;
     items[i].slug = "/" + id;
   }
 
