@@ -12,7 +12,7 @@ import type { Props } from "@theme/ApiDemoPanel/Curl";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
-import Highlight, { defaultProps } from "prism-react-renderer";
+import { Highlight } from "prism-react-renderer";
 
 import { useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
@@ -235,7 +235,6 @@ function Curl({ postman, codeSamples }: Props) {
       </div>
 
       <Highlight
-        {...defaultProps}
         theme={languageTheme}
         code={codeText}
         language={language.highlight || language.lang}

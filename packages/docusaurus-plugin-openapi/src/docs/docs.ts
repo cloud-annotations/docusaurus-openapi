@@ -145,12 +145,14 @@ async function doProcessDocMetadata({
 
   const draft = isDraftForEnvironment({ env, frontMatter });
 
+  const unlisted = frontMatter.unlisted ?? false;
+
   // Assign all of object properties during instantiation (if possible) for
   // NodeJS optimization.
   // Adding properties to object after instantiation will cause hidden
   // class transitions.
   return {
-    unversionedId,
+    // unversionedId,
     id,
     title,
     description,
@@ -164,6 +166,7 @@ async function doProcessDocMetadata({
     version: "",
     sidebarPosition,
     frontMatter,
+    unlisted,
   };
 }
 

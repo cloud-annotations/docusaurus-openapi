@@ -205,6 +205,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         label: label,
         href: item.permalink,
         docId: item.id,
+        unlisted: false,
         position: isMdxItem(item)
           ? (item.frontMatter?.sidebar_position as number) ??
             BottomSidebarPosition
@@ -226,6 +227,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
       label: item.title,
       href: item.permalink,
       docId: item.id,
+      unlisted: false,
       className: clsx(
         {
           "menu__list-item--deprecated": item.api.deprecated,

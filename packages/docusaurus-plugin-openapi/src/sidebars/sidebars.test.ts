@@ -31,7 +31,7 @@ describe("sidebars", () => {
   const getIntro = (overrides = {}) => ({
     type: "info" as const,
     id: "introduction",
-    unversionedId: "introduction",
+    // unversionedId: "introduction",
     title: "Introduction",
     description: "Sample description.",
     slug: "/introduction",
