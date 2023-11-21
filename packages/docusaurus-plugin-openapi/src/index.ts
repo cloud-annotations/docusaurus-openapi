@@ -237,6 +237,7 @@ export default function pluginOpenAPI(
         modules: {
           apiMetadata: aliasedSource(apiBaseMetadataPath),
         },
+        priority: 999999,
       });
 
       return;
