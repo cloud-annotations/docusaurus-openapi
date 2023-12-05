@@ -43,6 +43,9 @@ const primitives: Primitives = {
     default: (schema) =>
       typeof schema.default === "boolean" ? schema.default : true,
   },
+  null: {
+    default: () => "null",
+  },
   object: {},
   array: {},
 };
@@ -118,11 +121,21 @@ export const sampleFromSchema = (schema: SchemaObject = {}): any => {
 function primitive(schema: SchemaObject = {}) {
   let { type, format } = schema;
 
-  if (type === undefined) {
+  if (type instanceof Array) {
+    return type
+      .map(type => primitive({ type, format }))
+      .reduce((acc, cur) => acc ? `${acc} | ${cur}` : `${cur}`, null)
+  }
+
+  if (type === undefined || type === null ) {
     return;
   }
 
-  let fn = primitives[type].default;
+  let fn = primitives[type]?.default;
+
+  if (fn === undefined) {
+    return "Unknown Type: " + type;
+  }
 
   if (format !== undefined) {
     fn = primitives[type][format] || fn;
