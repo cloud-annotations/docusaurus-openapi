@@ -14,6 +14,7 @@ interface OASTypeToTypeMap {
   boolean: boolean;
   object: any;
   array: any[];
+  null: string;
 }
 
 type Primitives = {
@@ -118,17 +119,17 @@ export const sampleFromSchema = (schema: SchemaObject = {}): any => {
   return primitive(schema);
 };
 
-function primitive(schema: SchemaObject = {}) {
+function primitive(schema: SchemaObject = {}): string {
   let { type, format } = schema;
 
   if (type instanceof Array) {
     return type
-      .map(type => primitive({ type, format }))
-      .reduce((acc, cur) => acc ? `${acc} | ${cur}` : `${cur}`, null)
+      .map((type) => primitive({ type, format }))
+      .reduce((acc, cur) => (acc ? `${acc} | ${cur}` : `${cur}`), "");
   }
 
-  if (type === undefined || type === null ) {
-    return;
+  if (type === undefined || type === null) {
+    return "";
   }
 
   let fn = primitives[type]?.default;

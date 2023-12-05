@@ -5,7 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { SchemaObject } from "../openapi/types";
+import { SchemaObject, PrimitiveSchemaObjectTypes } from "../openapi/types";
+
+function typeToString(
+  type: PrimitiveSchemaObjectTypes | PrimitiveSchemaObjectTypes[] | undefined
+): string {
+  if (type === undefined) {
+    return "schema.type is not defined";
+  }
+  if (type instanceof Array) {
+    return type.reduce((acc, cur) => (acc ? `${acc} | ${cur}` : cur), "");
+  }
+
+  return type;
+}
 
 function prettyName(schema: SchemaObject, circular?: boolean) {
   if (schema.$ref) {
@@ -26,7 +39,7 @@ function prettyName(schema: SchemaObject, circular?: boolean) {
     return schema.xml?.name ?? schema.type;
   }
 
-  return schema.title ?? schema.type;
+  return schema.title ?? typeToString(schema.type);
 }
 
 export function getSchemaName(
