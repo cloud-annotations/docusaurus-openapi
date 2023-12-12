@@ -21,10 +21,9 @@
     "watch": "tsc --watch"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.0.0",
-    "@docusaurus/types": "^2.0.0",
+    "@docusaurus/module-type-aliases": "^3.0.0",
+    "@docusaurus/types": "^3.0.0",
     "@types/axios": "^0.14.0",
-    "@types/fs-extra": "^9.0.13",
     "@types/js-yaml": "^4.0.5",
     "@types/json-schema": "^7.0.9",
     "@types/lodash": "^4.14.176",
@@ -32,28 +31,27 @@
     "utility-types": "^3.10.0"
   },
   "dependencies": {
-    "@docusaurus/mdx-loader": "^2.0.0",
-    "@docusaurus/plugin-content-docs": "^2.0.0",
-    "@docusaurus/utils": "^2.0.0",
-    "@docusaurus/utils-validation": "^2.0.0",
+    "@docusaurus/mdx-loader": "^3.0.0",
+    "@docusaurus/plugin-content-docs": "^3.0.0",
+    "@docusaurus/utils": "^3.0.0",
+    "@docusaurus/utils-validation": "^3.0.0",
     "axios": "^0.26.1",
     "chalk": "^4.1.2",
-    "clsx": "^1.1.1",
-    "fs-extra": "^9.0.1",
+    "clsx": "^1.2.1",
     "js-yaml": "^4.1.0",
     "json-refs": "^3.0.15",
     "json-schema-resolve-allof": "^1.5.0",
     "lodash": "^4.17.20",
     "openapi-to-postmanv2": "^1.2.1",
     "postman-collection": "^4.1.0",
-    "remark-admonitions": "^1.2.1",
-    "webpack": "^5.73.0"
+    "remark-directive": "^3.0.0",
+    "webpack": "^5.88.1"
   },
   "peerDependencies": {
-    "react": "^16.8.4 || ^17.0.0",
-    "react-dom": "^16.8.4 || ^17.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   }
 }

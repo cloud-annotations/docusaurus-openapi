@@ -117,11 +117,7 @@ async function doProcessDocMetadata({
     return sourceDirName;
   }
 
-  const unversionedId = [computeDirNameIdPrefix(), baseID]
-    .filter(Boolean)
-    .join("/");
-
-  const id = unversionedId;
+  const id = [computeDirNameIdPrefix(), baseID].filter(Boolean).join("/");
 
   const docSlug = getSlug({
     baseID,
@@ -145,12 +141,13 @@ async function doProcessDocMetadata({
 
   const draft = isDraftForEnvironment({ env, frontMatter });
 
+  const unlisted = frontMatter.unlisted ?? false;
+
   // Assign all of object properties during instantiation (if possible) for
   // NodeJS optimization.
   // Adding properties to object after instantiation will cause hidden
   // class transitions.
   return {
-    unversionedId,
     id,
     title,
     description,
@@ -164,6 +161,7 @@ async function doProcessDocMetadata({
     version: "",
     sidebarPosition,
     frontMatter,
+    unlisted,
   };
 }
 

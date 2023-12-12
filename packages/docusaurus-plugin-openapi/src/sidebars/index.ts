@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import path from "path";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { basename, join, extname } from "node:path";
 
 import { CategoryMetadataFile } from "@docusaurus/plugin-content-docs/lib/sidebars/types";
 import { posixPath } from "@docusaurus/utils";
 import chalk from "chalk";
 import clsx from "clsx";
-import fs from "fs-extra";
 import Yaml from "js-yaml";
 import { groupBy, sortBy, uniq } from "lodash";
 import type { DeepPartial } from "utility-types";
@@ -94,14 +95,14 @@ export async function generateSidebar(
           visiting.push(...groupByTags(items, options));
         } else if (
           ["_spec_.json", "_spec_.yml", "_spec_.yaml"].includes(
-            path.basename(items[0].source)
+            basename(items[0].source)
           )
         ) {
           // Don't create a category for this spec file
           visiting.push(...groupByTags(items, options));
         } else {
           const title = items.filter(isApiItem)[0]?.api.info?.title;
-          const fileName = path.basename(source, path.extname(source));
+          const fileName = basename(source, extname(source));
           // Title could be an empty string so `??` won't work here.
           const label = !title ? fileName : title;
           visiting.push({
@@ -120,7 +121,7 @@ export async function generateSidebar(
 
       // Read category file to generate a label for the current path.
       currentPath.push(crumb);
-      const categoryPath = path.join(options.contentPath, ...currentPath);
+      const categoryPath = join(options.contentPath, ...currentPath);
       const meta = await readCategoryMetadataFile(categoryPath);
       const label = meta?.label ?? crumb;
 
@@ -197,7 +198,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
   const intros = items
     .filter((m) => isInfoItem(m) || isMdxItem(m))
     .map((item) => {
-      const fileName = path.basename(item.source, path.extname(item.source));
+      const fileName = basename(item.source, extname(item.source));
       const label = !item.title ? fileName : item.title;
 
       return {
@@ -205,6 +206,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
         label: label,
         href: item.permalink,
         docId: item.id,
+        unlisted: false,
         position: isMdxItem(item)
           ? (item.frontMatter?.sidebar_position as number) ??
             BottomSidebarPosition
@@ -226,6 +228,7 @@ function groupByTags(items: Item[], options: Options): PropSidebar {
       label: item.title,
       href: item.permalink,
       docId: item.id,
+      unlisted: false,
       className: clsx(
         {
           "menu__list-item--deprecated": item.api.deprecated,
@@ -279,7 +282,7 @@ async function readCategoryMetadataFile(
   categoryDirPath: string
 ): Promise<CategoryMetadataFile | null> {
   async function tryReadFile(filePath: string): Promise<CategoryMetadataFile> {
-    const contentString = await fs.readFile(filePath, { encoding: "utf8" });
+    const contentString = await readFile(filePath, { encoding: "utf8" });
     const unsafeContent = Yaml.load(contentString);
     try {
       return unsafeContent as CategoryMetadataFile; // validateCategoryMetadataFile(unsafeContent);
@@ -296,9 +299,9 @@ async function readCategoryMetadataFile(
   for (const ext of [".json", ".yml", ".yaml"]) {
     // Simpler to use only posix paths for mocking file metadata in tests
     const filePath = posixPath(
-      path.join(categoryDirPath, `${CategoryMetadataFilenameBase}${ext}`)
+      join(categoryDirPath, `${CategoryMetadataFilenameBase}${ext}`)
     );
-    if (await fs.pathExists(filePath)) {
+    if (existsSync(filePath)) {
       return tryReadFile(filePath);
     }
   }
