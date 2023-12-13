@@ -1,4 +1,4 @@
-## 0.6.5 (Dec 13, 2023)
+## 0.7.0 (Dec 13, 2023)
 
 High-level enhancements
 
