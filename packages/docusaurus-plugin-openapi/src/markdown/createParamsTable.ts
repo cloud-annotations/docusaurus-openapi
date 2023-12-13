@@ -7,11 +7,11 @@
 
 import { escape } from "lodash";
 
-import { ApiItem } from "../types";
 import { createDescription } from "./createDescription";
 import { createFullWidthTable } from "./createFullWidthTable";
 import { getQualifierMessage, getSchemaName } from "./schema";
 import { create, guard } from "./utils";
+import { ApiItem } from "../types";
 
 interface Props {
   parameters: ApiItem["parameters"];

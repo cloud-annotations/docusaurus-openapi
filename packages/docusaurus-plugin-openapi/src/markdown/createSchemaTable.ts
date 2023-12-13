@@ -7,11 +7,11 @@
 
 import { escape } from "lodash";
 
-import { MediaTypeObject, SchemaObject } from "../openapi/types";
 import { createDescription } from "./createDescription";
 import { createFullWidthTable } from "./createFullWidthTable";
 import { getQualifierMessage, getSchemaName } from "./schema";
 import { create, guard } from "./utils";
+import { MediaTypeObject, SchemaObject } from "../openapi/types";
 
 function resolveAllOf(allOf: SchemaObject[]) {
   // TODO: naive implementation (only supports objects, no directly nested allOf)

@@ -10,8 +10,8 @@ import React, { useState } from "react";
 // @ts-ignore
 import MagicDropzone from "react-magic-dropzone";
 
-import FloatingButton from "../FloatingButton";
 import styles from "./styles.module.css";
+import FloatingButton from "../FloatingButton";
 
 type PreviewFile = { preview: string } & File;
 

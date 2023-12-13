@@ -11,9 +11,10 @@ import {
   SecuritySchemeObject,
 } from "docusaurus-plugin-openapi/src/openapi/types";
 
+import { getAuthDataKeys } from "./auth-types";
 import { ThemeConfig } from "../../../types";
 import { createStorage, hashArray } from "../storage-utils";
-import { getAuthDataKeys } from "./auth-types";
+
 
 // The global definitions
 // "securitySchemes": {
