@@ -9,13 +9,13 @@ import React, { useState } from "react";
 
 import { nanoid } from "@reduxjs/toolkit";
 
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormMultiSelect from "./../FormMultiSelect";
 import FormSelect from "./../FormSelect";
 import FormTextInput from "./../FormTextInput";
 import { Param, setParam } from "./slice";
 import styles from "./styles.module.css";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 interface ParamProps {
   param: Param;

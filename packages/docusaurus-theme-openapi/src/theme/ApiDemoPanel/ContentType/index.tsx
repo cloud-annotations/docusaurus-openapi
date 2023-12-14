@@ -7,10 +7,10 @@
 
 import React from "react";
 
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
 import { setContentType } from "./slice";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 function ContentType() {
   const value = useTypedSelector((state) => state.contentType.value);

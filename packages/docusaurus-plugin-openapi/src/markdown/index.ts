@@ -7,7 +7,6 @@
 
 import { escape } from "lodash";
 
-import { ApiPageMetadata, InfoPageMetadata } from "../types";
 import { createDeprecationNotice } from "./createDeprecationNotice";
 import { createDescription } from "./createDescription";
 import { createParamsTable } from "./createParamsTable";
@@ -15,6 +14,7 @@ import { createRequestBodyTable } from "./createRequestBodyTable";
 import { createStatusCodesTable } from "./createStatusCodesTable";
 import { createVersionBadge } from "./createVersionBadge";
 import { render } from "./utils";
+import { ApiPageMetadata, InfoPageMetadata } from "../types";
 
 export function createApiPageMD({
   title,

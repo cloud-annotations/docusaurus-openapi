@@ -7,10 +7,10 @@
 
 import React from "react";
 
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormSelect from "./../FormSelect";
 import { setAccept } from "./slice";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 function Accept() {
   const value = useTypedSelector((state) => state.accept.value);

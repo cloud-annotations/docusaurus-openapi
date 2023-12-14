@@ -18,10 +18,10 @@ import { kebabCase } from "lodash";
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 
-import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
-import { isURL } from "../util";
 import { sampleFromSchema } from "./createExample";
 import { OpenApiObject, OpenApiObjectWithRef, TagObject } from "./types";
+import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
+import { isURL } from "../util";
 
 /**
  * Finds any reference objects in the OpenAPI definition and resolves them to a finalized value.
