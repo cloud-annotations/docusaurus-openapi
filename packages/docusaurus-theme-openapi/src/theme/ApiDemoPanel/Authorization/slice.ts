@@ -15,7 +15,6 @@ import { getAuthDataKeys } from "./auth-types";
 import { ThemeConfig } from "../../../types";
 import { createStorage, hashArray } from "../storage-utils";
 
-
 // The global definitions
 // "securitySchemes": {
 //   "BearerAuth": { "type": "http", "scheme": "BeAreR" },

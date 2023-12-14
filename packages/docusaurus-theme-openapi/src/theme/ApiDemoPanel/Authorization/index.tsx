@@ -16,7 +16,6 @@ import FormTextInput from "../FormTextInput";
 import { useTypedDispatch, useTypedSelector } from "../hooks";
 import styles from "../styles.module.css";
 
-
 type Props = {
   mode: "locked" | "unlocked";
 } & JSX.IntrinsicElements["button"];

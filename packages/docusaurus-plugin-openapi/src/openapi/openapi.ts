@@ -18,7 +18,6 @@ import { kebabCase } from "lodash";
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 
-
 import { isURL } from "../util";
 import { sampleFromSchema } from "./createExample";
 import { OpenApiObject, OpenApiObjectWithRef, TagObject } from "./types";
