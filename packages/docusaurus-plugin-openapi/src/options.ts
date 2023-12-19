@@ -13,7 +13,7 @@ import {
   AdmonitionsSchema,
 } from "@docusaurus/utils-validation";
 import chalk from "chalk";
-import admonitions from "remark-directive";
+// import admonitions from "remark-directive";
 
 import type { PluginOptions } from "./types";
 
@@ -84,11 +84,11 @@ export function validateOptions({
 
   const normalizedOptions = validate(OptionsSchema, options);
 
-  if (normalizedOptions.admonitions) {
-    normalizedOptions.remarkPlugins = normalizedOptions.remarkPlugins.concat([
-      [admonitions, normalizedOptions.admonitions],
-    ]);
-  }
+  // if (normalizedOptions.admonitions) {
+  //   normalizedOptions.remarkPlugins = normalizedOptions.remarkPlugins.concat([
+  //     [admonitions, normalizedOptions.admonitions],
+  //   ]);
+  // }
 
   return normalizedOptions;
 }
