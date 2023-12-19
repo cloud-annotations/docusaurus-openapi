@@ -1,3 +1,14 @@
+## 0.7.1 (Dec 18, 2023)
+
+High-level enhancements
+
+- Bug fixes related to Docusaurus v3 migration
+
+Other enhancements and bug fixes
+
+- Fix admonitions support in Docusaurus v3 ([#271](https://github.com/cloud-annotations/docusaurus-openapi/pull/271))
+- Fix some MDXv3 migration bugs ([#270](https://github.com/cloud-annotations/docusaurus-openapi/pull/270))
+
 ## 0.7.0 (Dec 13, 2023)
 
 High-level enhancements

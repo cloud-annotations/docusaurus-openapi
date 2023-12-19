@@ -104,7 +104,7 @@ function main() {
   const changelog = `
 ## ${pkg.version} (${date})
 
-High level enhancements
+High-level enhancements
 
 - TODO HIGHLIGHTS
 
