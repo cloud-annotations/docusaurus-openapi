@@ -18,6 +18,14 @@ const config = {
   organizationName: "cloud-annotations", // Usually your GitHub org/user name.
   projectName: "docusaurus-openapi", // Usually your repo name.
 
+  markdown: {
+    mdx1Compat: {
+      comments: false,
+      admonitions: false,
+      headingIds: false,
+    },
+  },
+
   presets: [
     [
       "docusaurus-preset-openapi",
