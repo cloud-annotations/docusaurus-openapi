@@ -242,7 +242,9 @@ export function createSchemaTable({ title, body, type, ...rest }: Props) {
           children: create("th", {
             style: { textAlign: "left" },
             children: [
-              `${title} `,
+              create("span", {
+                children: `${title} `,
+              }),
               ...parseTitleLabel({ required: body.required, type }),
               create("div", {
                 children: createDescription(body.description),
