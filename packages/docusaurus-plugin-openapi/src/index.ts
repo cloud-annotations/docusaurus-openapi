@@ -271,6 +271,7 @@ export default function pluginOpenAPI(
                 {
                   loader: require.resolve("@docusaurus/mdx-loader"),
                   options: {
+                    admonitions: options.admonitions,
                     remarkPlugins,
                     rehypePlugins,
                     beforeDefaultRehypePlugins,
