@@ -44,7 +44,6 @@
     "lodash": "^4.17.20",
     "openapi-to-postmanv2": "^1.2.1",
     "postman-collection": "^4.1.0",
-    "remark-directive": "^3.0.0",
     "webpack": "^5.88.1"
   },
   "peerDependencies": {
