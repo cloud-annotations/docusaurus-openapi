@@ -1,7 +1,7 @@
 {
   "name": "docusaurus-theme-openapi",
   "description": "OpenAPI theme for Docusaurus.",
-  "version": "0.7.2",
+  "version": "0.7.1",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -42,7 +42,7 @@
     "buffer": "^6.0.3",
     "clsx": "^1.2.1",
     "crypto-js": "^4.1.1",
-    "docusaurus-plugin-openapi": "^0.7.2",
+    "docusaurus-plugin-openapi": "^0.7.1",
     "immer": "^9.0.7",
     "lodash": "^4.17.20",
     "monaco-editor": "^0.31.1",
@@ -53,7 +53,6 @@
     "react-magic-dropzone": "^1.0.1",
     "react-redux": "^7.2.0",
     "redux-devtools-extension": "^2.13.8",
-    "refractor": "^4.8.1",
     "webpack": "^5.88.1"
   },
   "peerDependencies": {
