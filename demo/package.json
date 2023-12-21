@@ -1,6 +1,6 @@
 {
   "name": "demo",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -17,7 +17,7 @@
     "@docusaurus/core": "^3.0.0",
     "@svgr/webpack": "^5.5.0",
     "clsx": "^1.2.1",
-    "docusaurus-preset-openapi": "^0.7.1",
+    "docusaurus-preset-openapi": "^0.7.2",
     "file-loader": "^6.2.0",
     "prism-react-renderer": "^2.1.0",
     "react": "^18.0.0",
