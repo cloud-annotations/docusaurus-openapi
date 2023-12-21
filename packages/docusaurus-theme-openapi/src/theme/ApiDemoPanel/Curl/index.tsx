@@ -12,7 +12,9 @@ import type { Props } from "@theme/ApiDemoPanel/Curl";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
-import { Highlight } from "prism-react-renderer";
+import { Highlight, Prism } from "prism-react-renderer";
+import bashLang from "refractor/lang/bash";
+bashLang(Prism);
 
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
