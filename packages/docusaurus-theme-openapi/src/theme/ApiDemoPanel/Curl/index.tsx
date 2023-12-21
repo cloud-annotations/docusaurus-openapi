@@ -14,12 +14,13 @@ import clsx from "clsx";
 import codegen from "postman-code-generators";
 import { Highlight, Prism } from "prism-react-renderer";
 import bashLang from "refractor/lang/bash";
-bashLang(Prism);
 
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
 import { useTypedSelector } from "../hooks";
+
+bashLang(Prism);
 
 interface Language {
   tabName: string;
