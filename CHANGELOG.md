@@ -1,9 +1,3 @@
-## 0.7.2 (Dec 21, 2023)
-
-Enhancements and bug fixes
-
-- Fix bash syntax highlighting ([#274](https://github.com/cloud-annotations/docusaurus-openapi/pull/274))
-
 ## 0.7.1 (Dec 18, 2023)
 
 High-level enhancements
