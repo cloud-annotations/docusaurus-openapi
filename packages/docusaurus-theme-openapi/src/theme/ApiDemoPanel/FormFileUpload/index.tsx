@@ -12,6 +12,7 @@ import MagicDropzone from "react-magic-dropzone";
 
 import styles from "./styles.module.css";
 import FloatingButton from "../FloatingButton";
+import { stripText } from "../text";
 
 type PreviewFile = { preview: string } & File;
 
@@ -107,7 +108,7 @@ function FormFileUpload({ placeholder, onChange }: Props) {
             <RenderPreview file={file} />
           </>
         ) : (
-          <div className={styles.dropzoneContent}>{placeholder}</div>
+          <div className={styles.dropzoneContent}>{stripText(placeholder)}</div>
         )}
       </MagicDropzone>
     </FloatingButton>
