@@ -29,7 +29,8 @@ import type { LoadContext } from "@docusaurus/types";
 import {
   aliasedSitePath,
   normalizeUrl,
-  parseMarkdownString,
+  parseMarkdownFile,
+  DEFAULT_PARSE_FRONT_MATTER,
 } from "@docusaurus/utils";
 
 import { validateDocFrontMatter } from "./frontMatter";
@@ -78,11 +79,16 @@ async function doProcessDocMetadata({
   const { siteDir } = context;
 
   const {
-    frontMatter: unsafeFrontMatter,
-    contentTitle,
-    excerpt,
-  } = parseMarkdownString(content);
-  const frontMatter = validateDocFrontMatter(unsafeFrontMatter);
+    frontMatter: parsedFrontMatter,
+    contentTitle: parsedContentTitle,
+    excerpt: parsedExcerpt,
+  } = await parseMarkdownFile({
+    fileContent: content,
+    filePath,
+    parseFrontMatter: DEFAULT_PARSE_FRONT_MATTER,
+  });
+
+  const frontMatter = validateDocFrontMatter(parsedFrontMatter);
 
   // E.g. api/plugins/myDoc -> myDoc; myDoc -> myDoc
   const sourceFileNameWithoutExtension = path.basename(
@@ -129,9 +135,9 @@ async function doProcessDocMetadata({
   // Note: the title is used by default for page title, sidebar label,
   // pagination buttons... frontMatter.title should be used in priority over
   // contentTitle (because it can contain markdown/JSX syntax)
-  const title: string = frontMatter.title ?? contentTitle ?? baseID;
+  const title: string = frontMatter.title ?? parsedContentTitle ?? baseID;
 
-  const description: string = frontMatter.description ?? excerpt ?? "";
+  const description: string = frontMatter.description ?? parsedExcerpt ?? "";
 
   const permalink = normalizeUrl([
     context.baseUrl,
