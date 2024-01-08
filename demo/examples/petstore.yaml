@@ -300,6 +300,9 @@ paths:
             schema:
               type: string
               format: binary
+              description: |
+                This description contains <a href="https://www.w3.org/html/">HTML</a><br />
+                Cat pics plz
   /pet/findByStatus:
     get:
       tags:
@@ -838,13 +841,15 @@ paths:
       parameters:
         - name: username
           in: query
-          description: The user name for login
+          description: |
+            This description contains <a href="https://www.w3.org/html/">HTML</a><br />The user name for login
           required: true
           schema:
             type: string
         - name: password
           in: query
-          description: The password for login in clear text
+          description: |
+            This description contains [markdown](https://www.markdownguide.org/)<br />The password for login in clear text
           required: true
           schema:
             type: string
