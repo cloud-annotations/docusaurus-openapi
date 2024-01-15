@@ -1,3 +1,9 @@
+## 0.7.3 (Jan 15, 2024)
+
+Enhancements and bug fixes
+
+- Use parseMarkdownFile instead of parseMarkdownString ([#277](https://github.com/cloud-annotations/docusaurus-openapi/pull/277))
+
 ## 0.7.2 (Dec 21, 2023)
 
 Enhancements and bug fixes

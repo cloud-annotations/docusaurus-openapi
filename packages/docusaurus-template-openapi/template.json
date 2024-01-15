@@ -1,7 +1,7 @@
 {
   "package": {
     "name": "demo",
-    "version": "0.7.2",
+    "version": "0.7.3",
     "private": true,
     "scripts": {
       "docusaurus": "docusaurus",
@@ -16,7 +16,7 @@
     },
     "dependencies": {
       "@docusaurus/core": "^3.0.0",
-      "docusaurus-preset-openapi": "0.7.2",
+      "docusaurus-preset-openapi": "0.7.3",
       "@mdx-js/react": "^3.0.0",
       "clsx": "^1.2.1",
       "prism-react-renderer": "^2.1.0",
