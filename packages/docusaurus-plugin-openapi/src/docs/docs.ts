@@ -72,6 +72,8 @@ async function doProcessDocMetadata({
     | "editLocalizedFiles"
     | "numberPrefixParser"
     | "breadcrumbs"
+    | "showLastUpdateTime"
+    | "showLastUpdateAuthor"
   >;
   env: DocEnv;
 }): Promise<DocMetadataBase> {
@@ -181,6 +183,8 @@ export function processDocMetadata(args: {
     | "editLocalizedFiles"
     | "numberPrefixParser"
     | "breadcrumbs"
+    | "showLastUpdateTime"
+    | "showLastUpdateAuthor"
   >;
   env: DocEnv;
 }): Promise<DocMetadataBase> {
