@@ -1,12 +1,3 @@
-## 0.7.4 (Apr 1, 2024)
-
-Bug Fixes for Docusaurus 3.2.0 upgrade ([#283](https://github.com/cloud-annotations/docusaurus-openapi/pull/283))
-
-- `addLeadingSlash` and `addTrailingSlash` are now imported from `@docusaurus/utils-common`
-- Omit `showLastUpdateAuthor` and `showLastUpdateTime` from PluginOptions
-- Updated `toNav` function to handle `nav.menu` items that now have a role of `button` instead of `link`
-- Updated Docusaurus version to 3.2.0
-
 ## 0.7.3 (Jan 15, 2024)
 
 Enhancements and bug fixes
