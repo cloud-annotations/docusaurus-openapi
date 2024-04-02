@@ -28,10 +28,10 @@
     "watch": "tsc --watch"
   },
   "devDependencies": {
-    "@docusaurus/types": "^3.0.0"
+    "@docusaurus/types": "^3.2.0"
   },
   "dependencies": {
-    "@docusaurus/preset-classic": "^3.0.0",
+    "@docusaurus/preset-classic": "^3.2.0",
     "docusaurus-plugin-openapi": "^0.7.3",
     "docusaurus-plugin-proxy": "^0.7.3",
     "docusaurus-theme-openapi": "^0.7.3"

@@ -21,12 +21,8 @@ import type {
   NumberPrefixParser,
   DocMetadataBase,
 } from "@docusaurus/plugin-content-docs";
-import {
-  addLeadingSlash,
-  addTrailingSlash,
-  isValidPathname,
-  resolvePathname,
-} from "@docusaurus/utils";
+import { isValidPathname, resolvePathname } from "@docusaurus/utils";
+import { addLeadingSlash, addTrailingSlash } from "@docusaurus/utils-common";
 
 import { isCategoryIndex, toCategoryIndexMatcherParam } from "./docs";
 import {

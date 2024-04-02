@@ -21,8 +21,8 @@
     "watch": "tsc --watch"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.0.0",
-    "@docusaurus/types": "^3.0.0",
+    "@docusaurus/module-type-aliases": "^3.2.0",
+    "@docusaurus/types": "^3.2.0",
     "@types/axios": "^0.14.0",
     "@types/js-yaml": "^4.0.5",
     "@types/json-schema": "^7.0.9",
@@ -31,10 +31,11 @@
     "utility-types": "^3.10.0"
   },
   "dependencies": {
-    "@docusaurus/mdx-loader": "^3.0.0",
-    "@docusaurus/plugin-content-docs": "^3.0.0",
-    "@docusaurus/utils": "^3.0.0",
-    "@docusaurus/utils-validation": "^3.0.0",
+    "@docusaurus/mdx-loader": "^3.2.0",
+    "@docusaurus/plugin-content-docs": "^3.2.0",
+    "@docusaurus/utils": "^3.2.0",
+    "@docusaurus/utils-validation": "^3.2.0",
+    "@docusaurus/utils-common": "^3.2.0",
     "axios": "^0.26.1",
     "chalk": "^4.1.2",
     "clsx": "^1.2.1",
