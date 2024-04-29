@@ -24,7 +24,7 @@ import {
   Globby,
 } from "@docusaurus/utils";
 import chalk from "chalk";
-import { Configuration } from "webpack";
+import type { Configuration } from "webpack";
 
 import { DocEnv, processDocMetadata } from "./docs/docs";
 import { createApiPageMD, createInfoPageMD } from "./markdown";
