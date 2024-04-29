@@ -1,3 +1,9 @@
+## 0.7.5 (Apr 29, 2024)
+
+Enhancements and bug fixes
+
+- Remove axios dependency ([#288](https://github.com/cloud-annotations/docusaurus-openapi/pull/288))
+
 ## 0.7.4 (Apr 1, 2024)
 
 Bug Fixes for Docusaurus 3.2.0 upgrade ([#283](https://github.com/cloud-annotations/docusaurus-openapi/pull/283))
