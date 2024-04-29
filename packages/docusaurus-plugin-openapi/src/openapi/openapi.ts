@@ -210,7 +210,8 @@ export async function readOpenapiFiles(
   if (isURL(openapiPath)) {
     let data;
     try {
-      data = await (await fetch(openapiPath)).json();
+      const response = await fetch(openapiPath);
+      data = await response.json();
     } catch (err) {
       throw Error(
         `Did not find an OpenAPI specification at URL ${openapiPath}`
