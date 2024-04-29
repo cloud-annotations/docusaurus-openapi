@@ -9,7 +9,6 @@ import { lstat, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 import { aliasedSitePath, Globby, normalizeUrl } from "@docusaurus/utils";
-import axios from "axios";
 import chalk from "chalk";
 import yaml from "js-yaml";
 import JsonRefs from "json-refs";
@@ -209,8 +208,10 @@ export async function readOpenapiFiles(
   _options: {}
 ): Promise<OpenApiFiles[]> {
   if (isURL(openapiPath)) {
-    const { data } = await axios.get(openapiPath);
-    if (!data) {
+    let data;
+    try {
+      data = await (await fetch(openapiPath)).json();
+    } catch (err) {
       throw Error(
         `Did not find an OpenAPI specification at URL ${openapiPath}`
       );
