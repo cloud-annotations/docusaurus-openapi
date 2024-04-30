@@ -41,7 +41,7 @@
     "json-refs": "^3.0.15",
     "json-schema-resolve-allof": "^1.5.0",
     "lodash": "^4.17.20",
-    "openapi-to-postmanv2": "^1.2.1",
+    "openapi-to-postmanv2": "^4.20.1",
     "postman-collection": "^4.1.0",
     "webpack": "^5.88.1"
   },
