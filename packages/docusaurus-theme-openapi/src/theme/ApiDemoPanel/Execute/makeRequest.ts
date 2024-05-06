@@ -141,10 +141,16 @@ async function makeRequest(
       }
       case "formdata": {
         myBody = new FormData();
-        if (Array.isArray(body.formdata)) {
-          for (const data of body.formdata) {
-            if (data.key && data.value) {
-              myBody.append(data.key, data.value);
+        //converting request.body to json above strips out file info
+        //so below access through request.body.formdata.members
+        if (Array.isArray(request.body.formdata.members)) {
+          for (const data of request.body.formdata.members) {
+            if (data.type == "file") {
+              myBody.append(data.key, data.value.content, "file");
+            } else {
+              if (data.key && data.value) {
+                myBody.append(data.key, data.value);
+              }
             }
           }
         }
