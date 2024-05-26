@@ -251,6 +251,7 @@ function Curl({ postman, codeSamples }: Props) {
                 paddingRight: "60px",
                 borderRadius:
                   "2px 2px var(--openapi-card-border-radius) var(--openapi-card-border-radius)",
+                textWrap: "pretty",
               }}
             >
               <code ref={ref}>
