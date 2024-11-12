@@ -278,6 +278,10 @@ export default function pluginOpenAPI(
                     recmaPlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
+                    staticDirs: siteConfig.staticDirectories.map((dir) =>
+                      resolve(siteDir, dir)
+                    ),
+                    siteDir,
                     markdownConfig: siteConfig.markdown ?? { mdx1Compat: {} },
                     metadataPath: (mdxPath: string) => {
                       if (mdxPath.startsWith(dataDir)) {
