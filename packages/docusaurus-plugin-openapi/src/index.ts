@@ -251,6 +251,7 @@ export default function pluginOpenAPI(
       const {
         rehypePlugins,
         remarkPlugins,
+        recmaPlugins,
         beforeDefaultRehypePlugins,
         beforeDefaultRemarkPlugins,
       } = options;
@@ -274,6 +275,7 @@ export default function pluginOpenAPI(
                     admonitions: options.admonitions,
                     remarkPlugins,
                     rehypePlugins,
+                    recmaPlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
                     markdownConfig: siteConfig.markdown ?? { mdx1Compat: {} },

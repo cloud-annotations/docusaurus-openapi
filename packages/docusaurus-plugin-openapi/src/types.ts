@@ -6,6 +6,7 @@
  * ========================================================================== */
 
 import type { MDXOptions } from "@docusaurus/mdx-loader";
+import type { TagsPluginOptions } from "@docusaurus/utils";
 import type { Request } from "postman-collection";
 
 import {
@@ -20,7 +21,7 @@ export type {
   PropSidebar,
   PropSidebarItem,
 } from "@docusaurus/plugin-content-docs-types";
-export interface PluginOptions extends MDXOptions {
+export interface PluginOptions extends MDXOptions, TagsPluginOptions {
   id: string;
   path: string;
   routeBasePath: string;
