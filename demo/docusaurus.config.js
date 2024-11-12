@@ -26,6 +26,10 @@ const config = {
     },
   },
 
+  future: {
+    experimental_faster: true,
+  },
+
   presets: [
     [
       "docusaurus-preset-openapi",
