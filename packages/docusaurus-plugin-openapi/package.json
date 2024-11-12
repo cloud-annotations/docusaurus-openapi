@@ -43,7 +43,7 @@
     "lodash": "^4.17.20",
     "openapi-to-postmanv2": "^4.20.1",
     "postman-collection": "^4.1.0",
-    "webpack": "^5.88.1"
+    "webpack": "^5.95.0"
   },
   "peerDependencies": {
     "react": "^18.0.0",
