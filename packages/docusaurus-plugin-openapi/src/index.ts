@@ -8,6 +8,7 @@
 import { readFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
+import type { Options as MDXLoaderOptions } from "@docusaurus/mdx-loader";
 import type {
   LoadContext,
   Plugin,
@@ -292,7 +293,7 @@ export default function pluginOpenAPI(
                         return join(dataDir, `${docuHash(aliasedSource)}.json`);
                       }
                     },
-                  },
+                  } satisfies MDXLoaderOptions,
                 },
               ].filter(Boolean),
             },
