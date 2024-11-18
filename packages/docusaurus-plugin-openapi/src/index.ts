@@ -245,8 +245,8 @@ export default function pluginOpenAPI(
 
     configureWebpack(
       _config: Configuration,
-      isServer: boolean,
-      { getJSLoader }: ConfigureWebpackUtils
+      _isServer: boolean,
+      _configureWebpackUtils: ConfigureWebpackUtils
     ) {
       const {
         rehypePlugins,
@@ -268,7 +268,6 @@ export default function pluginOpenAPI(
               test: /(\.mdx?)$/,
               include: [dataDir, contentPath].map(addTrailingPathSeparator),
               use: [
-                getJSLoader({ isServer }),
                 {
                   loader: require.resolve("@docusaurus/mdx-loader"),
                   options: {
