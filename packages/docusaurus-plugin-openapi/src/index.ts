@@ -8,6 +8,7 @@
 import { readFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
+import type { Options as MDXLoaderOptions } from "@docusaurus/mdx-loader";
 import type {
   LoadContext,
   Plugin,
@@ -245,12 +246,13 @@ export default function pluginOpenAPI(
 
     configureWebpack(
       _config: Configuration,
-      isServer: boolean,
-      { getJSLoader }: ConfigureWebpackUtils
+      _isServer: boolean,
+      _configureWebpackUtils: ConfigureWebpackUtils
     ) {
       const {
         rehypePlugins,
         remarkPlugins,
+        recmaPlugins,
         beforeDefaultRehypePlugins,
         beforeDefaultRemarkPlugins,
       } = options;
@@ -267,15 +269,19 @@ export default function pluginOpenAPI(
               test: /(\.mdx?)$/,
               include: [dataDir, contentPath].map(addTrailingPathSeparator),
               use: [
-                getJSLoader({ isServer }),
                 {
                   loader: require.resolve("@docusaurus/mdx-loader"),
                   options: {
                     admonitions: options.admonitions,
                     remarkPlugins,
                     rehypePlugins,
+                    recmaPlugins,
                     beforeDefaultRehypePlugins,
                     beforeDefaultRemarkPlugins,
+                    staticDirs: siteConfig.staticDirectories.map((dir) =>
+                      resolve(siteDir, dir)
+                    ),
+                    siteDir,
                     markdownConfig: siteConfig.markdown ?? { mdx1Compat: {} },
                     metadataPath: (mdxPath: string) => {
                       if (mdxPath.startsWith(dataDir)) {
@@ -287,7 +293,7 @@ export default function pluginOpenAPI(
                         return join(dataDir, `${docuHash(aliasedSource)}.json`);
                       }
                     },
-                  },
+                  } satisfies MDXLoaderOptions,
                 },
               ].filter(Boolean),
             },
