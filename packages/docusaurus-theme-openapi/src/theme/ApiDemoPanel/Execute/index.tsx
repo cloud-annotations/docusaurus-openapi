@@ -9,11 +9,11 @@ import React from "react";
 
 import sdk from "postman-collection";
 
+import buildPostmanRequest from "./../buildPostmanRequest";
+import makeRequest from "./makeRequest";
 import { useTypedDispatch, useTypedSelector } from "../hooks";
 import { Param } from "../ParamOptions/slice";
 import { setResponse } from "../Response/slice";
-import buildPostmanRequest from "./../buildPostmanRequest";
-import makeRequest from "./makeRequest";
 
 function validateRequest(params: {
   path: Param[];
@@ -78,6 +78,7 @@ function Execute({ postman, proxy }: Props) {
           dispatch(setResponse(e.message ?? "Error fetching."));
         }
       }}
+      type="submit"
     >
       Execute
     </button>

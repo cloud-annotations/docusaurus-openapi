@@ -1,6 +1,76 @@
+## 0.7.5 (Apr 29, 2024)
+
+Enhancements and bug fixes
+
+- Remove axios dependency ([#288](https://github.com/cloud-annotations/docusaurus-openapi/pull/288))
+
+## 0.7.4 (Apr 1, 2024)
+
+Bug Fixes for Docusaurus 3.2.0 upgrade ([#283](https://github.com/cloud-annotations/docusaurus-openapi/pull/283))
+
+- `addLeadingSlash` and `addTrailingSlash` are now imported from `@docusaurus/utils-common`
+- Omit `showLastUpdateAuthor` and `showLastUpdateTime` from PluginOptions
+- Updated `toNav` function to handle `nav.menu` items that now have a role of `button` instead of `link`
+- Updated Docusaurus version to 3.2.0
+
+## 0.7.3 (Jan 15, 2024)
+
+Enhancements and bug fixes
+
+- Use parseMarkdownFile instead of parseMarkdownString ([#277](https://github.com/cloud-annotations/docusaurus-openapi/pull/277))
+
+## 0.7.2 (Dec 21, 2023)
+
+Enhancements and bug fixes
+
+- Fix bash syntax highlighting ([#274](https://github.com/cloud-annotations/docusaurus-openapi/pull/274))
+
+## 0.7.1 (Dec 18, 2023)
+
+High-level enhancements
+
+- Bug fixes related to Docusaurus v3 migration
+
+Other enhancements and bug fixes
+
+- Fix admonitions support in Docusaurus v3 ([#271](https://github.com/cloud-annotations/docusaurus-openapi/pull/271))
+- Fix some MDXv3 migration bugs ([#270](https://github.com/cloud-annotations/docusaurus-openapi/pull/270))
+
+## 0.7.0 (Dec 13, 2023)
+
+High-level enhancements
+
+- Docusaurus v3 support ([#266](https://github.com/cloud-annotations/docusaurus-openapi/pull/266))
+- Allow pressing enter to perform the 'Execute' action ([#255](https://github.com/cloud-annotations/docusaurus-openapi/pull/255))
+- Render examples in a `<code>` block ([#256](https://github.com/cloud-annotations/docusaurus-openapi/pull/256))
+
+Other enhancements and bug fixes
+
+- Wrap code examples tabs in narrow browser windows ([#250](https://github.com/cloud-annotations/docusaurus-openapi/pull/250))
+- Add border to form inputs when using light theme ([#252](https://github.com/cloud-annotations/docusaurus-openapi/pull/252))
+- Fix: Page crash on half surrogate pair ([#261](https://github.com/cloud-annotations/docusaurus-openapi/pull/261))
+
+## 0.6.4 (Mar 15, 2023)
+
+High-level enhancements
+
+- Fixes and enhancements for array query param handling ([#241](https://github.com/cloud-annotations/docusaurus-openapi/pull/241))
+  - Respect the `maxItems` property for array query params
+  - Add compatibility for `style` and `explode` properties when rendering array query params
+  - Fix infinite render loop on pages using array query params
+
+Other enhancements and bug fixes
+
+- Convert some relative imports in theme package ([#237](https://github.com/cloud-annotations/docusaurus-openapi/pull/237))
+- Ensure path-level parameters are passed to the theme ([#235](https://github.com/cloud-annotations/docusaurus-openapi/pull/235))
+- Hide required labels on response schemas ([#230](https://github.com/cloud-annotations/docusaurus-openapi/pull/230))
+- Fix invalid ignore pattern for underscore files ([#233](https://github.com/cloud-annotations/docusaurus-openapi/pull/233))
+- Add existing site install instructions ([#229](https://github.com/cloud-annotations/docusaurus-openapi/pull/229))
+- Docs: update template version ([#225](https://github.com/cloud-annotations/docusaurus-openapi/pull/225))
+
 ## 0.6.3 (Nov 7, 2022)
 
-High level enhancements
+High-level enhancements
 
 - Compatibility with Docusaurus 2.2.0 ([#223](https://github.com/cloud-annotations/docusaurus-openapi/pull/223))
 - Support for loading custom Markdown Files: ([#193](https://github.com/cloud-annotations/docusaurus-openapi/pull/193))
@@ -12,7 +82,7 @@ Other enhancements and bug fixes
 
 ## 0.6.2 (Aug 11, 2022)
 
-High level enhancements
+High-level enhancements
 
 - Authorize with api keys in header
 
@@ -36,7 +106,7 @@ Other enhancements and bug fixes
 
 ## 0.6.0 (Jun 23, 2022)
 
-High level enhancements
+High-level enhancements
 
 - Compatibility with Docusaurus 2.0.0-beta.21
 
@@ -50,7 +120,7 @@ Other enhancements and bug fixes
 
 ## 0.5.0 (Jan 9, 2022)
 
-High level enhancements
+High-level enhancements
 
 - All theme components are now TypeScript 🎉
 
@@ -79,7 +149,7 @@ Enhancements and bug fixes
 
 ## 0.4.0 (Dec 23, 2021)
 
-High level enhancements
+High-level enhancements
 
 - Docusaurus beta.14 support
 
@@ -138,7 +208,7 @@ Other enhancements and bug fixes
 
 ## 0.3.1 (Dec 21, 2021)
 
-High level enhancements
+High-level enhancements
 
 - Added support for more schema qualifiers:
 
@@ -185,7 +255,7 @@ Other enhancements and bug fixes
 
 ## 0.3.0 (Dec 16, 2021)
 
-High level enhancements
+High-level enhancements
 
 - Docusaurus beta.13 support (Thanks @Josh-Cena!)
 
@@ -263,7 +333,7 @@ Fix broken package
 
 ## 0.2.1 (Dec 5, 2021)
 
-High level enhancements
+High-level enhancements
 
 - The demo panel now allows you to choose the security scheme from a dropdown that is populated by the OpenAPI definition (only showing the dropdown if more than one is listed)
 - Adds support for using multiple auth modes simultaneously (Eg: `(BearerAuth) OR (ApiKeyAuth AND BasicAuth)`)

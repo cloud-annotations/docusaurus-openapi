@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
+import { escape } from "lodash";
+
 import { create, guard } from "./utils";
 
 export function createVersionBadge(version: string | undefined) {
@@ -13,6 +15,6 @@ export function createVersionBadge(version: string | undefined) {
       className: "theme-doc-version-badge badge badge--secondary",
       children: `Version: ${escape(version)}`,
     }),
-    `\n\n`,
+    `\n`,
   ]);
 }

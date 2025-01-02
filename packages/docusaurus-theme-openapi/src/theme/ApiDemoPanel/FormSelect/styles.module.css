@@ -34,6 +34,12 @@ html[data-theme="dark"] .selectInput {
   background-size: auto auto;
 }
 
+html[data-theme="light"] .selectInput {
+  border-color: var(--ifm-color-primary-lightest);
+  border-style: solid;
+  border-width: 1px;
+}
+
 .selectInput {
   composes: inputBase;
   -moz-appearance: none;

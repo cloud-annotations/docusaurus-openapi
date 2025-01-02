@@ -10,10 +10,10 @@ import {
   Joi,
   RemarkPluginsSchema,
   RehypePluginsSchema,
+  RecmaPluginsSchema,
   AdmonitionsSchema,
 } from "@docusaurus/utils-validation";
 import chalk from "chalk";
-import admonitions from "remark-admonitions";
 
 import type { PluginOptions } from "./types";
 
@@ -24,14 +24,17 @@ export const DEFAULT_OPTIONS: Omit<PluginOptions, "id" | "sidebarPath"> = {
   apiItemComponent: "@theme/ApiItem",
   remarkPlugins: [],
   rehypePlugins: [],
+  recmaPlugins: [],
   beforeDefaultRemarkPlugins: [],
   beforeDefaultRehypePlugins: [],
   admonitions: true,
   sidebarCollapsible: true,
   sidebarCollapsed: true,
+  onInlineTags: "warn",
+  tags: undefined,
 };
 
-export const OptionsSchema = Joi.object({
+export const OptionsSchema = Joi.object<PluginOptions>({
   path: Joi.string().default(DEFAULT_OPTIONS.path),
   routeBasePath: Joi.string()
     // '' not allowed, see https://github.com/facebook/docusaurus/issues/3374
@@ -43,6 +46,7 @@ export const OptionsSchema = Joi.object({
   apiItemComponent: Joi.string().default(DEFAULT_OPTIONS.apiItemComponent),
   remarkPlugins: RemarkPluginsSchema.default(DEFAULT_OPTIONS.remarkPlugins),
   rehypePlugins: RehypePluginsSchema.default(DEFAULT_OPTIONS.rehypePlugins),
+  recmaPlugins: RecmaPluginsSchema.default(DEFAULT_OPTIONS.recmaPlugins),
   beforeDefaultRemarkPlugins: RemarkPluginsSchema.default(
     DEFAULT_OPTIONS.beforeDefaultRemarkPlugins
   ),
@@ -52,6 +56,13 @@ export const OptionsSchema = Joi.object({
   admonitions: Joi.alternatives()
     .try(AdmonitionsSchema, Joi.boolean().invalid(true))
     .default(DEFAULT_OPTIONS.admonitions),
+  onInlineTags: Joi.string()
+    .equal("ignore", "log", "warn", "throw")
+    .default(DEFAULT_OPTIONS.onInlineTags),
+  tags: Joi.string()
+    .disallow("")
+    .allow(null, false)
+    .default(() => DEFAULT_OPTIONS.tags),
 });
 
 export function validateOptions({
@@ -83,12 +94,6 @@ export function validateOptions({
   }
 
   const normalizedOptions = validate(OptionsSchema, options);
-
-  if (normalizedOptions.admonitions) {
-    normalizedOptions.remarkPlugins = normalizedOptions.remarkPlugins.concat([
-      [admonitions, normalizedOptions.admonitions],
-    ]);
-  }
 
   return normalizedOptions;
 }

@@ -8,16 +8,19 @@
 import React, { useRef, useState, useEffect } from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import type { Props } from "@theme/ApiDemoPanel/Curl";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
-import sdk from "postman-collection";
-import Highlight, { defaultProps } from "prism-react-renderer";
+import { Highlight, Prism } from "prism-react-renderer";
+import bashLang from "refractor/lang/bash";
 
-import { useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
+import { useTypedSelector } from "../hooks";
+
+bashLang(Prism);
 
 interface Language {
   tabName: string;
@@ -122,11 +125,6 @@ const languageTheme = {
   ],
 };
 
-interface Props {
-  postman: sdk.Request;
-  codeSamples: any; // TODO: Type this...
-}
-
 function Curl({ postman, codeSamples }: Props) {
   // TODO: match theme for vscode.
 
@@ -230,6 +228,7 @@ function Curl({ postman, codeSamples }: Props) {
                 language === lang ? "api-code-tab--active" : undefined,
                 "api-code-tab"
               )}
+              type="button"
               onClick={() => setLanguage(lang)}
             >
               {lang.tabName || lang.label}
@@ -239,7 +238,6 @@ function Curl({ postman, codeSamples }: Props) {
       </div>
 
       <Highlight
-        {...defaultProps}
         theme={languageTheme}
         code={codeText}
         language={language.highlight || language.lang}

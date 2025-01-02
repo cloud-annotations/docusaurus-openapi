@@ -5,20 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { nanoid } from "@reduxjs/toolkit";
 
-import { useTypedDispatch, useTypedSelector } from "../hooks";
 import FormItem from "./../FormItem";
 import FormMultiSelect from "./../FormMultiSelect";
 import FormSelect from "./../FormSelect";
 import FormTextInput from "./../FormTextInput";
 import { Param, setParam } from "./slice";
 import styles from "./styles.module.css";
+import { useTypedDispatch, useTypedSelector } from "../hooks";
 
 interface ParamProps {
   param: Param;
+}
+
+interface Item {
+  id: string;
+  value?: string;
 }
 
 function ParamOption({ param }: ParamProps) {
@@ -81,6 +86,7 @@ function ParamOptions() {
         <>
           <button
             className={styles.showMoreButton}
+            type="button"
             onClick={() => setShowOptional((prev) => !prev)}
           >
             <span
@@ -161,10 +167,16 @@ function ArrayItem({
 }
 
 function ParamArrayFormItem({ param }: ParamProps) {
-  const [items, setItems] = useState<{ id: string; value?: string }[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const dispatch = useTypedDispatch();
 
   function handleAddItem() {
+    if (
+      param?.schema?.maxItems !== undefined &&
+      items.length >= param.schema.maxItems
+    ) {
+      return;
+    }
     setItems((i) => [
       ...i,
       {
@@ -173,7 +185,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
     ]);
   }
 
-  useEffect(() => {
+  function updateItems(items: Array<Item>) {
     const values = items
       .map((item) => item.value)
       .filter((item): item is string => !!item);
@@ -184,12 +196,13 @@ function ParamArrayFormItem({ param }: ParamProps) {
         value: values.length > 0 ? values : undefined,
       })
     );
-  }, [dispatch, items, param]);
+  }
 
   function handleDeleteItem(itemToDelete: { id: string }) {
     return () => {
       const newItems = items.filter((i) => i.id !== itemToDelete.id);
       setItems(newItems);
+      updateItems(newItems);
     };
   }
 
@@ -202,6 +215,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
         return i;
       });
       setItems(newItems);
+      updateItems(newItems);
     };
   }
 
@@ -212,6 +226,7 @@ function ParamArrayFormItem({ param }: ParamProps) {
           <ArrayItem param={param} onChange={handleChangeItem(item)} />
           <button
             className={styles.buttonDelete}
+            type="button"
             onClick={handleDeleteItem(item)}
           >
             <svg
@@ -230,7 +245,15 @@ function ParamArrayFormItem({ param }: ParamProps) {
           </button>
         </div>
       ))}
-      <button className={styles.buttonThin} onClick={handleAddItem}>
+      <button
+        className={styles.buttonThin}
+        type="button"
+        onClick={handleAddItem}
+        disabled={
+          param?.schema?.maxItems != null &&
+          items.length >= param.schema.maxItems
+        }
+      >
         Add item
       </button>
     </>

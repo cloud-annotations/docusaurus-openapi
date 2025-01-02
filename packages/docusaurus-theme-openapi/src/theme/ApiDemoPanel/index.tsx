@@ -8,28 +8,28 @@
 import React from "react";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { Metadata } from "@theme/ApiItem";
+import type { Props } from "@theme/ApiDemoPanel";
+import Curl from "@theme/ApiDemoPanel/Curl";
+import Response from "@theme/ApiDemoPanel/Response";
 import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import sdk from "postman-collection";
 import { Provider } from "react-redux";
 
-import { ThemeConfig } from "../../types";
 import Accept from "./Accept";
 import Authorization from "./Authorization";
 import { createAuth } from "./Authorization/slice";
 import Body from "./Body";
-import Curl from "./Curl";
 import Execute from "./Execute";
 import MethodEndpoint from "./MethodEndpoint";
 import ParamOptions from "./ParamOptions";
 import { createPersistanceMiddleware } from "./persistanceMiddleware";
-import Response from "./Response";
 import Server from "./Server";
 import { createServer } from "./Server/slice";
 import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
+import { ThemeConfig } from "../../types";
 
-function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
+function ApiDemoPanel({ item }: Props) {
   const { siteConfig } = useDocusaurusContext();
   const themeConfig = siteConfig.themeConfig as ThemeConfig;
   const options = themeConfig.api;
@@ -87,40 +87,46 @@ function ApiDemoPanel({ item }: { item: NonNullable<Metadata["api"]> }) {
     [persistanceMiddleware]
   );
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
   const { path, method } = item;
 
   return (
     <Provider store={store2}>
       <div style={{ marginTop: "3.5em" }}>
-        <Authorization />
+        <form onSubmit={handleSubmit}>
+          <Authorization />
 
-        {item.operationId !== undefined && (
-          <div style={{ marginBottom: "var(--ifm-table-cell-padding)" }}>
-            <code>
-              <b>{item.operationId}</b>
-            </code>
+          {item.operationId !== undefined && (
+            <div style={{ marginBottom: "var(--ifm-table-cell-padding)" }}>
+              <code>
+                <b>{item.operationId}</b>
+              </code>
+            </div>
+          )}
+
+          <MethodEndpoint method={method} path={path} />
+
+          <div className={styles.optionsPanel}>
+            <ParamOptions />
+            <Body
+              jsonRequestBodyExample={item.jsonRequestBodyExample}
+              requestBodyMetadata={item.requestBody}
+            />
+            <Accept />
           </div>
-        )}
 
-        <MethodEndpoint method={method} path={path} />
+          <Server />
 
-        <div className={styles.optionsPanel}>
-          <ParamOptions />
-          <Body
-            jsonRequestBodyExample={item.jsonRequestBodyExample}
-            requestBodyMetadata={item.requestBody}
+          <Curl
+            postman={postman}
+            codeSamples={(item as any)["x-code-samples"] ?? []}
           />
-          <Accept />
-        </div>
 
-        <Server />
-
-        <Curl
-          postman={postman}
-          codeSamples={(item as any)["x-code-samples"] ?? []}
-        />
-
-        <Execute postman={postman} proxy={options?.proxy} />
+          <Execute postman={postman} proxy={options?.proxy} />
+        </form>
 
         <Response />
       </div>

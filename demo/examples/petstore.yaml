@@ -38,8 +38,6 @@ info:
     OAuth2 - an open protocol to allow secure authorization in a simple
     and standard method from web, mobile and desktop applications.
 
-    <SecurityDefinitions />
-
   version: 1.0.0
   title: Swagger Petstore YAML
   termsOfService: "http://swagger.io/terms/"
@@ -302,6 +300,9 @@ paths:
             schema:
               type: string
               format: binary
+              description: |
+                This description contains <a href="https://www.w3.org/html/">HTML</a><br />
+                Cat pics plz
   /pet/findByStatus:
     get:
       tags:
@@ -442,7 +443,7 @@ paths:
         - store
       summary: Find purchase order by ID
       description: >-
-        For valid response try integer IDs with value <= 5 or > 10. Other values
+        For valid response try integer IDs with value \<= 5 or > 10. Other values
         will generated exceptions
       operationId: getOrderById
       parameters:
@@ -840,13 +841,15 @@ paths:
       parameters:
         - name: username
           in: query
-          description: The user name for login
+          description: |
+            This description contains <a href="https://www.w3.org/html/">HTML</a><br />The user name for login
           required: true
           schema:
             type: string
         - name: password
           in: query
-          description: The password for login in clear text
+          description: |
+            This description contains [markdown](https://www.markdownguide.org/)<br />The password for login in clear text
           required: true
           schema:
             type: string

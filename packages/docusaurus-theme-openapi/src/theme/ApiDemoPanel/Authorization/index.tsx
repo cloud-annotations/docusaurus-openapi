@@ -9,12 +9,12 @@ import React, { useState } from "react";
 
 import clsx from "clsx";
 
+import { AuthState, Scheme, setAuthData, setSelectedAuth } from "./slice";
 import FormItem from "../FormItem";
 import FormSelect from "../FormSelect";
 import FormTextInput from "../FormTextInput";
 import { useTypedDispatch, useTypedSelector } from "../hooks";
 import styles from "../styles.module.css";
-import { AuthState, Scheme, setAuthData, setSelectedAuth } from "./slice";
 
 type Props = {
   mode: "locked" | "unlocked";
@@ -33,6 +33,7 @@ function LockButton({ mode, children, style, ...rest }: Props) {
         marginBottom: "var(--ifm-spacing-vertical)",
         ...style,
       }}
+      type="button"
       {...rest}
     >
       <span>{children}</span>

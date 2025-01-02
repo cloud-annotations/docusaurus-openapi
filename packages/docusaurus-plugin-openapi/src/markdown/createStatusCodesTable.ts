@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import { ApiItem } from "../types";
 import { createDescription } from "./createDescription";
 import { createFullWidthTable } from "./createFullWidthTable";
 import { createSchemaTable } from "./createSchemaTable";
 import { create } from "./utils";
+import { ApiItem } from "../types";
 
 interface Props {
   responses: ApiItem["responses"];

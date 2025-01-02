@@ -29,7 +29,8 @@ import type { LoadContext } from "@docusaurus/types";
 import {
   aliasedSitePath,
   normalizeUrl,
-  parseMarkdownString,
+  parseMarkdownFile,
+  DEFAULT_PARSE_FRONT_MATTER,
 } from "@docusaurus/utils";
 
 import { validateDocFrontMatter } from "./frontMatter";
@@ -71,6 +72,8 @@ async function doProcessDocMetadata({
     | "editLocalizedFiles"
     | "numberPrefixParser"
     | "breadcrumbs"
+    | "showLastUpdateTime"
+    | "showLastUpdateAuthor"
   >;
   env: DocEnv;
 }): Promise<DocMetadataBase> {
@@ -78,11 +81,16 @@ async function doProcessDocMetadata({
   const { siteDir } = context;
 
   const {
-    frontMatter: unsafeFrontMatter,
-    contentTitle,
-    excerpt,
-  } = parseMarkdownString(content);
-  const frontMatter = validateDocFrontMatter(unsafeFrontMatter);
+    frontMatter: parsedFrontMatter,
+    contentTitle: parsedContentTitle,
+    excerpt: parsedExcerpt,
+  } = await parseMarkdownFile({
+    fileContent: content,
+    filePath,
+    parseFrontMatter: DEFAULT_PARSE_FRONT_MATTER,
+  });
+
+  const frontMatter = validateDocFrontMatter(parsedFrontMatter);
 
   // E.g. api/plugins/myDoc -> myDoc; myDoc -> myDoc
   const sourceFileNameWithoutExtension = path.basename(
@@ -117,11 +125,7 @@ async function doProcessDocMetadata({
     return sourceDirName;
   }
 
-  const unversionedId = [computeDirNameIdPrefix(), baseID]
-    .filter(Boolean)
-    .join("/");
-
-  const id = unversionedId;
+  const id = [computeDirNameIdPrefix(), baseID].filter(Boolean).join("/");
 
   const docSlug = getSlug({
     baseID,
@@ -133,9 +137,9 @@ async function doProcessDocMetadata({
   // Note: the title is used by default for page title, sidebar label,
   // pagination buttons... frontMatter.title should be used in priority over
   // contentTitle (because it can contain markdown/JSX syntax)
-  const title: string = frontMatter.title ?? contentTitle ?? baseID;
+  const title: string = frontMatter.title ?? parsedContentTitle ?? baseID;
 
-  const description: string = frontMatter.description ?? excerpt ?? "";
+  const description: string = frontMatter.description ?? parsedExcerpt ?? "";
 
   const permalink = normalizeUrl([
     context.baseUrl,
@@ -145,12 +149,13 @@ async function doProcessDocMetadata({
 
   const draft = isDraftForEnvironment({ env, frontMatter });
 
+  const unlisted = frontMatter.unlisted ?? false;
+
   // Assign all of object properties during instantiation (if possible) for
   // NodeJS optimization.
   // Adding properties to object after instantiation will cause hidden
   // class transitions.
   return {
-    unversionedId,
     id,
     title,
     description,
@@ -164,6 +169,7 @@ async function doProcessDocMetadata({
     version: "",
     sidebarPosition,
     frontMatter,
+    unlisted,
   };
 }
 
@@ -177,6 +183,8 @@ export function processDocMetadata(args: {
     | "editLocalizedFiles"
     | "numberPrefixParser"
     | "breadcrumbs"
+    | "showLastUpdateTime"
+    | "showLastUpdateAuthor"
   >;
   env: DocEnv;
 }): Promise<DocMetadataBase> {

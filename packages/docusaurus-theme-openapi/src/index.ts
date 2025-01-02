@@ -7,8 +7,8 @@
 
 import path from "path";
 
-import type { Plugin } from "@docusaurus/types";
-import { ProvidePlugin } from "webpack";
+import type { ConfigureWebpackUtils, Plugin } from "@docusaurus/types";
+import type { Configuration as WebpackConfiguration } from "webpack";
 
 export default function docusaurusThemeOpenAPI(): Plugin<void> {
   return {
@@ -22,10 +22,15 @@ export default function docusaurusThemeOpenAPI(): Plugin<void> {
       return path.resolve(__dirname, "..", "src", "theme");
     },
 
-    configureWebpack() {
+    configureWebpack(
+      _config: WebpackConfiguration,
+      _isServer: boolean,
+      { currentBundler }: ConfigureWebpackUtils
+    ) {
+      const bundler = currentBundler.instance ?? require("webpack");
       return {
         plugins: [
-          new ProvidePlugin({
+          new bundler.ProvidePlugin({
             Buffer: [require.resolve("buffer/"), "Buffer"],
             process: require.resolve("process/browser"),
           }),

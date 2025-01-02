@@ -10,8 +10,9 @@ import React, { useState } from "react";
 // @ts-ignore
 import MagicDropzone from "react-magic-dropzone";
 
-import FloatingButton from "../FloatingButton";
 import styles from "./styles.module.css";
+import FloatingButton from "../FloatingButton";
+import { stripText } from "../text";
 
 type PreviewFile = { preview: string } & File;
 
@@ -96,6 +97,7 @@ function FormFileUpload({ placeholder, onChange }: Props) {
           <>
             <button
               style={{ marginTop: "calc(var(--ifm-pre-padding) / 2)" }}
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setAndNotifyFile(undefined);
@@ -106,7 +108,7 @@ function FormFileUpload({ placeholder, onChange }: Props) {
             <RenderPreview file={file} />
           </>
         ) : (
-          <div className={styles.dropzoneContent}>{placeholder}</div>
+          <div className={styles.dropzoneContent}>{stripText(placeholder)}</div>
         )}
       </MagicDropzone>
     </FloatingButton>
