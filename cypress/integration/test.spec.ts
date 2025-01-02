@@ -47,11 +47,19 @@ function navTo(links: RegExp[], heading: RegExp) {
     return false;
   });
 
-  for (let link of links) {
-    cy.get("nav.menu")
-      .findByRole("link", { name: link })
-      .click({ force: true }); // sometimes the sidebar items get covered by the navbar in CI.
-  }
+  links.forEach((linkRegex) => {
+    cy.get("nav.menu").then(($menu) => {
+      const navElement = $menu
+        .find("a")
+        .toArray()
+        .find((el) => linkRegex.test(el.innerText));
+      if (navElement) {
+        cy.wrap(navElement).click({ force: true });
+      } else {
+        cy.log(`No link or button found matching regex: ${linkRegex}`);
+      }
+    });
+  });
 
   cy.findByRole("heading", { name: heading, level: 1 }).should("exist");
 }

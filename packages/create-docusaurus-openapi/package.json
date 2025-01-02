@@ -1,6 +1,6 @@
 {
   "name": "create-docusaurus-openapi",
-  "version": "0.6.4",
+  "version": "0.7.5",
   "description": "Create Docusaurus apps easily.",
   "repository": {
     "type": "git",
@@ -23,9 +23,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@docusaurus/logger": "^2.0.0",
+    "@docusaurus/logger": "^3.6.0",
     "commander": "^5.1.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^11.0.0",
     "lodash": "^4.17.20",
     "prompts": "^2.4.1",
     "semver": "^7.3.4",
@@ -34,9 +34,10 @@
     "tslib": "^2.3.1"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
     "@types/prompts": "^2.0.9",
     "@types/shelljs": "^0.8.6",
     "@types/supports-color": "^8.1.1"

@@ -8,6 +8,7 @@
 import React from "react";
 
 import styles from "./styles.module.css";
+import { stripText } from "../text";
 
 interface Props {
   value?: string;
@@ -21,7 +22,7 @@ function FormTextInput({ value, placeholder, password, onChange }: Props) {
     <input
       className={styles.input}
       type={password ? "password" : "text"}
-      placeholder={placeholder}
+      placeholder={stripText(placeholder)}
       value={value}
       onChange={onChange}
       autoComplete="off"

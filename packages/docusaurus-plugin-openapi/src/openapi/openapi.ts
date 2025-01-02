@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import path from "path";
+import { lstat, readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 
 import { aliasedSitePath, Globby, normalizeUrl } from "@docusaurus/utils";
-import axios from "axios";
 import chalk from "chalk";
-import fs from "fs-extra";
 import yaml from "js-yaml";
 import JsonRefs from "json-refs";
 import resolveAllOf from "json-schema-resolve-allof";
@@ -18,10 +17,10 @@ import { kebabCase } from "lodash";
 import Converter from "openapi-to-postmanv2";
 import sdk, { Collection } from "postman-collection";
 
-import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
-import { isURL } from "../util";
 import { sampleFromSchema } from "./createExample";
 import { OpenApiObject, OpenApiObjectWithRef, TagObject } from "./types";
+import { ApiMetadata, ApiPageMetadata, InfoPageMetadata } from "../types";
+import { isURL } from "../util";
 
 /**
  * Finds any reference objects in the OpenAPI definition and resolves them to a finalized value.
@@ -85,7 +84,6 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
     const infoPage: PartialPage<InfoPageMetadata> = {
       type: "info",
       id: "introduction",
-      unversionedId: "introduction",
       title: "Introduction",
       description: openapiData.info.description,
       slug: "/introduction",
@@ -144,7 +142,6 @@ function createItems(openapiData: OpenApiObject): ApiMetadata[] {
       const apiPage: PartialPage<ApiPageMetadata> = {
         type: "api",
         id: baseId,
-        unversionedId: baseId,
         title: title,
         description: description ?? "",
         slug: "/" + baseId,
@@ -211,8 +208,11 @@ export async function readOpenapiFiles(
   _options: {}
 ): Promise<OpenApiFiles[]> {
   if (isURL(openapiPath)) {
-    const { data } = await axios.get(openapiPath);
-    if (!data) {
+    let data;
+    try {
+      const response = await fetch(openapiPath);
+      data = await response.json();
+    } catch (err) {
       throw Error(
         `Did not find an OpenAPI specification at URL ${openapiPath}`
       );
@@ -225,7 +225,7 @@ export async function readOpenapiFiles(
       },
     ];
   }
-  const stat = await fs.lstat(openapiPath);
+  const stat = await lstat(openapiPath);
   if (stat.isDirectory()) {
     console.warn(
       chalk.yellow(
@@ -242,18 +242,18 @@ export async function readOpenapiFiles(
     return Promise.all(
       sources.map(async (source) => {
         // TODO: make a function for this
-        const fullPath = path.join(openapiPath, source);
-        const openapiString = await fs.readFile(fullPath, "utf-8");
+        const fullPath = join(openapiPath, source);
+        const openapiString = await readFile(fullPath, "utf-8");
         const data = yaml.load(openapiString) as OpenApiObjectWithRef;
         return {
           source: fullPath, // This will be aliased in process.
-          sourceDirName: path.dirname(source),
+          sourceDirName: dirname(source),
           data,
         };
       })
     );
   }
-  const openapiString = await fs.readFile(openapiPath, "utf-8");
+  const openapiString = await readFile(openapiPath, "utf-8");
   const data = yaml.load(openapiString) as OpenApiObjectWithRef;
   return [
     {
@@ -298,7 +298,6 @@ export async function processOpenapiFiles(
     }
 
     items[i].id = id;
-    items[i].unversionedId = id;
     items[i].slug = "/" + id;
   }
 

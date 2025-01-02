@@ -1,8 +1,8 @@
-<h1 align="center">Docusaurus OpenAPI (beta)</h1>
+<h1 align="center">Docusaurus OpenAPI</h1>
 
 <div align="center">
 
-OpenAPI plugin for generating API reference docs in Docusaurus v2.
+OpenAPI plugin for generating API reference docs in Docusaurus.
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/cloud-annotations/docusaurus-plugin-openapi/blob/HEAD/LICENSE)
 [![npm latest package](https://img.shields.io/npm/v/docusaurus-preset-openapi/latest.svg)](https://www.npmjs.com/package/docusaurus-preset-openapi)

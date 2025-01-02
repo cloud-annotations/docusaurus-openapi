@@ -6,6 +6,7 @@
  * ========================================================================== */
 
 import type { MDXOptions } from "@docusaurus/mdx-loader";
+import type { TagsPluginOptions } from "@docusaurus/utils";
 import type { Request } from "postman-collection";
 
 import {
@@ -20,7 +21,7 @@ export type {
   PropSidebar,
   PropSidebarItem,
 } from "@docusaurus/plugin-content-docs-types";
-export interface PluginOptions extends MDXOptions {
+export interface PluginOptions extends MDXOptions, TagsPluginOptions {
   id: string;
   path: string;
   routeBasePath: string;
@@ -49,7 +50,6 @@ export interface ApiMetadataBase {
   next?: ApiNavLink;
   //
   id: string; // TODO legacy versioned id => try to remove
-  unversionedId: string; // TODO new unversioned id => try to rename to "id"
   title: string;
   description: string;
   source: string; // @site aliased source => "@site/docs/folder/subFolder/subSubFolder/myDoc.md"

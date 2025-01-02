@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import pkg from "../lerna.json";
 import { getOutput } from "./utils/get-output";
 import { printBanner, printSpacer } from "./utils/print-utils";
+import pkg from "../lerna.json";
 
 const ORG = "cloud-annotations";
 const REPO = "docusaurus-openapi";
@@ -104,7 +104,7 @@ function main() {
   const changelog = `
 ## ${pkg.version} (${date})
 
-High level enhancements
+High-level enhancements
 
 - TODO HIGHLIGHTS
 

@@ -15,7 +15,6 @@ import { ParameterObject } from "docusaurus-plugin-openapi/src/openapi/types";
 import sdk from "postman-collection";
 import { Provider } from "react-redux";
 
-import { ThemeConfig } from "../../types";
 import Accept from "./Accept";
 import Authorization from "./Authorization";
 import { createAuth } from "./Authorization/slice";
@@ -28,6 +27,7 @@ import Server from "./Server";
 import { createServer } from "./Server/slice";
 import { createStoreWithState } from "./store";
 import styles from "./styles.module.css";
+import { ThemeConfig } from "../../types";
 
 function ApiDemoPanel({ item }: Props) {
   const { siteConfig } = useDocusaurusContext();

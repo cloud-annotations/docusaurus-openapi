@@ -12,12 +12,15 @@ import type { Props } from "@theme/ApiDemoPanel/Curl";
 import clsx from "clsx";
 // @ts-ignore
 import codegen from "postman-code-generators";
-import Highlight, { defaultProps } from "prism-react-renderer";
+import { Highlight, Prism } from "prism-react-renderer";
+import bashLang from "refractor/lang/bash";
 
-import { useTypedSelector } from "../hooks";
 import buildPostmanRequest from "./../buildPostmanRequest";
 import FloatingButton from "./../FloatingButton";
 import styles from "./styles.module.css";
+import { useTypedSelector } from "../hooks";
+
+bashLang(Prism);
 
 interface Language {
   tabName: string;
@@ -235,7 +238,6 @@ function Curl({ postman, codeSamples }: Props) {
       </div>
 
       <Highlight
-        {...defaultProps}
         theme={languageTheme}
         code={codeText}
         language={language.highlight || language.lang}
