@@ -1,3 +1,14 @@
+## 0.7.6 (Jan 3, 2025)
+
+High-level enhancements
+
+- Fixes for compatibility with Docusaurus 3.6 ([#294](https://github.com/cloud-annotations/docusaurus-openapi/pull/294))
+
+Other enhancements and bug fixes
+
+- Upgrade openapi-to-postmanv2 ([#290](https://github.com/cloud-annotations/docusaurus-openapi/pull/290))
+- Update README.md to remove references of v2 ([#295](https://github.com/cloud-annotations/docusaurus-openapi/pull/295))
+
 ## 0.7.5 (Apr 29, 2024)
 
 Enhancements and bug fixes
