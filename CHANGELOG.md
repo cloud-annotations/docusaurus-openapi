@@ -1,3 +1,9 @@
+## 0.7.7 (Oct 7, 2025)
+
+High-level enhancements
+
+- Upgrade for react 19 compatibility ([#298](https://github.com/cloud-annotations/docusaurus-openapi/pull/298))
+
 ## 0.7.6 (Jan 3, 2025)
 
 High-level enhancements
