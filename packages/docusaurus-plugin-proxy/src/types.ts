@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  * ========================================================================== */
 
-import type { Configuration } from "webpack-dev-server";
+import type { ProxyConfigArray } from "webpack-dev-server";
 
 export interface PluginOptions {
-  proxy: Configuration["proxy"];
+  proxy: ProxyConfigArray | undefined;
 }

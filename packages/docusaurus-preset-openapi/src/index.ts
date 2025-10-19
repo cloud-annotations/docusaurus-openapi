@@ -34,7 +34,7 @@ export default function preset(
   }
 
   if (proxy !== false) {
-    plugins.push(makePluginConfig("docusaurus-plugin-proxy", proxy));
+    plugins.push(makePluginConfig("docusaurus-plugin-proxy", { proxy }));
   }
 
   return { themes, plugins };

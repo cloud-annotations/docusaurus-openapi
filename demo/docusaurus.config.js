@@ -53,12 +53,13 @@ const config = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
-        proxy: {
-          "/proxy": {
+        proxy: [
+          {
+            context: ["/proxy"],
             target: "http://localhost:8091",
             pathRewrite: { "^/proxy": "" },
           },
-        },
+        ],
       }),
     ],
   ],

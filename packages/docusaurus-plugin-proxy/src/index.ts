@@ -20,7 +20,7 @@ export default function pluginOpenAPI(
     configureWebpack(): any {
       return {
         devServer: {
-          proxy: options,
+          proxy: options.proxy,
         },
       };
     },
