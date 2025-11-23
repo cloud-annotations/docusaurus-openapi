@@ -22,7 +22,7 @@ export function createPersistanceMiddleware(options: ThemeConfig["api"]) {
 
       const storage = createStorage(options?.authPersistance);
 
-      if (action.type === setAuthData.type) {
+      if (setAuthData.match(action)) {
         for (const [key, value] of Object.entries(state.auth.data)) {
           if (Object.values(value).filter(Boolean).length > 0) {
             storage.setItem(key, JSON.stringify(value));
@@ -32,7 +32,7 @@ export function createPersistanceMiddleware(options: ThemeConfig["api"]) {
         }
       }
 
-      if (action.type === setSelectedAuth.type) {
+      if (setSelectedAuth.match(action)) {
         if (state.auth.selected) {
           storage.setItem(
             hashArray(Object.keys(state.auth.options)),
@@ -41,7 +41,7 @@ export function createPersistanceMiddleware(options: ThemeConfig["api"]) {
         }
       }
 
-      if (action.type === setServer.type) {
+      if (setServer.match(action)) {
         if (state.server.value?.url) {
           // FIXME What to use as key?
           storage.setItem(
@@ -51,7 +51,7 @@ export function createPersistanceMiddleware(options: ThemeConfig["api"]) {
         }
       }
 
-      if (action.type === setServerVariable.type) {
+      if (setServerVariable.match(action)) {
         if (state.server.value?.url) {
           storage.setItem(
             `docusaurus.openapi.server/${state.server.value?.url}`,
