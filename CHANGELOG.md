@@ -1,8 +1,26 @@
+## 0.8.0 (Jan 2, 2026)
+
+High-level enhancements
+
+- Upgrade for Docusaurus 3.9 compatibility ([#300](https://github.com/cloud-annotations/docusaurus-openapi/pull/300)). If you have specified proxy options in your Docusaurus config, you should switch to an array-based syntax. For example:
+  ```
+  [...]
+  proxy: [
+    {
+      context: ["/proxy"],
+      target: "http://localhost:8091",
+      pathRewrite: { "^/proxy": "" },
+    },
+  ],
+  [...]
+  ```
+- More fixes for React 19 compatibility ([#301](https://github.com/cloud-annotations/docusaurus-openapi/pull/301))
+
 ## 0.7.7 (Oct 7, 2025)
 
 High-level enhancements
 
-- Upgrade for react 19 compatibility ([#298](https://github.com/cloud-annotations/docusaurus-openapi/pull/298))
+- Upgrade for React 19 compatibility ([#298](https://github.com/cloud-annotations/docusaurus-openapi/pull/298))
 
 ## 0.7.6 (Jan 3, 2025)
 
