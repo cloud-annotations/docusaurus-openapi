@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write # Required for OIDC
 
 env:
   FORCE_COLOR: true
