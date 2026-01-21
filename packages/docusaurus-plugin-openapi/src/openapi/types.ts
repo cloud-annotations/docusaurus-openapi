@@ -308,6 +308,14 @@ export interface ReferenceObject {
 }
 
 export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;
+export type PrimitiveSchemaObjectTypes =
+  | "string"
+  | "number"
+  | "integer"
+  | "boolean"
+  | "object"
+  | "array"
+  | "null";
 export type SchemaObject = Omit<
   JSONSchema,
   | "type"
@@ -320,7 +328,7 @@ export type SchemaObject = Omit<
   | "additionalProperties"
 > & {
   // OpenAPI specific overrides
-  type?: "string" | "number" | "integer" | "boolean" | "object" | "array";
+  type?: PrimitiveSchemaObjectTypes | PrimitiveSchemaObjectTypes[];
   allOf?: SchemaObject[];
   oneOf?: SchemaObject[];
   anyOf?: SchemaObject[];
